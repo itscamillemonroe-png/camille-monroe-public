@@ -10,7 +10,7 @@ async function loadLibrary(){
   const {data,error}=await supabase.from('protected_media').select('id,title,media_kind,storage_path,status,audience_scope,updated_at').order('updated_at',{ascending:false}).limit(50);
   const target=$('#studioMedia');if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
   const media=await Promise.all((data||[]).map(signedPreview));
-  target.innerHTML=media.length?media.map(item=>`<article class="studioMediaCard">${item.media_kind==='image'&&item.signed_url?`<img src="${escapeHtml(item.signed_url)}" alt="">`:'<div class="mediaKind">'+escapeHtml(item.media_kind)+'</div>'}<div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.audience_scope.replaceAll('_',' '))} · ${escapeHtml(item.status)} · ${prettyDate(item.updated_at)}</small></div></article>`).join(''):'<p class="memberEmpty">No protected content has been uploaded yet.</p>';
+  target.innerHTML=media.length?media.map(item=>`<article class="studioMediaCard">${item.media_kind==='photo'&&item.signed_url?`<img src="${escapeHtml(item.signed_url)}" alt="">`:'<div class="mediaKind">'+escapeHtml(item.media_kind)+'</div>'}<div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.audience_scope.replaceAll('_',' '))} · ${escapeHtml(item.status)} · ${prettyDate(item.updated_at)}</small></div></article>`).join(''):'<p class="memberEmpty">No protected content has been uploaded yet.</p>';
 }
 
 async function init(){
