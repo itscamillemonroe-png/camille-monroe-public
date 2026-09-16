@@ -28,18 +28,17 @@ async function init(){
     gate.classList.add('activeAccess');
     gate.innerHTML=`<strong>Checkout ready</strong><span>Current access: ${access} · Credits: ${wallet?.balance_credits ?? 0}</span>`;
   }
-  const query=new URLSearchParams(location.search); const result=query.get('payment');
-  if(result==='pending') setStatus('Payment submitted. Provider confirmation can take a few moments. Your access or credits will update automatically once confirmed.','success');
-  if(result==='cancelled') setStatus('Payment was cancelled. Nothing was charged here.','error');
+  const result=new URLSearchParams(location.search).get('payment');
+  if(result==='pending') setStatus('Payment submitted. Provider confirmation can take a few moments. Benefits update automatically after confirmation.','success');
+  if(result==='cancelled') setStatus('Payment was cancelled. No benefits were distributed.','error');
   document.querySelectorAll('.payButton').forEach(button=>button.addEventListener('click',async()=>{
     if(!eligible)return;
-    const card=button.closest('[data-product-id]'); const product_id=card?.dataset.productId;
-    if(!product_id)return;
-    const original=button.textContent; button.disabled=true; button.textContent='Opening secure checkout…'; setStatus('Creating your secure crypto invoice…');
+    const product_id=button.closest('[data-product-id]')?.dataset.productId;if(!product_id)return;
+    const original=button.textContent;button.disabled=true;button.textContent='Opening secure checkout…';setStatus('Creating your secure crypto invoice…');
     const {data,error}=await supabase.functions.invoke('create-nowpayments-checkout',{body:{product_id}});
-    if(error || !data?.checkout_url){button.disabled=false;button.textContent=original;setStatus(data?.error||error?.message||'Checkout could not start. Please try again.','error');return;}
+    if(error||!data?.checkout_url){button.disabled=false;button.textContent=original;setStatus(data?.error||error?.message||'Checkout could not start. Please try again.','error');return;}
     location.href=data.checkout_url;
   }));
 }
 
-init();
+init().catch(error=>setStatus(error.message||'Payments could not load.','error'));

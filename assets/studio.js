@@ -3,7 +3,7 @@ import { supabase, $, escapeHtml, prettyDate, requireSession, wireSignOut } from
 let session;
 const setStudioStatus=(text,type='')=>{const el=$('#studioStatus');el.textContent=text;el.className=`formStatus ${type}`.trim();};
 const safeName=name=>name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
-const mediaKind=type=>type.startsWith('video/')?'video':type.startsWith('audio/')?'audio':'image';
+const mediaKind=type=>type.startsWith('video/')?'video':type.startsWith('audio/')?'audio':'photo';
 
 async function signedPreview(item){const {data}=await supabase.storage.from('protected-media').createSignedUrl(item.storage_path,300);return {...item,signed_url:data?.signedUrl||''};}
 async function loadLibrary(){
