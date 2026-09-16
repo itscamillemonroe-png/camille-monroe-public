@@ -23,7 +23,7 @@ async function memberPage(){
   $('#signOut')?.addEventListener('click',async()=>{await supabase.auth.signOut();location.href='/';});
   const user=session.user;
   const [profileR,subR,walletR,postsR]=await Promise.all([
-    supabase.from('member_profiles').select('full_name,email,status,verification_status,approved_content_scope').eq('user_id',user.id).maybeSingle(),
+    supabase.from('member_profiles').select('full_name,email,status,verification_status,verification_provider,approved_content_scope').eq('user_id',user.id).maybeSingle(),
     supabase.from('member_subscriptions').select('access_until').eq('user_id',user.id).maybeSingle(),
     supabase.from('member_wallets').select('balance_credits').eq('user_id',user.id).maybeSingle(),
     supabase.from('member_posts').select('id,title,body,visibility_scope,published_at').order('published_at',{ascending:false}).limit(30)
@@ -32,13 +32,15 @@ async function memberPage(){
   $('#memberName').textContent=profile.full_name||'Member';
   $('#memberEmail').textContent=profile.email||user.email||'';
   $('#approvalStatus').textContent=(profile.status||'pending').replaceAll('_',' ');
-  $('#verificationStatus').textContent=(profile.verification_status||'pending').replaceAll('_',' ');
+  $('#verificationStatus').textContent=(profile.verification_status||'not started').replaceAll('_',' ');
   $('#accessUntil').textContent=prettyDate(sub.access_until);
   $('#creditBalance').textContent=Number.isFinite(wallet.balance_credits)?wallet.balance_credits:'0';
   const approved=profile.status==='approved'; const verified=profile.verification_status==='verified'; const active=sub.access_until&&new Date(sub.access_until)>new Date();
+  const verifyAction=$('#verificationAction'); if(verifyAction&&verified)verifyAction.hidden=true;
   const banner=$('#memberBanner');
   if(approved&&verified&&active){banner.innerHTML='<strong>Private access active</strong><span>Your member access is open. Member posts available to your account appear below.</span>';banner.classList.add('activeAccess');}
-  else {const next=!verified?'Verification is still required.':!approved?'Your account is waiting for Camille’s approval.':!active?'Your membership access is not active.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${next}</span>`;}
+  else if(!verified){banner.innerHTML='<strong>Age & identity verification required</strong><span>Complete verification before protected access and checkout can open. <a href="/verify/">Verify now →</a></span>';}
+  else {const next=!approved?'Your account is waiting for Camille’s approval.':!active?'Your membership access is not active.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${next}</span>`;}
   const feed=$('#memberFeed'); feed.innerHTML='';
   if(postsR.error){feed.innerHTML='<article class="memberEmpty">Member posts will appear here when your access allows them.</article>';return;}
   const posts=postsR.data||[];
