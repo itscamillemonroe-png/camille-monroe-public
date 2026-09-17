@@ -1,0 +1,33 @@
+name: Autobot Daily SFW Post
+
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autobot-daily-sfw
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+      - name: Publish next SFW post
+        run: node scripts/autobot.mjs
+      - name: Save published feed
+        run: |
+          if git diff --quiet -- data/public-feed.json; then
+            echo "No queued post was available."
+            exit 0
+          fi
+          git config user.name "Camille Autobot"
+          git config user.email "autobot@users.noreply.github.com"
+          git add data/public-feed.json
+          git commit -m "Autobot: publish daily SFW post"
+          git push
