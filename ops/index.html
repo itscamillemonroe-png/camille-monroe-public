@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#050505">
+<title>Emergency Operations | Camille Monroe</title>
+<link rel="stylesheet" href="/assets/style.css?v=20260917-ops">
+<style>
+.opsShell{max-width:1100px;margin:0 auto;padding:32px 18px 80px}
+.opsTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}
+.opsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.opsCard{border:1px solid rgba(214,178,105,.22);background:rgba(12,9,10,.88);border-radius:18px;padding:18px}
+.opsCard h2,.opsCard h3{margin:0 0 8px}.opsCard p{margin:6px 0;color:#c8bdad}
+.opsValue{font-size:1.7rem;font-weight:700}
+.opsActions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 28px}
+.opsButton{border:1px solid rgba(214,178,105,.35);background:#171113;color:#f4e9d8;border-radius:999px;padding:11px 16px;font:inherit}
+.opsButton.primary{background:#b58a52;color:#0b0908}.opsButton.danger{border-color:#8f4343;color:#ffd9d9}
+.opsButton:disabled{opacity:.5}.opsTable{width:100%;border-collapse:collapse}.opsTable th,.opsTable td{text-align:left;padding:10px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+.opsPill{display:inline-block;border:1px solid rgba(214,178,105,.3);border-radius:999px;padding:4px 8px;font-size:.78rem}
+.opsStatus{min-height:24px;margin:12px 0}.opsMember{margin-top:14px}.opsMember summary{cursor:pointer;font-weight:700}.opsDims{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:12px}.opsDim{padding:9px;border-radius:10px;background:rgba(255,255,255,.04);font-size:.86rem;overflow-wrap:anywhere}
+</style>
+</head>
+<body data-page="ops">
+<nav class="nav"><div class="wrap navin"><a class="brand" href="/member/">CAMILLE MONROE</a><div class="navActions"><a href="/studio/">Studio</a><a href="/member/">Member View</a><button id="signOut" class="navButton" type="button">Sign out</button></div></div></nav>
+<main class="opsShell">
+<section class="opsTop">
+<div><p class="eyebrow">Owner-only fallback</p><h1>Emergency Operations Console</h1><p class="lead">Manual control over the same production backend. Autopilot stays primary; this console exists so the Founder can inspect, pause, resume, or run core operations directly.</p></div>
+<div><span id="modePill" class="opsPill">Loading…</span></div>
+</section>
+
+<div id="opsStatus" class="opsStatus"></div>
+
+<section class="opsGrid">
+<article class="opsCard"><h3>Autopilot</h3><div id="autopilotState" class="opsValue">—</div><p id="lastCycle">—</p></article>
+<article class="opsCard"><h3>Members</h3><div id="memberCount" class="opsValue">—</div><p id="activeCount">—</p></article>
+<article class="opsCard"><h3>Infrastructure Registry</h3><div id="regionCount" class="opsValue">—</div><p id="aiCount">—</p></article>
+<article class="opsCard"><h3>Revenue</h3><div id="paidOrders" class="opsValue">—</div><p id="grossPaid">—</p></article>
+</section>
+
+<div class="opsActions">
+<button id="runNow" class="opsButton primary" type="button">Run Operations Cycle</button>
+<button id="refreshRelationships" class="opsButton" type="button">Refresh 60-Angle Core</button>
+<button id="enableAuto" class="opsButton" type="button">Autopilot</button>
+<button id="manualMode" class="opsButton" type="button">Manual Mode</button>
+<button id="pauseOps" class="opsButton danger" type="button">Emergency Pause</button>
+</div>
+
+<section class="opsCard">
+<h2>Relationship Core</h2>
+<p>First-party operational intelligence only. No protected or sensitive-trait inference.</p>
+<div id="relationshipList"><p>Loading…</p></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
+<h2>Recent Operations Cycles</h2>
+<div style="overflow:auto"><table class="opsTable"><thead><tr><th>Started</th><th>Status</th><th>Trigger</th><th>Summary</th></tr></thead><tbody id="cycleRows"></tbody></table></div>
+</section>
+</main>
+<script type="module" src="/assets/ops.js?v=20260917-ops"></script>
+</body></html>
