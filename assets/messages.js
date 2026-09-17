@@ -38,9 +38,9 @@ async function loadMessages(){
 
 async function init(){
   session=await requireSession();wireSignOut();
-  const [{data:p,error:pError},{data:settings}]=await Promise.all([supabase.from('member_profiles').select('status,is_admin,verification_status').eq('user_id',session.user.id).single(),supabase.from('communication_settings').select('messaging_enabled,message_price_credits').eq('id',1).single()]);
+  const [{data:p,error:pError},{data:settings}]=await Promise.all([supabase.from('member_profiles').select('status,is_admin,profile_photo_path').eq('user_id',session.user.id).single(),supabase.from('communication_settings').select('messaging_enabled,message_price_credits').eq('id',1).single()]);
   if(pError)throw pError;profile=p;
-  if(!profile.is_admin&&(profile.status!=='approved'||profile.verification_status!=='verified')){setMessageStatus('Paid private messaging is part of the adult service lane and remains locked until a compliant 18+ check is active.','error');$('#messageForm').hidden=true;return;}
+  if(!profile.is_admin){const {data:sub}=await supabase.from('member_subscriptions').select('access_until').eq('user_id',session.user.id).maybeSingle();const active=sub?.access_until&&new Date(sub.access_until)>new Date();if(profile.status!=='approved'||!profile.profile_photo_path||!active){setMessageStatus('Approved active membership is required for private messaging.','error');$('#messageForm').hidden=true;return;}}
   $('#messagePricing').textContent=profile.is_admin?'Reply to members from the same private thread.':`${settings?.message_price_credits??0} credits per sent message. Replies from Camille do not charge you.`;
   if(!settings?.messaging_enabled&&!profile.is_admin){setMessageStatus('Paid messaging is currently paused.','error');$('#messageForm').hidden=true;return;}
   await Promise.all([refreshWallet(),loadConversations()]);await loadMessages();
