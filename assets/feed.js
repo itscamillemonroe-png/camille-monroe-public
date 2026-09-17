@@ -1,4 +1,4 @@
-const feedPosts = [
+const fallbackPosts = [
   {
     type: 'Today with Camille',
     title: 'Giving this space the attention it deserves.',
@@ -42,14 +42,31 @@ function escapeHtml(value) {
 }
 
 function postTemplate(post, index) {
-  const callToAction = post.cta ? '<a class="postCta" href="/login/">Open Member Access →</a>' : '';
-  return `<article class="feedPost ${index === 2 ? 'teaserPost' : ''}">
-    <div class="postTopline"><span>${escapeHtml(post.type)}</span><small>${escapeHtml(post.time)}</small></div>
+  const hasLink = Boolean(post.href || post.cta === true);
+  const linkText = typeof post.cta === 'string' ? post.cta : 'Open Member Access';
+  const callToAction = hasLink ? `<a class="postCta" href="${escapeHtml(post.href || '/login/')}">${escapeHtml(linkText)} →</a>` : '';
+  const dateLabel = post.publishedAt
+    ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(new Date(post.publishedAt))
+    : post.time;
+  return `<article class="feedPost ${index === 0 ? 'teaserPost' : ''}">
+    <div class="postTopline"><span>${escapeHtml(post.category || post.type)}</span><small>${escapeHtml(dateLabel)}</small></div>
     <h3>${escapeHtml(post.title)}</h3>
     <p>${escapeHtml(post.body)}</p>
-    <div class="postFoot"><span>${escapeHtml(post.access)}</span>${callToAction}</div>
+    <div class="postFoot"><span>${escapeHtml(post.access || 'Public note')}</span>${callToAction}</div>
   </article>`;
 }
 
+async function loadFeed() {
+  try {
+    const response = await fetch('/data/public-feed.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Feed request failed: ${response.status}`);
+    const payload = await response.json();
+    return Array.isArray(payload.posts) && payload.posts.length ? payload.posts : fallbackPosts;
+  } catch (error) {
+    console.warn('Autobot feed fallback in use.', error);
+    return fallbackPosts;
+  }
+}
+
 const publicFeed = document.querySelector('#publicFeed');
-if (publicFeed) publicFeed.innerHTML = feedPosts.map(postTemplate).join('');
+if (publicFeed) loadFeed().then(posts => { publicFeed.innerHTML = posts.map(postTemplate).join(''); });
