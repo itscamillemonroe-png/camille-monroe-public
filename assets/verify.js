@@ -3,12 +3,56 @@ import { supabase, $, requireSession, wireSignOut } from './app-client.js';
 const BUCKET='member-profile-photos';
 const ALLOWED=new Set(['image/jpeg','image/png','image/webp']);
 function setMsg(text,type=''){const el=$('#verifyStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();}
+function setDiditMsg(text,type=''){const el=$('#diditStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();}
 function extension(file){if(file.type==='image/png')return 'png';if(file.type==='image/webp')return 'webp';return 'jpg';}
+
+function renderDidit(status='not_started'){
+  const title=$('#adultVerifyTitle'),copy=$('#adultVerifyCopy'),button=$('#startDidit');
+  if(status==='verified'){
+    title.textContent='18+ check complete';
+    copy.textContent='Didit approved your verification. NSFW access unlocks after Camille approves your profile and your eligible access is active.';
+    button.hidden=true;
+    $('#adultVerifyPanel').classList.add('activeAccess');
+    return;
+  }
+  $('#adultVerifyPanel').classList.remove('activeAccess');
+  button.hidden=false;
+  if(status==='pending'){
+    title.textContent='18+ check in progress';
+    copy.textContent='Finish the secure Didit check or wait a moment if you just completed it.';
+    button.textContent='Continue secure 18+ check';
+  }else if(status==='failed'||status==='expired'){
+    title.textContent=status==='expired'?'18+ check expired':'18+ check needs another try';
+    copy.textContent='Start a fresh secure verification. Your identity documents are handled by Didit, not stored on this site.';
+    button.textContent='Try secure 18+ check again';
+  }else{
+    title.textContent='Secure 18+ check required';
+    copy.textContent='Complete the private Didit check once. Camille receives only the verification result.';
+    button.textContent='Complete secure 18+ check';
+  }
+}
+
+async function loadDidit(){
+  const {data,error}=await supabase.functions.invoke('didit-verification',{body:{action:'status'}});
+  if(error||data?.error)throw new Error(data?.error||'Your 18+ verification status could not load.');
+  renderDidit(data?.verification_status||'not_started');
+}
+
+async function startDidit(){
+  const button=$('#startDidit');button.disabled=true;setDiditMsg('Opening the secure Didit check…');
+  try{
+    const {data,error}=await supabase.functions.invoke('didit-verification',{body:{action:'start'}});
+    if(error||data?.error)throw new Error(data?.error||'The secure verification could not start.');
+    if(data?.verified){renderDidit('verified');setDiditMsg('Your 18+ check is already complete.','success');return;}
+    if(!data?.verification_url)throw new Error('Didit did not return a verification link.');
+    location.assign(data.verification_url);
+  }catch(error){setDiditMsg(error.message||'The secure verification could not start.','error');button.disabled=false;}
+}
 
 async function load(){
   const session=await requireSession();
   wireSignOut();
-  const {data:profile,error}=await supabase.from('member_profiles').select('status,profile_photo_path,profile_photo_uploaded_at').eq('user_id',session.user.id).single();
+  const {data:profile,error}=await supabase.from('member_profiles').select('status,profile_photo_path,profile_photo_uploaded_at,verification_status').eq('user_id',session.user.id).single();
   if(error)throw error;
   const state=$('#verifyState');
   if(profile.profile_photo_path){
@@ -20,6 +64,9 @@ async function load(){
   }else{
     state.innerHTML='<strong>Profile picture required</strong><span>Upload a clear picture of yourself before Camille can approve or deny your member request.</span>';
   }
+  renderDidit(profile.verification_status||'not_started');
+  $('#startDidit').addEventListener('click',startDidit);
+  loadDidit().catch(error=>setDiditMsg(error.message,'error'));
   $('#profilePhotoForm').addEventListener('submit',async event=>{
     event.preventDefault();
     const file=$('#profilePhoto').files[0],button=event.currentTarget.querySelector('button');
