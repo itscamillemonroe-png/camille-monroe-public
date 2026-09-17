@@ -57,16 +57,15 @@ async function loadGallery(){
 
 async function memberPage(){
   const session=await requireSession();wireSignOut();const user=session.user;
-  const [profileR,subR,walletR]=await Promise.all([
+  const [profileR,subR]=await Promise.all([
     supabase.from('member_profiles').select('full_name,email,status,is_admin,profile_photo_path').eq('user_id',user.id).maybeSingle(),
-    supabase.from('member_subscriptions').select('access_until').eq('user_id',user.id).maybeSingle(),
-    supabase.from('member_wallets').select('balance_credits').eq('user_id',user.id).maybeSingle()
+    supabase.from('member_subscriptions').select('access_until').eq('user_id',user.id).maybeSingle()
   ]);
   if(profileR.error)throw profileR.error;
-  const profile=profileR.data||{},sub=subR.data||{},wallet=walletR.data||{};
+  const profile=profileR.data||{},sub=subR.data||{};
   if(!profile.is_admin&&!profile.profile_photo_path){location.replace('/verify/');return;}
   $('#memberName').textContent=profile.full_name||'Member';$('#memberEmail').textContent=profile.email||user.email||'';
-  $('#approvalStatus').textContent=(profile.status||'pending').replaceAll('_',' ');$('#profileStatus').textContent=profile.profile_photo_path?'submitted':'required';$('#accessUntil').textContent=prettyDate(sub.access_until);$('#creditBalance').textContent=Number.isFinite(wallet.balance_credits)?wallet.balance_credits:'0';
+  $('#approvalStatus').textContent=(profile.status||'pending').replaceAll('_',' ');$('#profileStatus').textContent=profile.profile_photo_path?'submitted':'required';$('#accessUntil').textContent=prettyDate(sub.access_until);
   const approved=profile.status==='approved',active=sub.access_until&&new Date(sub.access_until)>new Date(),admin=Boolean(profile.is_admin);
   if(admin){const services=$('.memberServices');services?.insertAdjacentHTML('afterbegin','<a class="serviceCard" href="/studio/"><span>00</span><div><strong>Creator Studio</strong><small>Upload and publish SFW protected content.</small></div><b>→</b></a>');}
   const banner=$('#memberBanner');
