@@ -13,12 +13,15 @@ async function init(){
   if(!session){location.href='/login/';return;}
   $('#signOut')?.addEventListener('click',async()=>{await supabase.auth.signOut();location.href='/';});
   const [{data:profile},{data:subscription},{data:wallet}]=await Promise.all([
-    supabase.from('member_profiles').select('status,profile_photo_path,verification_status,is_admin').eq('user_id',session.user.id).maybeSingle(),
+    supabase.from('member_profiles').select('status,profile_photo_path,verification_status,verification_provider,approved_content_scope,is_admin').eq('user_id',session.user.id).maybeSingle(),
     supabase.from('member_subscriptions').select('access_until').eq('user_id',session.user.id).maybeSingle(),
     supabase.from('member_wallets').select('balance_credits').eq('user_id',session.user.id).maybeSingle()
   ]);
   const membershipEligible=Boolean(profile && !profile.is_admin && profile.status==='approved' && profile.profile_photo_path);
-  const adultServicesEligible=membershipEligible && profile.verification_status==='verified';
+  const adultServicesEligible=membershipEligible
+    && profile.approved_content_scope==='adult_content'
+    && profile.verification_status==='verified'
+    && ['yoti','veriff','stripe_identity','didit'].includes(profile.verification_provider||'');
   const gate=$('#paymentGate');
   document.querySelectorAll('.payButton').forEach(button=>setButtonState(button,button.closest('[data-product-kind]')?.dataset.productKind==='membership'?!membershipEligible:!adultServicesEligible));
   if(!membershipEligible){
