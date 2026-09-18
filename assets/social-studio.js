@@ -29,7 +29,7 @@ function renderPlatforms(platforms=[]){
       <div>
         <strong>${escapeHtml(p.platform||'Platform')}</strong>
         <small>${escapeHtml(p.account_label|| (p.connection_status==='connected'?'Connected':'Ready to connect'))}</small>
-        <small>${Array.isArray(p.best_hours)&&p.best_hours.length?'Best: '+p.best_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · '):'Timing intelligence not available yet'}</small>
+        <small>${Array.isArray(p.best_hours)&&p.best_hours.length?'Best: '+p.best_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · ')+' · '+(p.timing_source==='metricool'?'Metricool':'shared default'):'Timing intelligence not available yet'}</small>
       </div>
       <b>${pill(p.connection_status)}</b>
     </article>`).join('')||'<p>No platforms configured.</p>';
@@ -94,6 +94,11 @@ function renderPosts(posts=[]){
   wirePostActions();
 }
 
+function renderTasks(tasks=[]){
+  const target=$('#contentTaskList');if(!target)return;
+  target.innerHTML=tasks.length?tasks.map(t=>`<article class="productCatalogCard"><div><span class="productState">${escapeHtml(String(t.status||'planned').toUpperCase())}</span><strong>${escapeHtml(t.title||'Content task')}</strong><small>${t.due_on?'Due '+escapeHtml(t.due_on):'No due date'} · ${escapeHtml(t.channel||'Social Studio')}</small></div></article>`).join(''):'<p class="memberEmpty">No open content tasks.</p>';
+}
+
 function renderJobs(jobs=[]){
   $('#socialJobRows').innerHTML=jobs.length?jobs.map(j=>`<tr>
     <td>${escapeHtml(j.platform||'—')}</td>
@@ -111,6 +116,7 @@ async function load(){
   renderPlatforms(snapshot.platforms||[]);
   renderConfig(snapshot.config||{},snapshot.counts||{});
   renderPosts(snapshot.posts||[]);
+  renderTasks(snapshot.tasks||[]);
   renderJobs(snapshot.jobs||[]);
   setStatus('Social Studio synchronized.','success');
 }
