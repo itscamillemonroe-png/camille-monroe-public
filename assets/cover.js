@@ -5,8 +5,12 @@ async function init(){
   if(!slug){$('#coverError').innerHTML='<p>This cover link is incomplete.</p>';return;}
   const {data,error}=await supabase.rpc('resolve_revenue_cover',{p_slug:slug});
   if(error||!data?.id){$('#coverError').innerHTML='<p>This cover is not available.</p>';return;}
-  const {data:publicData}=supabase.storage.from('lane-cover-media').getPublicUrl(data.storage_path);
-  const imageUrl=publicData?.publicUrl||'';
+  let imageUrl='';
+  if(String(data.storage_path||'').startsWith('/assets/')) imageUrl=data.storage_path;
+  else {
+    const {data:publicData}=supabase.storage.from('lane-cover-media').getPublicUrl(data.storage_path);
+    imageUrl=publicData?.publicUrl||'';
+  }
   if(!imageUrl){$('#coverError').innerHTML='<p>This cover image is not available.</p>';return;}
   $('#coverImage').src=imageUrl;$('#coverImage').alt=data.title||'Camille Monroe';
   $('#coverLane').textContent=data.lane_name||'Camille Monroe';
