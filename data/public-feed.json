@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-17T17:23:22.450Z",
+  "updatedAt": "2026-09-18T17:21:12.534Z",
   "posts": [
+    {
+      "id": "behind-scenes",
+      "category": "Behind the scenes",
+      "title": "The part you don’t see",
+      "body": "A polished moment always has a little chaos behind it. I’m organizing, creating, and making the private side feel worth opening.",
+      "cta": "Request access",
+      "href": "/login/",
+      "publishedAt": "2026-09-18T17:21:12.534Z"
+    },
     {
       "id": "quiet-luxury",
       "category": "Mood",
