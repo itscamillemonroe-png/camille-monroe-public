@@ -9,6 +9,12 @@ const setReviewStatus=(text,type='')=>{const el=$('#reviewStatus');if(!el)return
 const safeName=name=>name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
 const mediaKind=type=>type.startsWith('video/')?'video':type.startsWith('audio/')?'audio':'photo';
 const money=cents=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);
+function coverPublicUrl(path=''){
+  if(!path)return '';
+  if(String(path).startsWith('/assets/'))return path;
+  const {data}=supabase.storage.from('lane-cover-media').getPublicUrl(path);
+  return data?.publicUrl||'';
+}
 
 async function signedPreview(item){const {data}=await supabase.storage.from('protected-media').createSignedUrl(item.storage_path,300);return {...item,signed_url:data?.signedUrl||''};}
 function reviewMediaPreview(d){if(!d.signed_url)return '<div style="padding:28px;border:1px dashed rgba(255,255,255,.15);border-radius:14px;margin-bottom:12px">Media preview unavailable.</div>';if(d.media_kind==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(d.signed_url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin-bottom:12px"></video>';if(d.media_kind==='audio')return '<audio controls preload="metadata" src="'+escapeHtml(d.signed_url)+'" style="width:100%;margin-bottom:12px"></audio>';return '<img src="'+escapeHtml(d.signed_url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin-bottom:12px">';}
@@ -66,7 +72,12 @@ async function loadCovers(){
   const {data,error}=await supabase.rpc('owner_revenue_cover_snapshot');
   if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
   const covers=Array.isArray(data)?data:[];
-  target.innerHTML=covers.length?covers.map(c=>{const share=`https://itscamillemonroe.art/cover/?c=${encodeURIComponent(c.slug)}`;const ctr=Number(c.views_7d||0)>0?Math.round((Number(c.clicks_7d||0)/Number(c.views_7d))*100):0;return `<article class="productCatalogCard"><div><span class="productState ${c.active?'active':''}">${c.active?'Live':'Paused'}</span><strong>${escapeHtml(c.title)}</strong><small>${escapeHtml(c.lane_name||'Lane')} · ${c.views_7d||0} views · ${c.clicks_7d||0} clicks · ${ctr}% CTR (7d)</small><p><a href="${escapeHtml(share)}" target="_blank" rel="noopener">${escapeHtml(share)}</a></p></div><button class="heroButton copyCoverLink" type="button" data-url="${escapeHtml(share)}">Copy link</button></article>`;}).join(''):'<p class="memberEmpty">No revenue covers yet.</p>';
+  target.innerHTML=covers.length?covers.map(c=>{
+    const share=`https://itscamillemonroe.art/cover/?c=${encodeURIComponent(c.slug)}`;
+    const ctr=Number(c.views_7d||0)>0?Math.round((Number(c.clicks_7d||0)/Number(c.views_7d))*100):0;
+    const image=coverPublicUrl(c.storage_path);
+    return `<article class="productCatalogCard revenueCoverCard">${image?`<img class="revenueCoverThumb" src="${escapeHtml(image)}" alt="${escapeHtml(c.title||'Revenue cover')}">`:''}<div><span class="productState ${c.active?'active':''}">${c.active?'Live':'Paused'}</span><strong>${escapeHtml(c.title)}</strong><small>${escapeHtml(c.lane_name||'Lane')} · ${c.views_7d||0} views · ${c.clicks_7d||0} clicks · ${ctr}% CTR (7d)</small><p>${escapeHtml(c.short_copy||'')}</p><p><a href="${escapeHtml(share)}" target="_blank" rel="noopener">${escapeHtml(share)}</a></p></div><button class="heroButton copyCoverLink" type="button" data-url="${escapeHtml(share)}">Copy link</button></article>`;
+  }).join(''):'<p class="memberEmpty">No revenue covers yet.</p>';
   target.querySelectorAll('.copyCoverLink').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.url||'');setCoverStatus('Share link copied.','success');}catch{setCoverStatus('Open the link and copy it from the address bar.','error');}}));
 }
 
@@ -111,8 +122,13 @@ async function init(){
     if(upload.error){button.disabled=false;setCoverStatus(upload.error.message,'error');return;}
     const {data,error}=await supabase.rpc('owner_create_revenue_cover',{p_lane_no:laneNo,p_title:title,p_short_copy:copy,p_storage_path:path});
     if(error){await supabase.storage.from('lane-cover-media').remove([path]);button.disabled=false;setCoverStatus(error.message,'error');return;}
+    const oldPath=String(data?.old_storage_path||'');
+    if(data?.action==='updated'&&oldPath&&!oldPath.startsWith('/assets/')&&oldPath!==path){
+      await supabase.storage.from('lane-cover-media').remove([oldPath]).catch(()=>{});
+    }
     const share=`https://itscamillemonroe.art${data?.share_path||'/cover/'}`;
-    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover created: ${share}`,'success');await loadCovers();
+    const verb=data?.action==='updated'?'updated':'created';
+    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover ${verb}: ${share}`,'success');await loadCovers();
   });
 
   $('#productForm').addEventListener('submit',async event=>{
