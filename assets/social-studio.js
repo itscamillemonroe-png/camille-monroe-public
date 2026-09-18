@@ -1,11 +1,15 @@
 import { supabase, $, escapeHtml, prettyDate, requireSession, wireSignOut } from './app-client.js';
 
 let snapshot={};
+let session;
+const safeName=name=>String(name||'upload').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
+async function signedSocial(path){if(!path)return '';const {data,error}=await supabase.storage.from('social-draft-media').createSignedUrl(path,1800);return error?'':(data?.signedUrl||'');}
+function socialMediaPreview(p){const url=p.preview_url||'';if(!url)return '<div style="margin:12px 0;padding:34px 14px;border:1px dashed rgba(255,255,255,.16);border-radius:14px;text-align:center;color:#aaa">Media not attached yet.</div>';const type=String(p.media_mime_type||'').toLowerCase();if(type.startsWith('video/')||p.content_type==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';}
 const setStatus=(text,type='')=>{const el=$('#socialStatus');if(!el)return;el.textContent=text;el.className='opsStatus '+type;};
 const setDraftStatus=(text,type='')=>{const el=$('#draftStatus');if(!el)return;el.textContent=text;el.className='formStatus '+type;};
 
 async function requireOwner(){
-  const session=await requireSession();
+  session=await requireSession();
   wireSignOut();
   const {data,error}=await supabase.from('member_profiles').select('is_admin').eq('user_id',session.user.id).single();
   if(error||!data?.is_admin){location.replace('/member/');throw new Error('Owner access required.');}
@@ -53,18 +57,25 @@ function renderConfig(cfg={},counts={}){
 
 function postCard(p){
   const canReview=p.status==='draft';
+  const requiresMedia=['photo','video','story'].includes(p.content_type);
+  const hasMedia=Boolean(p.preview_url);
   const note=p.publish_error?'<p><small>'+escapeHtml(p.publish_error)+'</small></p>':'';
-  const media=p.media_url?'<p><small>Media attached</small></p>':(p.media_note?'<p><small>'+escapeHtml(p.media_note)+'</small></p>':'');
+  let attach='';
+  if(canReview&&requiresMedia&&!hasMedia){
+    attach='<label style="display:block;margin:12px 0">Attach exact media<input class="socialCardMediaFile" data-id="'+escapeHtml(p.id)+'" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"></label><button class="heroButton attachSocialCardMedia" data-id="'+escapeHtml(p.id)+'" type="button">Attach Media</button>';
+  }
   return `<article class="productCatalogCard">
-    <div>
+    <div style="width:100%">
       <span class="productState ${p.status==='published'?'active':''}">${escapeHtml(String(p.status||'draft').toUpperCase())}</span>
       <strong>${escapeHtml(p.title||'Social draft')}</strong>
       <small>${escapeHtml(p.platform||'')} · ${escapeHtml(p.content_type||'post')} · approval: ${escapeHtml(p.approval_status||'pending')} · publish: ${escapeHtml(p.publish_status||'not submitted')}</small>
-      <p>${escapeHtml(p.caption||'')}</p>
-      ${media}${note}
+      ${socialMediaPreview(p)}
+      <p style="white-space:pre-wrap;line-height:1.55">${escapeHtml(p.caption||'')}</p>
+      ${p.media_note?'<p><small>'+escapeHtml(p.media_note)+'</small></p>':''}
+      ${attach}${note}
     </div>
     <div class="heroButtons">
-      ${canReview?'<button class="heroButton approveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Approve</button><button class="heroButton archiveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button>':''}
+      ${canReview?'<button class="heroButton approveSocial" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requiresMedia||hasMedia)?'':'disabled')+'>Approve</button><button class="heroButton archiveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button>':''}
       ${p.status==='ready'?'<span class="opsPill">READY FOR METRICOOL</span>':''}
       ${p.external_post_url?'<a class="heroButton" href="'+escapeHtml(p.external_post_url)+'" target="_blank" rel="noopener">Open Post</a>':''}
     </div>
@@ -72,11 +83,12 @@ function postCard(p){
 }
 
 function wirePostActions(){
+  document.querySelectorAll('.attachSocialCardMedia').forEach(btn=>btn.addEventListener('click',()=>attachCardMedia(btn)));
   document.querySelectorAll('.approveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
     btn.disabled=true;setStatus('Approving social draft…');
     const {data,error}=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
-    setStatus(data?.ready_to_schedule?'Approved and queued for Metricool scheduling.':'Approved, but that platform still needs connection.','success');
+    setStatus(data?.ready_to_schedule?'Approved and ready for Metricool scheduling.':'Approved, but that platform still needs connection.','success');
     await load();
   }));
   document.querySelectorAll('.archiveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
@@ -87,6 +99,8 @@ function wirePostActions(){
     await load();
   }));
 }
+
+async function attachCardMedia(btn){const input=document.querySelector('.socialCardMediaFile[data-id="'+btn.dataset.id+'"]');const file=input?.files?.[0];if(!file){setStatus('Choose the exact image or video first.','error');return;}if(file.size>209715200){setStatus('Media must be 200 MB or smaller.','error');return;}const allowed=['image/jpeg','image/png','image/webp','video/mp4','video/quicktime'];if(!allowed.includes(file.type)){setStatus('Use JPG, PNG, WebP, MP4, or MOV.','error');return;}btn.disabled=true;setStatus('Uploading post media…');const path=session.user.id+'/'+btn.dataset.id+'-'+crypto.randomUUID()+'-'+safeName(file.name);const up=await supabase.storage.from('social-draft-media').upload(path,file,{contentType:file.type,upsert:false,cacheControl:'3600'});if(up.error){setStatus(up.error.message,'error');btn.disabled=false;return;}const q=await supabase.rpc('owner_attach_social_media',{p_post_id:btn.dataset.id,p_storage_path:path,p_mime_type:file.type});if(q.error){await supabase.storage.from('social-draft-media').remove([path]);setStatus(q.error.message,'error');btn.disabled=false;return;}setStatus('Media attached. Full post preview is ready.','success');await load();}
 
 function renderPosts(posts=[]){
   const visible=posts.filter(p=>p.status!=='archived');
@@ -115,7 +129,7 @@ async function load(){
   snapshot=data||{};
   renderPlatforms(snapshot.platforms||[]);
   renderConfig(snapshot.config||{},snapshot.counts||{});
-  renderPosts(snapshot.posts||[]);
+  const enrichedPosts=[];for(const p of (snapshot.posts||[])){let preview=p.media_url||'';if(p.media_storage_path)preview=await signedSocial(p.media_storage_path);enrichedPosts.push({...p,preview_url:preview});}renderPosts(enrichedPosts);
   renderTasks(snapshot.tasks||[]);
   renderJobs(snapshot.jobs||[]);
   setStatus('Social Studio synchronized.','success');
@@ -133,13 +147,14 @@ async function init(){
     const contentType=$('#socialType').value;
     const campaign=$('#socialCampaign').value.trim();
     const mediaUrl=$('#socialMediaUrl').value.trim();
+    const mediaFile=$('#socialMediaFile').files[0];
     const mediaNote=$('#socialMediaNote').value.trim();
     const local=$('#socialSchedule').value;
     const scheduledFor=local?new Date(local).toISOString():null;
     if(!title||!caption||!platform)return;
     const button=event.target.querySelector('button[type="submit"]');
     button.disabled=true;setDraftStatus('Saving review draft…');
-    const {error}=await supabase.rpc('owner_create_social_draft',{
+    const {data:newPostId,error}=await supabase.rpc('owner_create_social_draft',{
       p_title:title,
       p_caption:caption,
       p_platform:platform,
@@ -149,10 +164,10 @@ async function init(){
       p_media_url:mediaUrl||null,
       p_scheduled_for:scheduledFor
     });
-    button.disabled=false;
-    if(error){setDraftStatus(error.message,'error');return;}
-    event.target.reset();
-    setDraftStatus('Draft saved. Nothing has been published or scheduled.','success');
+    if(error){button.disabled=false;setDraftStatus(error.message,'error');return;}
+    if(mediaFile){if(mediaFile.size>209715200){button.disabled=false;setDraftStatus('Draft saved, but media is over 200 MB. Attach a smaller file from the review card.','error');await load();return;}const allowed=['image/jpeg','image/png','image/webp','video/mp4','video/quicktime'];if(!allowed.includes(mediaFile.type)){button.disabled=false;setDraftStatus('Draft saved, but that media type is not supported. Attach JPG, PNG, WebP, MP4, or MOV from the review card.','error');await load();return;}const path=session.user.id+'/'+newPostId+'-'+crypto.randomUUID()+'-'+safeName(mediaFile.name);const up=await supabase.storage.from('social-draft-media').upload(path,mediaFile,{contentType:mediaFile.type,upsert:false,cacheControl:'3600'});if(up.error){button.disabled=false;setDraftStatus('Draft saved, but media upload failed: '+up.error.message,'error');await load();return;}const aq=await supabase.rpc('owner_attach_social_media',{p_post_id:newPostId,p_storage_path:path,p_mime_type:mediaFile.type});if(aq.error){await supabase.storage.from('social-draft-media').remove([path]);button.disabled=false;setDraftStatus('Draft saved, but media could not be attached: '+aq.error.message,'error');await load();return;}}
+    button.disabled=false;event.target.reset();
+    setDraftStatus('Draft saved for visual review. Nothing has been published or scheduled.','success');
     await load();
   });
 }
