@@ -26,7 +26,7 @@ async function loadProducts(){
   const target=$('#productCatalog');
   if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
   const products=Array.isArray(data)?data:[];
-  target.innerHTML=products.length?products.map(p=>`<article class="productCatalogCard"><div><span class="productState ${p.active?'active':''}">${p.active?'Live':'Draft'}</span><strong>${escapeHtml(p.name)}</strong><small>${money(p.price_cents)} · ${escapeHtml(p.media_title||'No media')}</small><p>${escapeHtml(p.description||'No description')}</p></div><button class="heroButton productToggle" type="button" data-product-id="${escapeHtml(p.id)}" data-active="${p.active?'true':'false'}">${p.active?'Pause':'Activate'}</button></article>`).join(''):'<p class="memberEmpty">No one-time products yet.</p>';
+  target.innerHTML=products.length?products.map(p=>`<article class="productCatalogCard"><div><span class="productState ${p.active?'active':''}">${p.active?'Live':'Draft'}</span><strong>${escapeHtml(p.name)}</strong><small>${money(p.price_cents)} · ${escapeHtml(p.media_title||'No media')} · ${p.commercial_rights?'Rights cleared':'Rights not cleared'}</small><p>${escapeHtml(p.description||'No description')}</p></div><button class="heroButton productToggle" type="button" data-product-id="${escapeHtml(p.id)}" data-active="${p.active?'true':'false'}">${p.active?'Pause':'Activate'}</button></article>`).join(''):'<p class="memberEmpty">No one-time products yet.</p>';
   target.querySelectorAll('.productToggle').forEach(button=>button.addEventListener('click',async()=>{
     button.disabled=true;
     const next=button.dataset.active!=='true';
@@ -55,9 +55,14 @@ async function init(){
     const upload=await supabase.storage.from('protected-media').upload(path,file,{contentType:file.type,upsert:false,cacheControl:'3600'});
     if(upload.error){button.disabled=false;$('#uploadProgress').hidden=true;setStudioStatus(upload.error.message,'error');return;}
     $('#uploadProgress span').style.width='65%';
-    const {error}=await supabase.rpc('owner_publish_media_post',{p_title:title,p_body:body,p_scope:'sfw_member',p_media_kind:mediaKind(file.type),p_storage_path:path});
+    const {data:published,error}=await supabase.rpc('owner_publish_media_post',{p_title:title,p_body:body,p_scope:'sfw_member',p_media_kind:mediaKind(file.type),p_storage_path:path});
     if(error){await supabase.storage.from('protected-media').remove([path]);button.disabled=false;$('#uploadProgress').hidden=true;setStudioStatus(error.message,'error');return;}
-    setStudioStatus('Published. Approved members with active membership can see it now.','success');event.target.reset();
+    const mediaId=published?.media_id;
+    if(mediaId&&$('#rightsConfirm').checked){
+      const {error:rightsError}=await supabase.rpc('owner_confirm_asset_rights',{p_media_id:mediaId,p_rights_status:'owned',p_rights_basis:'Owner confirmed original/controlled commercial rights at upload',p_commercial_use_allowed:true,p_creator_or_licensor:'Camille Monroe',p_evidence_reference:null,p_notes:'Confirmed in Creator Studio upload flow'});
+      if(rightsError){setStudioStatus(`Published, but rights clearance could not be recorded: ${rightsError.message}`,'error');button.disabled=false;await loadLibrary();return;}
+    }
+    setStudioStatus('Published and commercial rights recorded. Approved active members can see it now.','success');event.target.reset();
     $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await loadLibrary();
   });
 
