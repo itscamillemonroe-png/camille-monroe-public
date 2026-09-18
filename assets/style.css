@@ -67,3 +67,31 @@ footer{font-size:13px}
   .feedIntro{font-size:14px}
   .feedPost p,.memberPost p{font-size:16px}
 }
+
+
+/* Readability pass — larger everyday text without changing display typography */
+body{font-size:16.5px}
+p,li,.muted,.paymentLead,.serviceLead,.authIntro,.authFine{font-size:max(1rem,16px)}
+.navlinks,.navActions{font-size:13px}
+.brand{font-size:12px}
+.heroButton,.btn{font-size:12px;min-height:46px}
+.feedIntro,.feedPost p,.memberPost p{font-size:15.5px}
+.postTopline,.postFoot,.livePill{font-size:11px}
+.memberEmail,.memberBanner span,.memberStats strong,.serviceCard strong,.paymentCard p,.paymentNote span,.formStatus,.callEstimate,.requestCard p,.callControls span{font-size:14px}
+.memberStats span,.serviceCard small,.postTop small,.conversationButton small,.messageBubble small,.requestCard small,.studioMediaCard small,.mediaCard small{font-size:11.5px}
+.authFine,.authForm label,.callRequestForm label,.publishForm label{font-size:13px}
+.authForm input,.messageComposer textarea,.callRequestForm input,.callRequestForm select,.callRequestForm textarea,.publishForm input,.publishForm select,.publishForm textarea{font-size:16px}
+.linkrow,.conversationButton,.requestCard,.serviceCard,.paymentCard{line-height:1.55}
+footer{font-size:12.5px}
+
+@media(max-width:760px){
+  body{font-size:17px}
+  .brand{font-size:11.5px}
+  .heroButton,.btn{font-size:12px;min-height:47px}
+  .feedIntro{font-size:15px}
+  .feedPost p,.memberPost p{font-size:16px;line-height:1.72}
+  .memberBanner span,.serviceCard strong,.paymentCard p,.paymentNote span,.formStatus,.requestCard p{font-size:14.5px}
+  .memberStats strong{font-size:14px}
+  .memberStats span,.serviceCard small,.conversationButton small,.messageBubble small,.requestCard small{font-size:12px}
+  .authForm label,.callRequestForm label,.publishForm label{font-size:13px}
+}
