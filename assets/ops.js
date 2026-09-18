@@ -13,7 +13,7 @@ async function requireOwner(){
   if(error||!data?.is_admin){location.replace('/member/');throw new Error('Owner access required.');}
 }
 
-function render(snapshot){
+function render(snapshot,attribution={},readiness={}){
   const cfg=snapshot.config||{};
   const revenue=snapshot.revenue?.funnel||{};
   const infra=snapshot.infrastructure||{};
@@ -26,6 +26,18 @@ function render(snapshot){
   $('#aiCount').textContent=`${infra.ai_capabilities??0} AI capability profiles · ${infra.routing_policies??0} routing policies`;
   $('#paidOrders').textContent=String(revenue.paid_orders??0);
   $('#grossPaid').textContent=`${money(revenue.gross_paid_cents)} confirmed gross`;
+  const treasury=attribution.treasury||{};
+  $('#bluevineSettled').textContent=money(treasury.bluevine_settled_cents||0);
+  $('#revenueTransit').textContent=`${money(treasury.in_transit_cents||0)} still in transit`;
+
+  const sources=attribution.by_source||[];
+  $('#sourceRows').innerHTML=sources.length?sources.map(s=>`<tr><td>${escapeHtml(s.source||'direct')}</td><td>${escapeHtml(String(s.orders??0))}</td><td>${escapeHtml(String(s.paid_orders??0))}</td><td>${escapeHtml(money(s.revenue_cents||0))}</td></tr>`).join(''):'<tr><td colspan="4">No attributed orders yet.</td></tr>';
+
+  const blockers=readiness.blocking_requirements||[];
+  const rights=readiness.rights||{};
+  const products=readiness.products||{};
+  $('#launchSummary').textContent=`${blockers.length} blocking requirement${blockers.length===1?'':'s'} remain · ${rights.commercial_rights_cleared??0} rights-cleared asset${rights.commercial_rights_cleared===1?'':'s'} · ${products.live_products??0} live one-time product${products.live_products===1?'':'s'}.`;
+  $('#launchBlockers').innerHTML=blockers.length?blockers.map(b=>`<div class="opsDim"><strong>${escapeHtml(b.asset_group)} · ${escapeHtml(b.asset_key)}</strong><br>${escapeHtml(b.requirement)}<br><span class="opsPill">${escapeHtml(b.status)}</span></div>`).join(''):'<p>No blocking launch requirements remain.</p>';
 
   const rel=snapshot.relationship_members||[];
   $('#relationshipList').innerHTML=rel.length?rel.map(member=>{
@@ -40,9 +52,15 @@ function render(snapshot){
 
 async function load(){
   status('Refreshing owner operations…');
-  const {data,error}=await supabase.rpc('owner_ops_snapshot');
+  const [{data,error},{data:attribution,error:attributionError},{data:readiness,error:readinessError}]=await Promise.all([
+    supabase.rpc('owner_ops_snapshot'),
+    supabase.rpc('owner_revenue_attribution_snapshot'),
+    supabase.rpc('owner_launch_readiness_snapshot')
+  ]);
   if(error)throw error;
-  render(data);
+  if(attributionError)throw attributionError;
+  if(readinessError)throw readinessError;
+  render(data,attribution,readiness);
   status('Operations console synchronized.','success');
 }
 
