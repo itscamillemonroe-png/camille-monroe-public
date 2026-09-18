@@ -148,9 +148,10 @@ function renderTasks(items){
   if(!items.length){target.innerHTML='<p class="inboxEmpty">No open content tasks.</p>';return;}
   let html='';
   for(const t of items){
-    html+='<article class="productCatalogCard"><div><span class="productState">'+escapeHtml(String(t.status||'planned').toUpperCase())+'</span><strong>'+escapeHtml(t.title||'Task')+'</strong><small>'+escapeHtml(t.channel||'')+(t.due_on?' · due '+escapeHtml(t.due_on):'')+'</small></div></article>';
+    html+='<article class="productCatalogCard"><div><span class="productState">'+escapeHtml(String(t.status||'planned').toUpperCase())+'</span><strong>'+escapeHtml(t.title||'Task')+'</strong><small>'+escapeHtml(t.channel||'')+(t.due_on?' · due '+escapeHtml(t.due_on):'')+'</small></div><button class="heroButton completeTask" data-id="'+escapeHtml(t.id)+'" type="button">Mark done</button></article>';
   }
   target.innerHTML=html;
+  target.querySelectorAll('.completeTask').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;const q=await supabase.rpc('owner_complete_content_task',{p_task_id:btn.dataset.id});if(q.error){setStatus(q.error.message,'error');btn.disabled=false;return;}setStatus('Task marked done.','success');await load();}));
 }
 async function load(){
   setStatus('Loading Founder Inbox…');
@@ -168,5 +169,5 @@ async function load(){
   renderTasks(data.tasks||[]);
   setStatus('Founder Inbox is current.','success');
 }
-async function init(){await requireOwner();await load();}
+async function init(){await requireOwner();const refresh=$('#refreshInbox');if(refresh)refresh.addEventListener('click',()=>load().catch(error=>setStatus(error.message||'Inbox refresh failed.','error')));await load();}
 init().catch(error=>setStatus(error.message||'Founder Inbox could not load.','error'));
