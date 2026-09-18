@@ -3,6 +3,8 @@ import { supabase, $, escapeHtml, requireSession, wireSignOut, getAttribution } 
 function setStatus(text,type=''){const el=$('#paymentStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();}
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);}
 
+let selectedPaymentMethod='crypto';
+function updatePaymentMethodUI(route){const card=$('#chooseCard'),crypto=$('#chooseCrypto');if(card){card.disabled=!route?.card_ach_ready;card.classList.toggle('primary',selectedPaymentMethod==='card_ach');card.classList.toggle('glass',selectedPaymentMethod!=='card_ach');}if(crypto){crypto.disabled=!route?.crypto_ready;crypto.classList.toggle('primary',selectedPaymentMethod==='crypto');crypto.classList.toggle('glass',selectedPaymentMethod!=='crypto');}}
 function wirePayButtons({approved,active,route}){
   document.querySelectorAll('.payButton:not([data-wired])').forEach(button=>{
     button.dataset.wired='true';
@@ -16,8 +18,8 @@ function wirePayButtons({approved,active,route}){
       const original=button.textContent;
       button.disabled=true;
       button.textContent='Opening secure checkout…';
-      setStatus(route?.card_ach_ready?'Opening secure card / wallet / ACH checkout…':'Opening secure checkout using the currently available payment method…');
-      const {data,error}=await supabase.functions.invoke('create-checkout',{body:{product_id,attribution:getAttribution()}});
+      setStatus(selectedPaymentMethod==='card_ach'?'Opening secure card / wallet / ACH checkout…':'Opening secure crypto checkout…');
+      const {data,error}=await supabase.functions.invoke('create-checkout',{body:{product_id,payment_method:selectedPaymentMethod,attribution:getAttribution()}});
       if(error||!data?.checkout_url){
         button.disabled=false;
         button.textContent=original;
@@ -57,7 +59,10 @@ async function init(){
   const active=Boolean(subscription?.access_until&&new Date(subscription.access_until)>new Date());
   const gate=$('#paymentGate');
   const provider=$('#paymentProvider');
-  if(route?.card_ach_ready){provider.classList.add('activeAccess');provider.innerHTML='<strong>Card, wallet & ACH checkout</strong><span>Primary payment processing is connected with payouts directed to Bluevine Business Checking.</span>';}else{provider.innerHTML='<strong>Payment transition in progress</strong><span>Card / wallet / ACH is being connected. Crypto remains available as the temporary fallback so checkout does not go offline.</span>';}
+  if(route?.card_ach_ready){selectedPaymentMethod='card_ach';provider.classList.add('activeAccess');provider.innerHTML='<strong>Two payment options</strong><span>Card / wallet / ACH routes toward Bluevine Business Checking. Crypto stays available through NOWPayments.</span>';}else{selectedPaymentMethod='crypto';provider.innerHTML='<strong>Crypto available now</strong><span>Card / wallet / ACH is still being connected to Bluevine. Crypto remains a permanent payment option and is available now.</span>';}
+  updatePaymentMethodUI(route);
+  $('#chooseCard')?.addEventListener('click',()=>{if(!route?.card_ach_ready){setStatus('Card / wallet / ACH is still being connected. Crypto is available now.','error');return;}selectedPaymentMethod='card_ach';updatePaymentMethodUI(route);setStatus('Card / wallet / ACH selected.','success');});
+  $('#chooseCrypto')?.addEventListener('click',()=>{if(!route?.crypto_ready)return;selectedPaymentMethod='crypto';updatePaymentMethodUI(route);setStatus('Crypto selected.','success');});
 
   if(!approved){
     gate.innerHTML='<strong>Checkout locked</strong><span>Submit your profile picture and wait for Camille’s approval before checkout.</span>';
