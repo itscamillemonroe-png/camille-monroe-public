@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050505">
 <title>Emergency Operations | Camille Monroe</title>
-<link rel="stylesheet" href="/assets/style.css?v=20260917-ops">
+<link rel="stylesheet" href="/assets/style.css?v=20260917-revenue32">
 <style>
 .opsShell{max-width:1100px;margin:0 auto;padding:32px 18px 80px}
 .opsTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}
@@ -37,6 +37,7 @@
 <article class="opsCard"><h3>Members</h3><div id="memberCount" class="opsValue">—</div><p id="activeCount">—</p></article>
 <article class="opsCard"><h3>Infrastructure Registry</h3><div id="regionCount" class="opsValue">—</div><p id="aiCount">—</p></article>
 <article class="opsCard"><h3>Revenue</h3><div id="paidOrders" class="opsValue">—</div><p id="grossPaid">—</p></article>
+<article class="opsCard"><h3>Bluevine Settled</h3><div id="bluevineSettled" class="opsValue">—</div><p id="revenueTransit">—</p></article>
 </section>
 
 <div class="opsActions">
@@ -48,6 +49,18 @@
 </div>
 
 <section class="opsCard">
+<h2>Revenue Attribution</h2>
+<p>First-party campaign/source attribution attached to payment orders. No hidden personal profiling.</p>
+<div style="overflow:auto"><table class="opsTable"><thead><tr><th>Source</th><th>Orders</th><th>Paid</th><th>Revenue</th></tr></thead><tbody id="sourceRows"></tbody></table></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
+<h2>Launch Readiness</h2>
+<p id="launchSummary">Loading…</p>
+<div id="launchBlockers"></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
 <h2>Relationship Core</h2>
 <p>First-party operational intelligence only. No protected or sensitive-trait inference.</p>
 <div id="relationshipList"><p>Loading…</p></div>
@@ -58,5 +71,5 @@
 <div style="overflow:auto"><table class="opsTable"><thead><tr><th>Started</th><th>Status</th><th>Trigger</th><th>Summary</th></tr></thead><tbody id="cycleRows"></tbody></table></div>
 </section>
 </main>
-<script type="module" src="/assets/ops.js?v=20260917-ops"></script>
+<script type="module" src="/assets/ops.js?v=20260917-revenue32"></script>
 </body></html>
