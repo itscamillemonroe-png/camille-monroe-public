@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://itscamillemonroe.art/</loc></url>
-<url><loc>https://itscamillemonroe.art/about/</loc></url>
-<url><loc>https://itscamillemonroe.art/links/</loc></url>
-<url><loc>https://itscamillemonroe.art/faq/</loc></url>
-<url><loc>https://itscamillemonroe.art/policies/</loc></url>
+  <url><loc>https://itscamillemonroe.art/</loc><lastmod>2026-09-18</lastmod></url>
+  <url><loc>https://itscamillemonroe.art/about/</loc><lastmod>2026-09-18</lastmod></url>
+  <url><loc>https://itscamillemonroe.art/links/</loc><lastmod>2026-09-18</lastmod></url>
+  <url><loc>https://itscamillemonroe.art/faq/</loc><lastmod>2026-09-18</lastmod></url>
+  <url><loc>https://itscamillemonroe.art/policies/</loc><lastmod>2026-09-18</lastmod></url>
+  <url><loc>https://itscamillemonroe.art/lane/membership/</loc><lastmod>2026-09-18</lastmod></url>
 </urlset>
