@@ -13,7 +13,7 @@ async function requireOwner(){
   if(error||!data?.is_admin){location.replace('/member/');throw new Error('Owner access required.');}
 }
 
-function render(snapshot,attribution={},readiness={}){
+function render(snapshot,attribution={},readiness={},control={}){
   const cfg=snapshot.config||{};
   const revenue=snapshot.revenue?.funnel||{};
   const infra=snapshot.infrastructure||{};
@@ -29,6 +29,42 @@ function render(snapshot,attribution={},readiness={}){
   const treasury=attribution.treasury||{};
   $('#bluevineSettled').textContent=money(treasury.bluevine_settled_cents||0);
   $('#revenueTransit').textContent=`${money(treasury.in_transit_cents||0)} still in transit`;
+  const runtime=control.runtime||{};
+  $('#watchdogState').textContent=runtime.self_heal_enabled?'ON':'OFF';
+  $('#watchdogDetail').textContent=runtime.watchdog_last_run_at
+    ? `Last check ${prettyDate(runtime.watchdog_last_run_at)} · ${runtime.watchdog_last_action||'healthy'}`
+    : 'No watchdog check recorded yet';
+  $('#browserlessState').textContent=runtime.browserless_default?'ON':'OFF';
+  $('#browserlessDetail').textContent=runtime.browserless_default
+    ? 'Core operations are backend-first; browser is fallback only.'
+    : 'Browserless default is not enabled.';
+
+  const lanes=control.lane_autopilot?.runtime||[];
+  $('#laneRows').innerHTML=lanes.length?lanes.map(l=>`<tr>
+    <td><strong>${escapeHtml(String(l.lane_no))}. ${escapeHtml(l.name||l.slug||'Lane')}</strong></td>
+    <td><span class="opsPill">${escapeHtml(l.active?(l.checkout_ready?'LIVE':'CHECKOUT BLOCKED'):'STAGED')}</span></td>
+    <td>${escapeHtml(String(l.last_24h_paid_orders??0))} paid · ${escapeHtml(money(l.last_24h_revenue_cents||0))}</td>
+    <td>${escapeHtml(String(l.last_7d_paid_orders??0))} paid · ${escapeHtml(money(l.last_7d_revenue_cents||0))}</td>
+    <td>${escapeHtml(l.next_best_action||'—')}</td>
+  </tr>`).join(''):'<tr><td colspan="5">No revenue lanes configured.</td></tr>';
+
+  const integrations=control.integrations||[];
+  $('#integrationRows').innerHTML=integrations.length?integrations.map(i=>`<tr>
+    <td><strong>${escapeHtml(i.integration_key)}</strong><br><small>${escapeHtml(i.function||'')}</small></td>
+    <td>${escapeHtml(i.execution_mode||'—')}</td>
+    <td>${i.continuous_capable?'Yes':'No'}</td>
+    <td>${i.browser_required?'YES':'No'}</td>
+    <td>${i.active?'Active':'Staged'}</td>
+  </tr>`).join(''):'<tr><td colspan="5">No integration policy rows found.</td></tr>';
+
+  const escalations=control.lane_autopilot?.open_escalations||[];
+  $('#escalationList').innerHTML=escalations.length?escalations.map(e=>`<div class="opsDim">
+    <strong>${escapeHtml((e.severity||'info').toUpperCase())} · ${escapeHtml(e.title||'Escalation')}</strong><br>
+    ${escapeHtml(e.detail||'')}<br>
+    <span class="opsPill">${escapeHtml(e.category||'operations')}</span>
+    ${e.action_required?`<p>${escapeHtml(e.action_required)}</p>`:''}
+    <button class="opsButton resolveEscalation" data-id="${escapeHtml(String(e.id))}" type="button">Mark resolved</button>
+  </div>`).join(''):'<p>No open founder escalations.</p>';
 
   const sources=attribution.by_source||[];
   $('#sourceRows').innerHTML=sources.length?sources.map(s=>`<tr><td>${escapeHtml(s.source||'direct')}</td><td>${escapeHtml(String(s.orders??0))}</td><td>${escapeHtml(String(s.paid_orders??0))}</td><td>${escapeHtml(money(s.revenue_cents||0))}</td></tr>`).join(''):'<tr><td colspan="4">No attributed orders yet.</td></tr>';
@@ -52,15 +88,25 @@ function render(snapshot,attribution={},readiness={}){
 
 async function load(){
   status('Refreshing owner operations…');
-  const [{data,error},{data:attribution,error:attributionError},{data:readiness,error:readinessError}]=await Promise.all([
+  const [{data,error},{data:attribution,error:attributionError},{data:readiness,error:readinessError},{data:control,error:controlError}]=await Promise.all([
     supabase.rpc('owner_ops_snapshot'),
     supabase.rpc('owner_revenue_attribution_snapshot'),
-    supabase.rpc('owner_launch_readiness_snapshot')
+    supabase.rpc('owner_launch_readiness_snapshot'),
+    supabase.rpc('owner_manual_control_snapshot')
   ]);
   if(error)throw error;
   if(attributionError)throw attributionError;
   if(readinessError)throw readinessError;
-  render(data,attribution,readiness);
+  if(controlError)throw controlError;
+  render(data,attribution,readiness,control);
+  document.querySelectorAll('.resolveEscalation').forEach(btn=>btn.addEventListener('click',async()=>{
+    try{
+      status('Resolving escalation…');
+      const {error}=await supabase.rpc('owner_resolve_escalation',{p_id:Number(btn.dataset.id)});
+      if(error)throw error;
+      await load();
+    }catch(e){status(e.message,'error');}
+  }));
   status('Operations console synchronized.','success');
 }
 
@@ -68,6 +114,14 @@ async function setMode(mode,pause=false){
   status('Updating operations mode…');
   const {error}=await supabase.rpc('owner_set_ops_mode',{p_mode:mode,p_emergency_pause:pause});
   if(error)throw error;
+  await load();
+}
+
+async function runWatchdog(){
+  status('Running browserless watchdog…');
+  const {data,error}=await supabase.rpc('owner_run_operations_watchdog');
+  if(error)throw error;
+  status(`Watchdog: ${data?.status||'complete'}`,'success');
   await load();
 }
 
@@ -94,6 +148,7 @@ async function init(){
   $('#enableAuto').addEventListener('click',()=>setMode('autopilot',false).catch(e=>status(e.message,'error')));
   $('#manualMode').addEventListener('click',()=>setMode('manual',false).catch(e=>status(e.message,'error')));
   $('#pauseOps').addEventListener('click',()=>setMode('paused',true).catch(e=>status(e.message,'error')));
+  $('#runWatchdog').addEventListener('click',()=>runWatchdog().catch(e=>status(e.message,'error')));
   await load();
 }
 
