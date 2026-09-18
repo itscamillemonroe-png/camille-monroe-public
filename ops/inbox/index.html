@@ -16,7 +16,6 @@
       <a class="brand" href="/ops/">CAMILLE MONROE</a>
       <div class="navActions">
         <a href="/studio/">Creator Studio</a>
-        <a href="/studio/social/">Social Studio</a>
         <a href="/ops/">Control Room</a>
         <button id="signOut" class="navButton" type="button">Sign out</button>
       </div>
@@ -30,7 +29,7 @@
       <div>
         <p class="eyebrow">Founder only</p>
         <h1>Founder Inbox</h1>
-        <p class="lead">One place for every access request, approval, visual post review, and open content task.</p>
+        <p class="lead">One place for every access request, Creator Studio approval, and open content task.</p>
       </div>
       <div class="heroButtons"><span id="inboxTotal" class="opsPill">Loading…</span><button id="refreshInbox" class="opsButton" type="button">Refresh</button></div>
     </section>
@@ -39,7 +38,6 @@
 
     <section class="opsSummary inboxSummary">
       <a class="opsStat inboxJump" href="#access"><span>Access Requests</span><strong id="accessCount">—</strong><small>people waiting</small></a>
-      <a class="opsStat inboxJump" href="#social"><span>Social Approvals</span><strong id="socialCount">—</strong><small>full post preview</small></a>
       <a class="opsStat inboxJump" href="#creator"><span>Creator Approvals</span><strong id="creatorCount">—</strong><small>media + AI drafts</small></a>
       <a class="opsStat inboxJump" href="#tasks"><span>Open Tasks</span><strong id="taskCount">—</strong><small>work queue</small></a>
     </section>
@@ -49,14 +47,6 @@
         <div><p class="eyebrow">Membership</p><h2>Access Requests</h2><p>See the applicant’s actual profile photo before you approve or deny SFW member access.</p></div>
       </div>
       <div id="accessRequests" class="inboxGrid"><p class="memberEmpty">Loading access requests…</p></div>
-    </section>
-
-    <section id="social" class="opsPanel inboxSection">
-      <div class="opsItemHead">
-        <div><p class="eyebrow">Social Studio</p><h2>Social Approvals</h2><p>The media below is the exact photo/video attached to the post. Media posts cannot be approved without it.</p></div>
-        <a class="heroButton" href="/studio/social/">Open Social Studio</a>
-      </div>
-      <div id="socialApprovals" class="inboxGrid"><p class="memberEmpty">Loading social approvals…</p></div>
     </section>
 
     <section id="creator" class="opsPanel inboxSection">
@@ -78,6 +68,6 @@
     </section>
   </main>
 
-  <script type="module" src="/assets/founder-inbox.js?v=20260918-inbox4"></script>
+  <script type="module" src="/assets/founder-inbox.js?v=20260918-inbox5"></script>
 </body>
 </html>
