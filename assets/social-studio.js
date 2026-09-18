@@ -29,6 +29,7 @@ function renderPlatforms(platforms=[]){
       <div>
         <strong>${escapeHtml(p.platform||'Platform')}</strong>
         <small>${escapeHtml(p.account_label|| (p.connection_status==='connected'?'Connected':'Ready to connect'))}</small>
+        <small>${Array.isArray(p.best_hours)&&p.best_hours.length?'Best: '+p.best_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · '):'Timing intelligence not available yet'}</small>
       </div>
       <b>${pill(p.connection_status)}</b>
     </article>`).join('')||'<p>No platforms configured.</p>';
@@ -75,7 +76,7 @@ function wirePostActions(){
     btn.disabled=true;setStatus('Approving social draft…');
     const {data,error}=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
-    setStatus(data?.ready_to_schedule?'Approved. Ready for Metricool scheduling.':'Approved, but that platform still needs connection.','success');
+    setStatus(data?.ready_to_schedule?'Approved and queued for Metricool scheduling.':'Approved, but that platform still needs connection.','success');
     await load();
   }));
   document.querySelectorAll('.archiveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
