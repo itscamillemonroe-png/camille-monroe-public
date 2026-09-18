@@ -38,6 +38,8 @@
 <article class="opsCard"><h3>Infrastructure Registry</h3><div id="regionCount" class="opsValue">—</div><p id="aiCount">—</p></article>
 <article class="opsCard"><h3>Revenue</h3><div id="paidOrders" class="opsValue">—</div><p id="grossPaid">—</p></article>
 <article class="opsCard"><h3>Bluevine Settled</h3><div id="bluevineSettled" class="opsValue">—</div><p id="revenueTransit">—</p></article>
+<article class="opsCard"><h3>Watchdog</h3><div id="watchdogState" class="opsValue">—</div><p id="watchdogDetail">—</p></article>
+<article class="opsCard"><h3>Browserless Core</h3><div id="browserlessState" class="opsValue">—</div><p id="browserlessDetail">—</p></article>
 </section>
 
 <div class="opsActions">
@@ -46,9 +48,28 @@
 <button id="enableAuto" class="opsButton" type="button">Autopilot</button>
 <button id="manualMode" class="opsButton" type="button">Manual Mode</button>
 <button id="pauseOps" class="opsButton danger" type="button">Emergency Pause</button>
+<button id="runWatchdog" class="opsButton" type="button">Run Watchdog</button>
 </div>
 
 <section class="opsCard">
+<h2>Revenue Lanes</h2>
+<p>Live lane health, revenue, and the next action selected by the operating system.</p>
+<div style="overflow:auto"><table class="opsTable"><thead><tr><th>Lane</th><th>Status</th><th>24h</th><th>7d</th><th>Next action</th></tr></thead><tbody id="laneRows"></tbody></table></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
+<h2>Integration Health</h2>
+<p>Production execution mode for each operational dependency. Browser-required should remain false for the core system.</p>
+<div style="overflow:auto"><table class="opsTable"><thead><tr><th>Integration</th><th>Mode</th><th>Continuous</th><th>Browser</th><th>Active</th></tr></thead><tbody id="integrationRows"></tbody></table></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
+<h2>Founder Escalations</h2>
+<p>Only exceptions that require human review appear here.</p>
+<div id="escalationList"><p>Loading…</p></div>
+</section>
+
+<section class="opsCard" style="margin-top:16px">
 <h2>Revenue Attribution</h2>
 <p>First-party campaign/source attribution attached to payment orders. No hidden personal profiling.</p>
 <div style="overflow:auto"><table class="opsTable"><thead><tr><th>Source</th><th>Orders</th><th>Paid</th><th>Revenue</th></tr></thead><tbody id="sourceRows"></tbody></table></div>
@@ -71,5 +92,5 @@
 <div style="overflow:auto"><table class="opsTable"><thead><tr><th>Started</th><th>Status</th><th>Trigger</th><th>Summary</th></tr></thead><tbody id="cycleRows"></tbody></table></div>
 </section>
 </main>
-<script type="module" src="/assets/ops.js?v=20260917-revenue32"></script>
+<script type="module" src="/assets/ops.js?v=20260917-founderboard1"></script>
 </body></html>
