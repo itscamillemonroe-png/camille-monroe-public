@@ -27,9 +27,8 @@ function mediaHtml(url,mime,kind){
 }
 function renderCounts(c){
   const creator=(Number(c.autobot_approvals)||0)+(Number(c.media_approvals)||0);
-  const total=(Number(c.access_requests)||0)+(Number(c.social_approvals)||0)+creator+(Number(c.tasks)||0);
+  const total=(Number(c.access_requests)||0)+creator+(Number(c.tasks)||0);
   $('#accessCount').textContent=String(c.access_requests||0);
-  $('#socialCount').textContent=String(c.social_approvals||0);
   $('#creatorCount').textContent=String(creator);
   $('#taskCount').textContent=String(c.tasks||0);
   $('#inboxTotal').textContent=total?String(total)+' WAITING':'CLEAR';
@@ -169,11 +168,9 @@ async function load(){
   if(q.error)throw q.error;
   const data=q.data||{};
   const access=await enrichAccess(data.access_requests||[]);
-  const social=await enrichSocial(data.social_posts||[]);
   const media=await enrichMedia(data.media_drafts||[]);
   renderCounts(data.counts||{});
   renderAccess(access);
-  renderSocial(social);
   renderAutobot(data.autobot_drafts||[]);
   renderMedia(media);
   renderTasks(data.tasks||[]);
