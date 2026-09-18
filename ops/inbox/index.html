@@ -8,7 +8,7 @@
   <title>Founder Inbox | Camille Monroe</title>
   <link rel="stylesheet" href="/assets/style.css?v=20260918-inbox1">
   <link rel="stylesheet" href="/assets/ops-control.css?v=20260917-tight1">
-  <link rel="stylesheet" href="/assets/founder-inbox.css?v=20260918-inbox1">
+  <link rel="stylesheet" href="/assets/founder-inbox.css?v=20260918-inbox2">
 </head>
 <body data-page="founder-inbox">
   <nav class="nav">
@@ -32,7 +32,7 @@
         <h1>Founder Inbox</h1>
         <p class="lead">One place for every access request, approval, visual post review, and open content task.</p>
       </div>
-      <button id="refreshInbox" class="opsButton" type="button">Refresh</button>
+      <div class="heroButtons"><span id="inboxTotal" class="opsPill">Loading…</span><button id="refreshInbox" class="opsButton" type="button">Refresh</button></div>
     </section>
 
     <div id="inboxStatus" class="opsStatus"></div>
@@ -48,7 +48,7 @@
       <div class="opsItemHead">
         <div><p class="eyebrow">Membership</p><h2>Access Requests</h2><p>See the applicant’s actual profile photo before you approve or deny SFW member access.</p></div>
       </div>
-      <div id="accessQueue" class="inboxGrid"><p class="memberEmpty">Loading access requests…</p></div>
+      <div id="accessRequests" class="inboxGrid"><p class="memberEmpty">Loading access requests…</p></div>
     </section>
 
     <section id="social" class="opsPanel inboxSection">
@@ -56,7 +56,7 @@
         <div><p class="eyebrow">Social Studio</p><h2>Social Approvals</h2><p>The media below is the exact photo/video attached to the post. Media posts cannot be approved without it.</p></div>
         <a class="heroButton" href="/studio/social/">Open Social Studio</a>
       </div>
-      <div id="socialQueue" class="inboxGrid"><p class="memberEmpty">Loading social approvals…</p></div>
+      <div id="socialApprovals" class="inboxGrid"><p class="memberEmpty">Loading social approvals…</p></div>
     </section>
 
     <section id="creator" class="opsPanel inboxSection">
@@ -65,19 +65,19 @@
         <a class="heroButton" href="/studio/">Open Creator Studio</a>
       </div>
       <div class="inboxSubhead"><h3>Media drafts</h3></div>
-      <div id="mediaQueue" class="inboxGrid"><p class="memberEmpty">Loading media approvals…</p></div>
+      <div id="mediaApprovals" class="inboxGrid"><p class="memberEmpty">Loading media approvals…</p></div>
       <div class="inboxSubhead"><h3>AI copy drafts</h3></div>
-      <div id="autobotQueue" class="inboxGrid"><p class="memberEmpty">Loading AI approvals…</p></div>
+      <div id="autobotApprovals" class="inboxGrid"><p class="memberEmpty">Loading AI approvals…</p></div>
     </section>
 
     <section id="tasks" class="opsPanel inboxSection">
       <div class="opsItemHead">
         <div><p class="eyebrow">Work queue</p><h2>Open Tasks</h2><p>Everything that still needs to happen across the Studios.</p></div>
       </div>
-      <div id="taskQueue" class="productCatalog"><p class="memberEmpty">Loading tasks…</p></div>
+      <div id="taskList" class="productCatalog"><p class="memberEmpty">Loading tasks…</p></div>
     </section>
   </main>
 
-  <script type="module" src="/assets/founder-inbox.js?v=20260918-inbox1"></script>
+  <script type="module" src="/assets/founder-inbox.js?v=20260918-inbox2"></script>
 </body>
 </html>
