@@ -3,7 +3,7 @@ import { supabase, $, escapeHtml, requireSession, wireSignOut, getAttribution } 
 function setStatus(text,type=''){const el=$('#paymentStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();}
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);}
 
-function wirePayButtons({approved,active}){
+function wirePayButtons({approved,active,route}){
   document.querySelectorAll('.payButton:not([data-wired])').forEach(button=>{
     button.dataset.wired='true';
     const kind=button.closest('[data-kind]')?.dataset.kind;
@@ -16,8 +16,8 @@ function wirePayButtons({approved,active}){
       const original=button.textContent;
       button.disabled=true;
       button.textContent='Opening secure checkout…';
-      setStatus('Creating your secure crypto invoice…');
-      const {data,error}=await supabase.functions.invoke('create-nowpayments-checkout',{body:{product_id,attribution:getAttribution()}});
+      setStatus(route?.card_ach_ready?'Opening secure card / wallet / ACH checkout…':'Opening secure checkout using the currently available payment method…');
+      const {data,error}=await supabase.functions.invoke('create-checkout',{body:{product_id,attribution:getAttribution()}});
       if(error||!data?.checkout_url){
         button.disabled=false;
         button.textContent=original;
@@ -29,7 +29,7 @@ function wirePayButtons({approved,active}){
   });
 }
 
-async function loadPremiumDrops({approved,active}){
+async function loadPremiumDrops({approved,active,route}){
   if(!approved||!active)return;
   const {data,error}=await supabase.rpc('member_active_content_products');
   if(error)throw error;
@@ -38,22 +38,26 @@ async function loadPremiumDrops({approved,active}){
   const section=$('#premiumDrops'),grid=$('#premiumDropGrid');
   grid.innerHTML=products.map(product=>`<article class="paymentCard featured" data-product-id="${escapeHtml(product.id)}" data-kind="content"><span class="paymentTag">Premium SFW drop</span><h2>${escapeHtml(product.name||'Premium Drop')}</h2><strong class="paymentPrice">${escapeHtml(money(product.price_cents||0))}</strong><p>${escapeHtml(product.description||'One-time protected member unlock.')}</p><button class="btn primary wide payButton" type="button">Unlock this drop</button></article>`).join('');
   section.hidden=false;
-  wirePayButtons({approved,active});
+  wirePayButtons({approved,active,route});
 }
 
 async function init(){
   const session=await requireSession();
   wireSignOut();
-  const [{data:profile,error:profileError},{data:subscription,error:subError}]=await Promise.all([
+  const [{data:profile,error:profileError},{data:subscription,error:subError},{data:route,error:routeError}]=await Promise.all([
     supabase.from('member_profiles').select('status,profile_photo_path,is_admin').eq('user_id',session.user.id).maybeSingle(),
-    supabase.from('member_subscriptions').select('access_until').eq('user_id',session.user.id).maybeSingle()
+    supabase.from('member_subscriptions').select('access_until').eq('user_id',session.user.id).maybeSingle(),
+    supabase.rpc('member_payment_provider_status')
   ]);
   if(profileError)throw profileError;
   if(subError)throw subError;
+  if(routeError)throw routeError;
 
   const approved=Boolean(profile&&!profile.is_admin&&profile.status==='approved'&&profile.profile_photo_path);
   const active=Boolean(subscription?.access_until&&new Date(subscription.access_until)>new Date());
   const gate=$('#paymentGate');
+  const provider=$('#paymentProvider');
+  if(route?.card_ach_ready){provider.classList.add('activeAccess');provider.innerHTML='<strong>Card, wallet & ACH checkout</strong><span>Primary payment processing is connected with payouts directed to Bluevine Business Checking.</span>';}else{provider.innerHTML='<strong>Payment transition in progress</strong><span>Card / wallet / ACH is being connected. Crypto remains available as the temporary fallback so checkout does not go offline.</span>';}
 
   if(!approved){
     gate.innerHTML='<strong>Checkout locked</strong><span>Submit your profile picture and wait for Camille’s approval before checkout.</span>';
@@ -62,8 +66,8 @@ async function init(){
     gate.innerHTML=`<strong>Checkout ready</strong><span>Membership: ${active?'Active':'Not active'}.</span>`;
   }
 
-  wirePayButtons({approved,active});
-  await loadPremiumDrops({approved,active});
+  wirePayButtons({approved,active,route});
+  await loadPremiumDrops({approved,active,route});
 }
 
 init().catch(error=>setStatus(error.message||'Checkout could not load.','error'));
