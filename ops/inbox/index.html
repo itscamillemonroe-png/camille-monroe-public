@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
+  <title>Founder Inbox | Camille Monroe</title>
+  <link rel="stylesheet" href="/assets/style.css?v=20260918-inbox1">
+  <link rel="stylesheet" href="/assets/ops-control.css?v=20260917-tight1">
+  <link rel="stylesheet" href="/assets/founder-inbox.css?v=20260918-inbox1">
+</head>
+<body data-page="founder-inbox">
+  <nav class="nav">
+    <div class="wrap navin">
+      <a class="brand" href="/ops/">CAMILLE MONROE</a>
+      <div class="navActions">
+        <a href="/studio/">Creator Studio</a>
+        <a href="/studio/social/">Social Studio</a>
+        <a href="/ops/">Control Room</a>
+        <button id="signOut" class="navButton" type="button">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="opsShell">
+    <a class="opsBack" href="/ops/">← Control Room</a>
+
+    <section class="opsHeader inboxHero">
+      <div>
+        <p class="eyebrow">Founder only</p>
+        <h1>Founder Inbox</h1>
+        <p class="lead">One place for every access request, approval, visual post review, and open content task.</p>
+      </div>
+      <button id="refreshInbox" class="opsButton" type="button">Refresh</button>
+    </section>
+
+    <div id="inboxStatus" class="opsStatus"></div>
+
+    <section class="opsSummary inboxSummary">
+      <a class="opsStat inboxJump" href="#access"><span>Access Requests</span><strong id="accessCount">—</strong><small>people waiting</small></a>
+      <a class="opsStat inboxJump" href="#social"><span>Social Approvals</span><strong id="socialCount">—</strong><small>full post preview</small></a>
+      <a class="opsStat inboxJump" href="#creator"><span>Creator Approvals</span><strong id="creatorCount">—</strong><small>media + AI drafts</small></a>
+      <a class="opsStat inboxJump" href="#tasks"><span>Open Tasks</span><strong id="taskCount">—</strong><small>work queue</small></a>
+    </section>
+
+    <section id="access" class="opsPanel inboxSection">
+      <div class="opsItemHead">
+        <div><p class="eyebrow">Membership</p><h2>Access Requests</h2><p>See the applicant’s actual profile photo before you approve or deny SFW member access.</p></div>
+      </div>
+      <div id="accessQueue" class="inboxGrid"><p class="memberEmpty">Loading access requests…</p></div>
+    </section>
+
+    <section id="social" class="opsPanel inboxSection">
+      <div class="opsItemHead">
+        <div><p class="eyebrow">Social Studio</p><h2>Social Approvals</h2><p>The media below is the exact photo/video attached to the post. Media posts cannot be approved without it.</p></div>
+        <a class="heroButton" href="/studio/social/">Open Social Studio</a>
+      </div>
+      <div id="socialQueue" class="inboxGrid"><p class="memberEmpty">Loading social approvals…</p></div>
+    </section>
+
+    <section id="creator" class="opsPanel inboxSection">
+      <div class="opsItemHead">
+        <div><p class="eyebrow">Creator Studio</p><h2>Creator Approvals</h2><p>Review AI copy drafts and protected photo/video/audio media before anything goes live.</p></div>
+        <a class="heroButton" href="/studio/">Open Creator Studio</a>
+      </div>
+      <div class="inboxSubhead"><h3>Media drafts</h3></div>
+      <div id="mediaQueue" class="inboxGrid"><p class="memberEmpty">Loading media approvals…</p></div>
+      <div class="inboxSubhead"><h3>AI copy drafts</h3></div>
+      <div id="autobotQueue" class="inboxGrid"><p class="memberEmpty">Loading AI approvals…</p></div>
+    </section>
+
+    <section id="tasks" class="opsPanel inboxSection">
+      <div class="opsItemHead">
+        <div><p class="eyebrow">Work queue</p><h2>Open Tasks</h2><p>Everything that still needs to happen across the Studios.</p></div>
+      </div>
+      <div id="taskQueue" class="productCatalog"><p class="memberEmpty">Loading tasks…</p></div>
+    </section>
+  </main>
+
+  <script type="module" src="/assets/founder-inbox.js?v=20260918-inbox1"></script>
+</body>
+</html>
