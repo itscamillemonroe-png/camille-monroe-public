@@ -14,6 +14,7 @@
     <div class="wrap navin">
       <a class="brand" href="/studio/">CAMILLE MONROE</a>
       <div class="navActions">
+        <a href="/studio/inbox/">Founder Inbox</a>
         <a href="/studio/">Creator Studio</a>
         <a href="/ops/">Control Room</a>
         <button id="signOut" class="navButton" type="button">Sign out</button>
@@ -59,14 +60,14 @@
     </section>
     <section class="opsPanel">
       <h2>Create Social Draft</h2>
-      <p>Creating a draft does not publish or schedule anything.</p>
+      <p>Creating a draft does not publish or schedule anything. For photo, video, or story posts, attach the exact media so you can visually approve the complete post.</p>
       <form id="socialDraftForm" class="publishForm productForm">
         <label>Title<input id="socialTitle" maxlength="160" required placeholder="Internal post title"></label>
         <label>Platform<select id="socialPlatform" required></select></label>
         <label>Content type<select id="socialType"><option value="photo">Photo</option><option value="video">Video</option><option value="story">Story</option><option value="text">Text</option></select></label>
         <label>Campaign<input id="socialCampaign" maxlength="100" placeholder="Optional campaign"></label>
         <label class="wideField">Caption<textarea id="socialCaption" maxlength="4000" required placeholder="Write or paste the social caption…"></textarea></label>
-        <label class="wideField">Media URL<input id="socialMediaUrl" maxlength="1000" placeholder="Optional public media URL / approved Drive delivery URL"></label>
+        <label class="uploadDrop wideField">Exact post media<input id="socialMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"><span>JPG, PNG, WebP, MP4, or MOV · private preview until approved</span></label><label class="wideField">Media URL<input id="socialMediaUrl" maxlength="1000" placeholder="Optional if media is already hosted at an approved public URL"></label>
         <label class="wideField">Media note<input id="socialMediaNote" maxlength="240" placeholder="What image/video should go with this?"></label>
         <label>Preferred publish time<input id="socialSchedule" type="datetime-local"></label>
         <button class="heroButton primary wideField" type="submit">Save Draft for Review</button>
@@ -87,6 +88,6 @@
       </div>
     </section>
   </main>
-  <script type="module" src="/assets/social-studio.js?v=20260918-social2"></script>
+  <script type="module" src="/assets/social-studio.js?v=20260918-social3"></script>
 </body>
 </html>
