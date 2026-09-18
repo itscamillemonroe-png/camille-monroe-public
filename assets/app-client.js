@@ -20,3 +20,43 @@ export async function requireSession() {
 export function wireSignOut() {
   $('#signOut')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.href='/'; });
 }
+
+
+const attributionKey='cm_attribution_v1';
+const clipValue=(value,max=120)=>String(value||'').trim().slice(0,max);
+function currentReferrerHost(){
+  try{return document.referrer?new URL(document.referrer).hostname.slice(0,160):'';}catch{return '';}
+}
+export function captureAttribution(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const existing=JSON.parse(sessionStorage.getItem(attributionKey)||localStorage.getItem(attributionKey)||'null');
+    const incoming={
+      source:clipValue(params.get('utm_source')),
+      medium:clipValue(params.get('utm_medium')),
+      campaign:clipValue(params.get('utm_campaign')),
+      content:clipValue(params.get('utm_content')),
+      term:clipValue(params.get('utm_term')),
+      referrer_host:clipValue(currentReferrerHost(),160),
+      landing_path:clipValue(location.pathname,180)
+    };
+    const hasCampaign=Boolean(incoming.source||incoming.medium||incoming.campaign||incoming.content||incoming.term);
+    const next=existing&&!hasCampaign?existing:{
+      source:incoming.source||(incoming.referrer_host?'referral':'direct'),
+      medium:incoming.medium||(incoming.referrer_host?'referral':'none'),
+      campaign:incoming.campaign,
+      content:incoming.content,
+      term:incoming.term,
+      referrer_host:incoming.referrer_host,
+      landing_path:incoming.landing_path
+    };
+    sessionStorage.setItem(attributionKey,JSON.stringify(next));
+    localStorage.setItem(attributionKey,JSON.stringify(next));
+    return next;
+  }catch{return {source:'direct',medium:'none',campaign:'',content:'',term:'',referrer_host:'',landing_path:location.pathname};}
+}
+export function getAttribution(){
+  try{return JSON.parse(sessionStorage.getItem(attributionKey)||localStorage.getItem(attributionKey)||'null')||captureAttribution();}
+  catch{return captureAttribution();}
+}
+captureAttribution();
