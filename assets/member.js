@@ -73,7 +73,7 @@ async function memberPage(){
   else if(approved&&active){banner.innerHTML='<strong>Member access active</strong><span>Your approved SFW member experience is open.</span>';banner.classList.add('activeAccess');}
   else{const next=!approved?'Your profile picture is submitted and waiting for Camille’s approval.':!active?'Your approval is complete. Activate membership access to open the member feed.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${escapeHtml(next)}</span>`;}
   if(!admin&&(!approved||!active)){renderPosts([]);$('#memberGallery').innerHTML='<article class="memberEmpty">Your member gallery opens after approval and active membership.</article>';return;}
-  const {data:posts,error:postsError}=await supabase.from('member_posts').select('id,title,body,visibility_scope,published_at').eq('visibility_scope','sfw_member').order('published_at',{ascending:false}).limit(30);
+  const {data:posts,error:postsError}=await supabase.from('member_posts').select('id,title,body,visibility_scope,published_at').eq('visibility_scope','sfw_member').eq('status','published').order('published_at',{ascending:false}).limit(30);
   if(postsError)renderPosts([]);else renderPosts(posts||[]);
   await loadGallery();
 }
