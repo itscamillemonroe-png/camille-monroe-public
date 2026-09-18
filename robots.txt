@@ -1,3 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /login/
+Disallow: /member/
+Disallow: /payments/
+Disallow: /studio/
+Disallow: /ops/
+Disallow: /messages/
+Disallow: /calls/
+Disallow: /verify/
+Disallow: /cover/
+Disallow: /lane/private-messaging/
+Disallow: /lane/voice-calls/
+Disallow: /lane/video-calls/
+Disallow: /lane/premium-drops/
+Disallow: /lane/support/
+
 Sitemap: https://itscamillemonroe.art/sitemap.xml
