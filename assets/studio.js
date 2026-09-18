@@ -4,6 +4,7 @@ let session;
 let library=[];
 const setStudioStatus=(text,type='')=>{const el=$('#studioStatus');el.textContent=text;el.className=`formStatus ${type}`.trim();};
 const setProductStatus=(text,type='')=>{const el=$('#productStatus');el.textContent=text;el.className=`formStatus ${type}`.trim();};
+const setCoverStatus=(text,type='')=>{const el=$('#coverStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();};
 const safeName=name=>name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
 const mediaKind=type=>type.startsWith('video/')?'video':type.startsWith('audio/')?'audio':'photo';
 const money=cents=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);
@@ -37,11 +38,20 @@ async function loadProducts(){
   }));
 }
 
+async function loadCovers(){
+  const target=$('#coverCatalog');if(!target)return;
+  const {data,error}=await supabase.rpc('owner_revenue_cover_snapshot');
+  if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
+  const covers=Array.isArray(data)?data:[];
+  target.innerHTML=covers.length?covers.map(c=>{const share=`https://itscamillemonroe.art/cover/?c=${encodeURIComponent(c.slug)}`;const ctr=Number(c.views_7d||0)>0?Math.round((Number(c.clicks_7d||0)/Number(c.views_7d))*100):0;return `<article class="productCatalogCard"><div><span class="productState ${c.active?'active':''}">${c.active?'Live':'Paused'}</span><strong>${escapeHtml(c.title)}</strong><small>${escapeHtml(c.lane_name||'Lane')} · ${c.views_7d||0} views · ${c.clicks_7d||0} clicks · ${ctr}% CTR (7d)</small><p><a href="${escapeHtml(share)}" target="_blank" rel="noopener">${escapeHtml(share)}</a></p></div><button class="heroButton copyCoverLink" type="button" data-url="${escapeHtml(share)}">Copy link</button></article>`;}).join(''):'<p class="memberEmpty">No revenue covers yet.</p>';
+  target.querySelectorAll('.copyCoverLink').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.url||'');setCoverStatus('Share link copied.','success');}catch{setCoverStatus('Open the link and copy it from the address bar.','error');}}));
+}
+
 async function init(){
   session=await requireSession();wireSignOut();
   const {data:profile,error}=await supabase.from('member_profiles').select('is_admin').eq('user_id',session.user.id).single();
   if(error||!profile?.is_admin){location.href='/member/';return;}
-  await Promise.all([loadLibrary(),loadProducts()]);
+  await Promise.all([loadLibrary(),loadProducts(),loadCovers()]);
 
   $('#publishForm').addEventListener('submit',async event=>{
     event.preventDefault();
@@ -64,6 +74,22 @@ async function init(){
     }
     setStudioStatus('Published and commercial rights recorded. Approved active members can see it now.','success');event.target.reset();
     $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await loadLibrary();
+  });
+
+  $('#coverForm')?.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const file=$('#coverFile').files[0],title=$('#coverTitle').value.trim(),copy=$('#coverCopy').value.trim(),laneNo=Number($('#coverLane').value);
+    if(!file||!title||!Number.isInteger(laneNo)||laneNo<1||laneNo>6){setCoverStatus('Choose an image, title, and revenue lane.','error');return;}
+    if(file.size>20*1024*1024){setCoverStatus('Cover images must be 20 MB or smaller.','error');return;}
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setCoverStatus('Use a JPG, PNG, or WebP cover image.','error');return;}
+    const button=$('#coverForm button[type="submit"]');button.disabled=true;setCoverStatus('Uploading public revenue cover…');
+    const path=`${session.user.id}/${crypto.randomUUID()}-${safeName(file.name)}`;
+    const upload=await supabase.storage.from('lane-cover-media').upload(path,file,{contentType:file.type,upsert:false,cacheControl:'3600'});
+    if(upload.error){button.disabled=false;setCoverStatus(upload.error.message,'error');return;}
+    const {data,error}=await supabase.rpc('owner_create_revenue_cover',{p_lane_no:laneNo,p_title:title,p_short_copy:copy,p_storage_path:path});
+    if(error){await supabase.storage.from('lane-cover-media').remove([path]);button.disabled=false;setCoverStatus(error.message,'error');return;}
+    const share=`https://itscamillemonroe.art${data?.share_path||'/cover/'}`;
+    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover created: ${share}`,'success');await loadCovers();
   });
 
   $('#productForm').addEventListener('submit',async event=>{
