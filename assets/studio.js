@@ -56,13 +56,21 @@ async function loadProducts(){
   const target=$('#productCatalog');
   if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
   const products=Array.isArray(data)?data:[];
-  target.innerHTML=products.length?products.map(p=>`<article class="productCatalogCard"><div><span class="productState ${p.active?'active':''}">${p.active?'Live':'Draft'}</span><strong>${escapeHtml(p.name)}</strong><small>${money(p.price_cents)} · ${escapeHtml(p.media_title||'No media')} · ${p.commercial_rights?'Rights cleared':'Rights not cleared'}</small><p>${escapeHtml(p.description||'No description')}</p></div><button class="heroButton productToggle" type="button" data-product-id="${escapeHtml(p.id)}" data-active="${p.active?'true':'false'}">${p.active?'Pause':'Activate'}</button></article>`).join(''):'<p class="memberEmpty">No one-time products yet.</p>';
+  target.innerHTML=products.length?products.map(p=>`<article class="productCatalogCard"><div><span class="productState ${p.active?'active':''}">${p.active?'Live':'Draft'}</span><strong>${escapeHtml(p.name)}</strong><small>${money(p.price_cents)} · ${escapeHtml(p.media_title||'No media')} · ${p.commercial_rights?'Rights cleared':'Rights not cleared'}</small><p>${escapeHtml(p.description||'No description')}</p></div><div class="heroButtons"><button class="heroButton productToggle" type="button" data-product-id="${escapeHtml(p.id)}" data-active="${p.active?'true':'false'}">${p.active?'Pause':'Activate'}</button>${p.active?'':`<button class="heroButton archiveProduct" type="button" data-product-id="${escapeHtml(p.id)}">Archive</button>`}</div></article>`).join(''):'<p class="memberEmpty">No paid Premium Drops are ready yet.</p>';
   target.querySelectorAll('.productToggle').forEach(button=>button.addEventListener('click',async()=>{
     button.disabled=true;
     const next=button.dataset.active!=='true';
     const {error}=await supabase.rpc('owner_set_digital_product_active',{p_product_id:button.dataset.productId,p_active:next});
     if(error){setProductStatus(error.message,'error');button.disabled=false;return;}
-    setProductStatus(next?'Product activated.':'Product paused.','success');
+    setProductStatus(next?'Product activated. Premium Drops checkout can now surface it.':'Product paused.','success');
+    await loadProducts();
+  }));
+  target.querySelectorAll('.archiveProduct').forEach(button=>button.addEventListener('click',async()=>{
+    if(!confirm('Archive this draft? Historical orders stay intact, but the product will disappear from Creator Studio.'))return;
+    button.disabled=true;
+    const {error}=await supabase.rpc('owner_archive_digital_product',{p_product_id:button.dataset.productId});
+    if(error){setProductStatus(error.message,'error');button.disabled=false;return;}
+    setProductStatus('Draft archived. Historical records were preserved.','success');
     await loadProducts();
   }));
 }
