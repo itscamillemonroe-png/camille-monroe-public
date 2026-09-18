@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
+  <title>Social Studio | Camille Monroe</title>
+  <link rel="stylesheet" href="/assets/style.css?v=20260918-social1">
+  <link rel="stylesheet" href="/assets/ops-control.css?v=20260917-tight1">
+</head>
+<body data-page="social-studio">
+  <nav class="nav">
+    <div class="wrap navin">
+      <a class="brand" href="/studio/">CAMILLE MONROE</a>
+      <div class="navActions">
+        <a href="/studio/">Creator Studio</a>
+        <a href="/ops/">Control Room</a>
+        <button id="signOut" class="navButton" type="button">Sign out</button>
+      </div>
+    </div>
+  </nav>
+  <main class="opsShell">
+    <a class="opsBack" href="/studio/">← Creator Studio</a>
+    <section class="opsHeader">
+      <div>
+        <p class="eyebrow">Owner only</p>
+        <h1>Social Studio</h1>
+        <p class="lead">AI-assisted social content, review-first. Draft here, approve here, then connected platforms move through Metricool.</p>
+      </div>
+      <span id="socialMode" class="opsPill">Loading…</span>
+    </section>
+    <div id="socialStatus" class="opsStatus"></div>
+    <section class="opsSummary">
+      <article class="opsStat"><span>Connected</span><strong id="connectedCount">—</strong><small>live social networks</small></article>
+      <article class="opsStat"><span>Drafts</span><strong id="draftCount">—</strong><small>waiting for review</small></article>
+      <article class="opsStat"><span>Ready</span><strong id="readyCount">—</strong><small>approved for scheduling</small></article>
+      <article class="opsStat"><span>Published</span><strong id="publishedCount">—</strong><small>tracked posts</small></article>
+    </section>
+    <section class="opsPanel">
+      <div class="opsItemHead"><div><h2>Platforms</h2><p>Connected networks can be scheduled through Metricool after approval. Staged networks stay off until you authorize them.</p></div></div>
+      <div id="platformGrid" class="opsLaneGrid"></div>
+    </section>
+    <section class="opsPanel">
+      <div class="opsItemHead">
+        <div><h2>Content Lane</h2><p id="contentLaneSummary">Loading content-lane settings…</p></div>
+        <span id="reviewPill" class="opsPill">REVIEW FIRST</span>
+      </div>
+      <div class="opsSummary" style="margin-bottom:0">
+        <article class="opsStat"><span>Draft Target</span><strong id="draftTarget">—</strong><small>per day</small></article>
+        <article class="opsStat"><span>Times</span><strong id="postingHours">—</strong><small>America/Chicago</small></article>
+        <article class="opsStat"><span>Executor</span><strong id="executorName">—</strong><small>after founder approval</small></article>
+        <article class="opsStat"><span>Tasks</span><strong id="taskCount">—</strong><small>open content tasks</small></article>
+      </div>
+    </section>
+    <section class="opsPanel">
+      <h2>Create Social Draft</h2>
+      <p>Creating a draft does not publish or schedule anything.</p>
+      <form id="socialDraftForm" class="publishForm productForm">
+        <label>Title<input id="socialTitle" maxlength="160" required placeholder="Internal post title"></label>
+        <label>Platform<select id="socialPlatform" required></select></label>
+        <label>Content type<select id="socialType"><option value="photo">Photo</option><option value="video">Video</option><option value="story">Story</option><option value="text">Text</option></select></label>
+        <label>Campaign<input id="socialCampaign" maxlength="100" placeholder="Optional campaign"></label>
+        <label class="wideField">Caption<textarea id="socialCaption" maxlength="4000" required placeholder="Write or paste the social caption…"></textarea></label>
+        <label class="wideField">Media URL<input id="socialMediaUrl" maxlength="1000" placeholder="Optional public media URL / approved Drive delivery URL"></label>
+        <label class="wideField">Media note<input id="socialMediaNote" maxlength="240" placeholder="What image/video should go with this?"></label>
+        <label>Preferred publish time<input id="socialSchedule" type="datetime-local"></label>
+        <button class="heroButton primary wideField" type="submit">Save Draft for Review</button>
+      </form>
+      <p id="draftStatus" class="formStatus" aria-live="polite"></p>
+    </section>
+    <section class="opsPanel">
+      <div class="opsItemHead"><div><h2>Review Queue</h2><p>Approve moves content to ready-to-schedule. Archive kills it. Nothing publishes from this screen without approval.</p></div></div>
+      <div id="socialPostQueue" class="productCatalog"><p class="memberEmpty">Loading social drafts…</p></div>
+    </section>
+    <section class="opsPanel">
+      <h2>Recent Publish Activity</h2>
+      <div class="opsTableWrap">
+        <table class="opsTable">
+          <thead><tr><th>Platform</th><th>Status</th><th>Scheduled</th><th>Result</th></tr></thead>
+          <tbody id="socialJobRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/assets/social-studio.js?v=20260918-social1"></script>
+</body>
+</html>
