@@ -20,3 +20,50 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:#8f846a;font-s
 @media(max-width:760px){.navActions a{display:none}.mediaGallery{grid-template-columns:1fr}.mediaCard img,.mediaCard video{height:330px}.servicePage{padding:26px 10px 52px}.serviceHeader{display:grid}.messageLayout{grid-template-columns:1fr;min-height:0}.conversationList{display:flex;gap:8px;border-right:0;border-bottom:1px solid var(--line);overflow-x:auto}.conversationButton{min-width:190px}.messageThread{height:56svh;padding:14px}.messageComposer{grid-template-columns:1fr}.messageComposer .heroButton{width:100%}.callRequestForm,.publishForm{grid-template-columns:1fr;padding:15px}.requestCard{display:grid}.requestActions{width:100%}.requestActions .heroButton{flex:1}.callStage,.callStage #remoteVideo{min-height:480px}.callStage #localVideo{width:105px;height:145px}.callControls span{width:100%}.callControls .heroButton{flex:1}.studioMedia{grid-template-columns:1fr 1fr}.studioMediaCard img,.mediaKind{height:145px}}
 @media(min-width:761px){.homePage .photoHero{min-height:calc(100vh - 64px)}.feedStage{padding-top:34px}.memberHeroButtons{max-width:760px}}
 .authForm input[type=file]{padding:10px;color:#bcae8e}.authForm label small{color:#807661;font-size:10px}.profilePhotoForm{margin-top:18px}.profilePreviewWrap{margin:16px 0;display:grid;place-items:center}.profilePreview{width:132px;height:132px;object-fit:cover;border-radius:50%;border:2px solid rgba(215,180,106,.65);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+
+
+/* Readability pass — Sept 2026 */
+html{font-size:17px}
+body{font-size:1rem}
+.brand{font-size:13px}
+.navlinks,.navActions{font-size:14px}
+.eyebrow{font-size:12px}
+.heroButton,.btn{font-size:13px}
+.feedIntro{font-size:15px}
+.livePill,.postTopline,.postFoot{font-size:12px}
+.feedPost p,.memberPost p{font-size:16px}
+.memberEmail{font-size:14px}
+.memberBanner span{font-size:15px}
+.memberStats span{font-size:11px}
+.memberStats strong{font-size:15px}
+.serviceCard strong{font-size:15px}
+.serviceCard small{font-size:13px}
+.postTop strong{font-size:15px}
+.postTop small{font-size:12px}
+.authFine{font-size:13px}
+.authForm label{font-size:14px}
+.authForm input{font-size:16px}
+.authTabs button{font-size:14px}
+.formStatus{font-size:14px}
+.paymentTag{font-size:12px}
+.paymentCard p{font-size:15px}
+.paymentNote span{font-size:14px}
+footer{font-size:13px}
+.mediaCard small{font-size:12px}
+.serviceBalance{font-size:13px}
+.conversationButton small{font-size:12px}
+.messageBubble p{font-size:15px}
+.messageBubble small{font-size:11px}
+.callRequestForm label,.publishForm label{font-size:13px}
+.callEstimate{font-size:14px}
+.requestCard span{font-size:11px}
+.requestCard small{font-size:12px}
+.requestCard p{font-size:14px}
+.callControls span{font-size:14px}
+.authForm label small{font-size:12px}
+@media(max-width:760px){
+  .brand{font-size:12px}
+  .heroButton,.btn{font-size:12px}
+  .feedIntro{font-size:14px}
+  .feedPost p,.memberPost p{font-size:16px}
+}
