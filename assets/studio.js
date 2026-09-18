@@ -61,23 +61,6 @@ async function loadProducts(){
   }));
 }
 
-async function loadCoverPlan(){
-  const target=$('#coverPlan');if(!target)return;
-  const {data,error}=await supabase.rpc('owner_revenue_cover_plan');
-  if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
-  const plans=Array.isArray(data)?data:[];
-  target.innerHTML=plans.length?plans.map(p=>`<article class="productCatalogCard"><div><span class="productState ${p.status==='complete'?'active':''}">${p.status==='complete'?'Complete':'Planned'}</span><strong>${escapeHtml(String(p.lane_no).padStart(2,'0'))} · ${escapeHtml(p.lane_name||'Revenue lane')}</strong><small>${escapeHtml(p.drive_title||'Public review image')}</small><p><strong>${escapeHtml(p.cover_title||'')}</strong><br>${escapeHtml(p.short_copy||'')}</p><p><a href="${escapeHtml(p.drive_url||'#')}" target="_blank" rel="noopener">Open assigned image in Drive</a></p></div>${p.status==='planned'?`<button class="heroButton useCoverPlan" type="button" data-plan-id="${escapeHtml(String(p.id))}" data-lane="${escapeHtml(String(p.lane_no))}" data-title="${escapeHtml(p.cover_title||'')}" data-copy="${escapeHtml(p.short_copy||'')}">Use this plan</button>`:''}</article>`).join(''):'<p class="memberEmpty">No planned covers.</p>';
-  target.querySelectorAll('.useCoverPlan').forEach(button=>button.addEventListener('click',()=>{
-    $('#coverPlanId').value=button.dataset.planId||'';
-    $('#coverLane').value=button.dataset.lane||'';
-    $('#coverTitle').value=button.dataset.title||'';
-    $('#coverCopy').value=button.dataset.copy||'';
-    $('#coverFile').focus();
-    setCoverStatus('Plan loaded. Open the assigned Drive image, save it, then choose that file here.','success');
-    $('#coverForm').scrollIntoView({behavior:'smooth',block:'center'});
-  }));
-}
-
 async function loadCovers(){
   const target=$('#coverCatalog');if(!target)return;
   const {data,error}=await supabase.rpc('owner_revenue_cover_snapshot');
@@ -91,7 +74,7 @@ async function init(){
   session=await requireSession();wireSignOut();
   const {data:profile,error}=await supabase.from('member_profiles').select('is_admin').eq('user_id',session.user.id).single();
   if(error||!profile?.is_admin){location.href='/member/';return;}
-  await Promise.all([loadLibrary(),loadProducts(),loadCovers(),loadCoverPlan(),loadAutobotReview(),loadMediaReview()]);
+  await Promise.all([loadLibrary(),loadProducts(),loadCovers(),loadAutobotReview(),loadMediaReview()]);
 
   $('#publishForm').addEventListener('submit',async event=>{
     event.preventDefault();
@@ -118,7 +101,7 @@ async function init(){
 
   $('#coverForm')?.addEventListener('submit',async event=>{
     event.preventDefault();
-    const file=$('#coverFile').files[0],title=$('#coverTitle').value.trim(),copy=$('#coverCopy').value.trim(),laneNo=Number($('#coverLane').value),planId=Number($('#coverPlanId').value||0);
+    const file=$('#coverFile').files[0],title=$('#coverTitle').value.trim(),copy=$('#coverCopy').value.trim(),laneNo=Number($('#coverLane').value);
     if(!file||!title||!Number.isInteger(laneNo)||laneNo<1||laneNo>6){setCoverStatus('Choose an image, title, and revenue lane.','error');return;}
     if(file.size>20*1024*1024){setCoverStatus('Cover images must be 20 MB or smaller.','error');return;}
     if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setCoverStatus('Use a JPG, PNG, or WebP cover image.','error');return;}
@@ -128,12 +111,8 @@ async function init(){
     if(upload.error){button.disabled=false;setCoverStatus(upload.error.message,'error');return;}
     const {data,error}=await supabase.rpc('owner_create_revenue_cover',{p_lane_no:laneNo,p_title:title,p_short_copy:copy,p_storage_path:path});
     if(error){await supabase.storage.from('lane-cover-media').remove([path]);button.disabled=false;setCoverStatus(error.message,'error');return;}
-    if(planId&&data?.id){
-      const {error:planError}=await supabase.rpc('owner_complete_revenue_cover_plan',{p_plan_id:planId,p_cover_id:data.id});
-      if(planError){setCoverStatus(`Cover created, but the plan could not be marked complete: ${planError.message}`,'error');}
-    }
     const share=`https://itscamillemonroe.art${data?.share_path||'/cover/'}`;
-    event.target.reset();$('#coverPlanId').value='';button.disabled=false;setCoverStatus(`Revenue cover created: ${share}`,'success');await Promise.all([loadCovers(),loadCoverPlan()]);
+    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover created: ${share}`,'success');await loadCovers();
   });
 
   $('#productForm').addEventListener('submit',async event=>{
