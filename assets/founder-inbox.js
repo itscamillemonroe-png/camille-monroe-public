@@ -18,8 +18,11 @@ async function signed(bucket,path,seconds=900){
 function mediaHtml(url,mime,kind){
   if(!url)return '<div class="inboxMedia"><p class="inboxEmpty">Media not attached yet.</p></div>';
   const type=String(mime||'').toLowerCase();
-  if(type.startsWith('video/')||kind==='video')return '<div class="inboxMedia"><video controls playsinline preload="metadata" src="'+escapeHtml(url)+'"></video></div>';
-  if(type.startsWith('audio/')||kind==='audio')return '<div class="inboxMedia"><audio controls src="'+escapeHtml(url)+'"></audio></div>';
+  if(type.startsWith('video/'))return '<div class="inboxMedia"><video controls playsinline preload="metadata" src="'+escapeHtml(url)+'"></video></div>';
+  if(type.startsWith('audio/'))return '<div class="inboxMedia"><audio controls src="'+escapeHtml(url)+'"></audio></div>';
+  if(type.startsWith('image/'))return '<div class="inboxMedia"><img src="'+escapeHtml(url)+'" alt=""></div>';
+  if(kind==='video')return '<div class="inboxMedia"><video controls playsinline preload="metadata" src="'+escapeHtml(url)+'"></video></div>';
+  if(kind==='audio')return '<div class="inboxMedia"><audio controls src="'+escapeHtml(url)+'"></audio></div>';
   return '<div class="inboxMedia"><img src="'+escapeHtml(url)+'" alt=""></div>';
 }
 function renderCounts(c){
@@ -78,14 +81,21 @@ async function decideAccess(btn,decision){
 function socialCard(p){
   const requires=['photo','video','story'].includes(p.content_type);
   const has=Boolean(p.preview_url);
+  const type=String(p.media_mime_type||'').toLowerCase();
+  const privateMedia=Boolean(p.media_storage_path);
+  const mediaCompatible=!requires||!privateMedia||
+    (p.content_type==='photo'&&type.startsWith('image/'))||
+    (p.content_type==='video'&&type.startsWith('video/'))||
+    (p.content_type==='story'&&(type.startsWith('image/')||type.startsWith('video/')));
   let h='<article class="inboxCard"><div class="inboxBody"><div class="inboxMeta"><span class="opsPill">'+escapeHtml(String(p.platform||'SOCIAL').toUpperCase())+'</span><span class="opsPill">'+escapeHtml(String(p.content_type||'POST').toUpperCase())+'</span></div><strong>'+escapeHtml(p.title||'Social post')+'</strong><small>'+escapeHtml(p.campaign||'No campaign')+'</small></div>';
   h+=mediaHtml(p.preview_url,p.media_mime_type,p.content_type);
   h+='<div class="inboxBody"><p class="inboxCaption">'+escapeHtml(p.caption||'')+'</p>';
-  if(!has&&requires){
+  if(has&&requires&&!mediaCompatible)h+='<p class="inboxWarning"><small>The attached file does not match this post type. Replace it with the exact '+escapeHtml(p.content_type)+' media before approval.</small></p>';
+  if(requires&&(!has||!mediaCompatible)){
     h+='<div class="mediaAttach"><label>Attach exact media to review<input class="socialMediaFile" data-id="'+escapeHtml(p.id)+'" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"></label><button class="heroButton attachSocialMedia" data-id="'+escapeHtml(p.id)+'" type="button">Attach Media</button></div>';
   }
   if(p.media_note)h+='<p><small>'+escapeHtml(p.media_note)+'</small></p>';
-  h+='<div class="inboxActions"><button class="heroButton approveSocialInbox" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requires||has)?'':'disabled')+'>Approve Post</button><button class="heroButton archiveSocialInbox" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button></div></div></article>';
+  h+='<div class="inboxActions"><button class="heroButton approveSocialInbox" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requires||(has&&mediaCompatible))?'':'disabled')+'>Approve Post</button><button class="heroButton archiveSocialInbox" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button></div></div></article>';
   return h;
 }
 function renderSocial(items){

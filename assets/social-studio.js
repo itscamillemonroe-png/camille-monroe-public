@@ -4,7 +4,7 @@ let snapshot={};
 let session;
 const safeName=name=>String(name||'upload').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
 async function signedSocial(path){if(!path)return '';const {data,error}=await supabase.storage.from('social-draft-media').createSignedUrl(path,1800);return error?'':(data?.signedUrl||'');}
-function socialMediaPreview(p){const url=p.preview_url||'';if(!url)return '<div style="margin:12px 0;padding:34px 14px;border:1px dashed rgba(255,255,255,.16);border-radius:14px;text-align:center;color:#aaa">Media not attached yet.</div>';const type=String(p.media_mime_type||'').toLowerCase();if(type.startsWith('video/')||p.content_type==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';}
+function socialMediaPreview(p){const url=p.preview_url||'';if(!url)return '<div style="margin:12px 0;padding:34px 14px;border:1px dashed rgba(255,255,255,.16);border-radius:14px;text-align:center;color:#aaa">Media not attached yet.</div>';const type=String(p.media_mime_type||'').toLowerCase();if(type.startsWith('video/'))return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';if(type.startsWith('image/'))return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';if(p.content_type==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';}
 const setStatus=(text,type='')=>{const el=$('#socialStatus');if(!el)return;el.textContent=text;el.className='opsStatus '+type;};
 const setDraftStatus=(text,type='')=>{const el=$('#draftStatus');if(!el)return;el.textContent=text;el.className='formStatus '+type;};
 
@@ -59,9 +59,16 @@ function postCard(p){
   const canReview=p.status==='draft';
   const requiresMedia=['photo','video','story'].includes(p.content_type);
   const hasMedia=Boolean(p.preview_url);
+  const type=String(p.media_mime_type||'').toLowerCase();
+  const privateMedia=Boolean(p.media_storage_path);
+  const mediaCompatible=!requiresMedia||!privateMedia||
+    (p.content_type==='photo'&&type.startsWith('image/'))||
+    (p.content_type==='video'&&type.startsWith('video/'))||
+    (p.content_type==='story'&&(type.startsWith('image/')||type.startsWith('video/')));
+  const mediaMismatch=hasMedia&&requiresMedia&&!mediaCompatible?'<p><small>The attached file does not match this post type. Replace it with the exact '+escapeHtml(p.content_type)+' media before approval.</small></p>':'';
   const note=p.publish_error?'<p><small>'+escapeHtml(p.publish_error)+'</small></p>':'';
   let attach='';
-  if(canReview&&requiresMedia&&!hasMedia){
+  if(canReview&&requiresMedia&&(!hasMedia||!mediaCompatible)){
     attach='<label style="display:block;margin:12px 0">Attach exact media<input class="socialCardMediaFile" data-id="'+escapeHtml(p.id)+'" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"></label><button class="heroButton attachSocialCardMedia" data-id="'+escapeHtml(p.id)+'" type="button">Attach Media</button>';
   }
   return `<article class="productCatalogCard">
@@ -71,11 +78,12 @@ function postCard(p){
       <small>${escapeHtml(p.platform||'')} · ${escapeHtml(p.content_type||'post')} · approval: ${escapeHtml(p.approval_status||'pending')} · publish: ${escapeHtml(p.publish_status||'not submitted')}</small>
       ${socialMediaPreview(p)}
       <p style="white-space:pre-wrap;line-height:1.55">${escapeHtml(p.caption||'')}</p>
+      ${mediaMismatch}
       ${p.media_note?'<p><small>'+escapeHtml(p.media_note)+'</small></p>':''}
       ${attach}${note}
     </div>
     <div class="heroButtons">
-      ${canReview?'<button class="heroButton approveSocial" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requiresMedia||hasMedia)?'':'disabled')+'>Approve</button><button class="heroButton archiveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button>':''}
+      ${canReview?'<button class="heroButton approveSocial" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requiresMedia||(hasMedia&&mediaCompatible))?'':'disabled')+'>Approve</button><button class="heroButton archiveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button>':''}
       ${p.status==='ready'?'<span class="opsPill">READY FOR METRICOOL</span>':''}
       ${p.external_post_url?'<a class="heroButton" href="'+escapeHtml(p.external_post_url)+'" target="_blank" rel="noopener">Open Post</a>':''}
     </div>
