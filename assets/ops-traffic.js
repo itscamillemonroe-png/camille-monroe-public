@@ -34,6 +34,11 @@ function render(data){
   $('#trafficSourceRows').innerHTML=sources.length?sources.map(x=>`<tr><td><strong>${escapeHtml(x.source)}</strong><br><small>${escapeHtml(x.medium)}</small></td><td>${x.views||0}</td><td>${x.visitors||0}</td></tr>`).join(''):'<tr><td colspan="3">No source data yet.</td></tr>';
 
   const funnels=Array.isArray(data.funnel_by_source)?data.funnel_by_source:[];
+  const paidOrders=funnels.reduce((sum,x)=>sum+Number(x.paid_orders||0),0),revenueCents=funnels.reduce((sum,x)=>sum+Number(x.revenue_cents||0),0),visitors=Number(s.unique_visitors||0);
+  if($('#trafficPaidOrders'))$('#trafficPaidOrders').textContent=String(paidOrders);
+  if($('#trafficRevenue'))$('#trafficRevenue').textContent=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(revenueCents/100);
+  if($('#trafficPaidConversion'))$('#trafficPaidConversion').textContent=pct(paidOrders,visitors);
+  if($('#trafficRpv'))$('#trafficRpv').textContent=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(visitors?(revenueCents/100)/visitors:0);
   $('#trafficFunnelRows').innerHTML=funnels.length?funnels.map(x=>`<tr><td><strong>${escapeHtml(x.source)}</strong></td><td>${x.visitors||0}</td><td>${x.access_requests||0}</td><td>${x.paid_orders||0}</td><td>${new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(x.revenue_cents)||0)/100)}</td></tr>`).join(''):'<tr><td colspan="5">No source funnel data yet.</td></tr>';
 
   const campaigns=Array.isArray(data.campaigns)?data.campaigns:[];
@@ -53,7 +58,7 @@ async function load(days=30){
   const [{data,error},{data:deep,error:deepError}]=await Promise.all([supabase.rpc('owner_site_traffic_snapshot',{p_days:Number(days)||30}),supabase.rpc('owner_site_traffic_deep_snapshot',{p_days:Number(days)||30})]);
   if(error)throw error;if(deepError)throw deepError;
   render(data||{});renderDeep(deep||{});
-  status('Traffic analytics synchronized. Internal Control Room and Studio views are stored separately and excluded from public totals.','success');
+  status('Traffic analytics updated. Read the conversion funnel before judging raw views; Control Room and Studio activity stays separate from public totals.','success');
 }
 async function init(){
   await requireOwner();
