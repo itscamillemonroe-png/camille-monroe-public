@@ -39,7 +39,7 @@ function wirePayButtons({approved,active,route}){
       if(!response.ok||!data?.checkout_url){
         button.disabled=false;
         button.textContent=original;
-        setStatus((data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`)+(data?.diagnostic?` [${data.diagnostic}]`:''),'error');
+        setStatus(data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`,'error');
         return;
       }
       location.href=data.checkout_url;
@@ -75,9 +75,9 @@ async function init(){
   const active=Boolean(subscription?.access_until&&new Date(subscription.access_until)>new Date());
   const gate=$('#paymentGate');
   const provider=$('#paymentProvider');
-  if(route?.card_ach_ready){selectedPaymentMethod='card_ach';provider.classList.add('activeAccess');provider.innerHTML='<strong>Two payment options</strong><span>Card / wallet / ACH routes toward Bluevine Business Checking. Crypto stays available through NOWPayments.</span>';}else{selectedPaymentMethod='crypto';provider.innerHTML='<strong>Crypto available now</strong><span>Card / wallet / ACH is still being connected to Bluevine. Crypto remains a permanent payment option and is available now.</span>';}
+  if(route?.card_ach_ready){selectedPaymentMethod='card_ach';provider.classList.add('activeAccess');provider.innerHTML='<strong>Two payment options</strong><span>Card / wallet / ACH routes toward Bluevine Business Checking. Crypto stays available through NOWPayments.</span>';}else{selectedPaymentMethod='crypto';provider.innerHTML='<strong>Crypto available now</strong><span>Card / wallet / ACH is temporarily unavailable while the secure Stripe checkout route is being completed. Crypto remains available now.</span>';}
   updatePaymentMethodUI(route);
-  $('#chooseCard')?.addEventListener('click',()=>{if(!route?.card_ach_ready){setStatus('Card / wallet / ACH is still being connected. Crypto is available now.','error');return;}selectedPaymentMethod='card_ach';updatePaymentMethodUI(route);setStatus('Card / wallet / ACH selected.','success');});
+  $('#chooseCard')?.addEventListener('click',()=>{if(!route?.card_ach_ready){setStatus('Card / wallet / ACH is temporarily unavailable. Crypto is available now.','error');return;}selectedPaymentMethod='card_ach';updatePaymentMethodUI(route);setStatus('Card / wallet / ACH selected.','success');});
   $('#chooseCrypto')?.addEventListener('click',()=>{if(!route?.crypto_ready)return;selectedPaymentMethod='crypto';updatePaymentMethodUI(route);setStatus('Crypto selected.','success');});
 
   if(!approved){
