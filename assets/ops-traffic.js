@@ -25,6 +25,12 @@ function render(data){
   const sources=Array.isArray(data.sources)?data.sources:[];
   $('#trafficSourceRows').innerHTML=sources.length?sources.map(x=>`<tr><td><strong>${escapeHtml(x.source)}</strong><br><small>${escapeHtml(x.medium)}</small></td><td>${x.views||0}</td><td>${x.visitors||0}</td></tr>`).join(''):'<tr><td colspan="3">No source data yet.</td></tr>';
 
+  const funnels=Array.isArray(data.funnel_by_source)?data.funnel_by_source:[];
+  $('#trafficFunnelRows').innerHTML=funnels.length?funnels.map(x=>`<tr><td><strong>${escapeHtml(x.source)}</strong></td><td>${x.visitors||0}</td><td>${x.access_requests||0}</td><td>${x.paid_orders||0}</td><td>${new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(x.revenue_cents)||0)/100)}</td></tr>`).join(''):'<tr><td colspan="5">No source funnel data yet.</td></tr>';
+
+  const campaigns=Array.isArray(data.campaigns)?data.campaigns:[];
+  $('#trafficCampaignRows').innerHTML=campaigns.length?campaigns.map(x=>`<tr><td><strong>${escapeHtml(x.source)}</strong></td><td>${escapeHtml(x.campaign)}</td><td>${escapeHtml(x.content)}</td><td>${x.views||0}</td><td>${x.visitors||0}</td></tr>`).join(''):'<tr><td colspan="5">No campaign data yet.</td></tr>';
+
   const refs=Array.isArray(data.referrers)?data.referrers:[];
   $('#trafficRefRows').innerHTML=refs.length?refs.map(x=>`<tr><td>${escapeHtml(x.referrer_host)}</td><td>${x.views||0}</td></tr>`).join(''):'<tr><td colspan="2">No referral data yet.</td></tr>';
 
