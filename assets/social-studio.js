@@ -65,7 +65,7 @@ function renderDistributionFlow(data={}){
   if($('#socialPaidSubs'))$('#socialPaidSubs').textContent=String(social.paid_subscribers||0);
   const state=String(indm.status||'NOT_CONFIGURED');
   const connected=state.includes('CONNECTED'),pending=state.includes('PENDING');
-  if($('#indmFlowState'))$('#indmFlowState').textContent=connected?(pending?'CONNECTED*':'CONNECTED'):'NOT SET';
+  if($('#indmFlowState'))$('#indmFlowState').textContent=connected?(pending?'SETUP PENDING':'CONNECTED'):'NOT CONNECTED';
   if($('#websiteReturnState'))$('#websiteReturnState').textContent='ACTIVE';
 }
 
