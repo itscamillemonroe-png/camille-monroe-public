@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Stripe Setup | Camille Monroe Control Room</title>
   <link rel="stylesheet" href="/assets/style.css?v=20260917-comms">
+  <link rel="stylesheet" href="/assets/ops-control.css?v=20260919-rev39">
 </head>
 <body>
   <nav class="nav">
@@ -21,36 +22,36 @@
   <main class="paymentPage">
     <section class="paymentWrap">
       <div class="eyebrow">Owner only · secure setup</div>
-      <h1>Stripe production connection</h1>
-      <p class="paymentLead">This page stores Stripe credentials directly in the production Supabase Vault. Values are verified or validated, never shown back, and are not saved in browser storage.</p>
+      <h1>Card Payment Connection</h1>
+      <p class="paymentLead">This owner-only page connects the secure Stripe credentials used for card, wallet, and ACH checkout. Secret values are not shown back or stored in your browser.</p>
 
       <div class="paymentGrid">
         <article class="paymentCard">
           <span class="paymentTag">Checkout credential</span>
-          <h2>Stripe restricted key</h2>
+          <h2>Checkout connection</h2>
           <strong id="checkoutSecretState" class="paymentPrice" style="font-size:28px">Checking…</strong>
-          <p>Use the live restricted key that has Checkout Sessions write and Prices read access.</p>
+          <p>This secure credential allows Camille to create approved Stripe checkout sessions.</p>
         </article>
         <article class="paymentCard">
           <span class="paymentTag">Fulfillment credential</span>
-          <h2>Webhook signing secret</h2>
+          <h2>Payment confirmation connection</h2>
           <strong id="webhookSecretState" class="paymentPrice" style="font-size:28px">Checking…</strong>
-          <p>Use the signing secret from the existing Camille production Stripe webhook endpoint.</p>
+          <p>This secure credential lets Camille verify Stripe payment confirmations before access or fulfillment.</p>
         </article>
         <article class="paymentCard featured">
           <span class="paymentTag">Production status</span>
           <h2>Card / Wallet / ACH</h2>
           <strong id="stripeReadyState" class="paymentPrice" style="font-size:28px">Checking…</strong>
-          <p>Checkout is enabled only after both secure pieces are present.</p>
+          <p>Card, wallet, and ACH checkout are ready only when both secure connections are configured.</p>
         </article>
       </div>
 
       <form id="stripeSetupForm" class="paymentCard" style="margin-top:24px" autocomplete="off">
-        <label for="stripeSecretKey"><strong>Stripe live restricted key</strong></label>
+        <label for="stripeSecretKey"><strong>Checkout credential</strong></label>
         <input id="stripeSecretKey" type="password" inputmode="text" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="rk_live_… or sk_live_…" style="width:100%;margin:10px 0 18px">
-        <label for="stripeWebhookSecret"><strong>Stripe webhook signing secret</strong></label>
+        <label for="stripeWebhookSecret"><strong>Payment confirmation credential</strong></label>
         <input id="stripeWebhookSecret" type="password" inputmode="text" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="whsec_…" style="width:100%;margin:10px 0 18px">
-        <button id="saveStripeSecrets" class="btn primary wide" type="submit">Verify & save securely</button>
+        <button id="saveStripeSecrets" class="btn primary wide" type="submit">Check & save securely</button>
       </form>
 
       <div id="setupStatus" class="formStatus"></div>
@@ -61,5 +62,5 @@
     </section>
   </main>
   <script type="module" src="/assets/payment-setup.js?v=20260919-secure1"></script>
-<script src="/assets/analytics.js?v=20260919-traffic1" defer></script></body>
+<script src="/assets/analytics.js?v=20260919-rev39" defer></script></body>
 </html>
