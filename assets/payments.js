@@ -4,6 +4,11 @@ function setStatus(text,type=''){const el=$('#paymentStatus');if(!el)return;el.t
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);}
 
 let selectedPaymentMethod='crypto';
+function trackCheckout(eventType,target=''){
+  if(globalThis.CamilleAnalytics?.track){globalThis.CamilleAnalytics.track(eventType,target);return;}
+  globalThis.cmTelemetryQueue=Array.isArray(globalThis.cmTelemetryQueue)?globalThis.cmTelemetryQueue:[];
+  globalThis.cmTelemetryQueue.push({eventType,target});
+}
 function updatePaymentMethodUI(route){const card=$('#chooseCard'),crypto=$('#chooseCrypto');if(card){card.disabled=!route?.card_ach_ready;card.classList.toggle('primary',selectedPaymentMethod==='card_ach');card.classList.toggle('glass',selectedPaymentMethod!=='card_ach');}if(crypto){crypto.disabled=!route?.crypto_ready;crypto.classList.toggle('primary',selectedPaymentMethod==='crypto');crypto.classList.toggle('glass',selectedPaymentMethod!=='crypto');}}
 function wirePayButtons({approved,active,route}){
   document.querySelectorAll('.payButton:not([data-wired])').forEach(button=>{
@@ -16,6 +21,7 @@ function wirePayButtons({approved,active,route}){
       const product_id=button.closest('[data-product-id]')?.dataset.productId;
       if(!product_id)return;
       const original=button.textContent;
+      trackCheckout('checkout_attempt',`${selectedPaymentMethod}:${product_id}`);
       button.disabled=true;
       button.textContent='Opening secure checkout…';
       setStatus(selectedPaymentMethod==='card_ach'?'Opening secure card / wallet / ACH checkout…':'Opening secure crypto checkout…');
@@ -23,6 +29,7 @@ function wirePayButtons({approved,active,route}){
       if(!session?.access_token){
         button.disabled=false;
         button.textContent=original;
+        trackCheckout('checkout_blocked',`expired_session:${selectedPaymentMethod}:${product_id}`);
         setStatus('Your sign-in expired. Please sign in again.','error');
         return;
       }
@@ -39,9 +46,11 @@ function wirePayButtons({approved,active,route}){
       if(!response.ok||!data?.checkout_url){
         button.disabled=false;
         button.textContent=original;
+        trackCheckout('checkout_error',`http_${response.status}:${selectedPaymentMethod}:${product_id}`);
         setStatus(data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`,'error');
         return;
       }
+      trackCheckout('checkout_redirect',`${selectedPaymentMethod}:${product_id}`);
       location.href=data.checkout_url;
     });
   });
@@ -81,6 +90,7 @@ async function init(){
   $('#chooseCrypto')?.addEventListener('click',()=>{if(!route?.crypto_ready)return;selectedPaymentMethod='crypto';updatePaymentMethodUI(route);setStatus('Crypto selected.','success');});
 
   if(!approved){
+    trackCheckout('checkout_blocked','approval_gate');
     gate.innerHTML='<strong>Checkout locked</strong><span>Submit your profile picture and wait for Camille’s approval before checkout.</span>';
   }else{
     gate.classList.add('activeAccess');
