@@ -27,3 +27,37 @@
 /* REV38 mobile containment */
 .opsShell,.opsPanel,.opsEvidenceGrid,.opsTableWrap{min-width:0;max-width:100%;box-sizing:border-box}.opsTableWrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.opsPanel{overflow:hidden}.opsStat{min-width:0;overflow-wrap:anywhere}
 @media(max-width:760px){.opsTable{min-width:520px}.opsPanel{padding:15px}.opsSummary{gap:8px}.opsStat{padding:13px}.opsStat strong{font-size:25px}}
+
+
+/* REV39 clarity system */
+.opsSubnav{position:relative}
+.opsExplain{margin:0 0 16px;border:1px solid rgba(215,180,106,.16);border-radius:15px;background:rgba(255,255,255,.018);overflow:hidden}
+.opsExplain summary{cursor:pointer;list-style:none;padding:13px 15px;color:#e7d39f;font-size:12px;font-weight:700;letter-spacing:.035em}
+.opsExplain summary::-webkit-details-marker{display:none}
+.opsExplain summary:after{content:'+';float:right;color:#d7b46a;font-size:18px;line-height:1}
+.opsExplain[open] summary:after{content:'−'}
+.opsExplainGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 15px 15px}
+.opsExplainGrid>div{padding:12px;border-radius:12px;background:#090909;border:1px solid rgba(215,180,106,.1)}
+.opsExplainGrid strong{display:block;color:#f0dfad;font-size:12px;margin-bottom:5px}
+.opsExplainGrid p{margin:0;color:#9f947d;font-size:11px;line-height:1.5}
+.opsSectionHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+.opsSectionHead p{max-width:720px}
+.opsMetricContext{display:block;margin-top:4px;color:#827761;font-size:10px;line-height:1.35}
+.opsLegend{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px}
+.opsLegend span{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid rgba(215,180,106,.13);border-radius:999px;color:#9f947d;font-size:10px}
+.opsLegend b{color:#e6cf94}
+.opsTableWrap{border-radius:12px}
+.opsTable tbody tr:hover{background:rgba(215,180,106,.025)}
+.opsPanel>h2:first-child,.opsSectionHead h2{line-height:1}
+.opsStat strong{overflow-wrap:anywhere}
+.opsButton:disabled{opacity:.55;cursor:wait}
+.opsLane small,.opsPanel p,.opsItem p{line-height:1.5}
+@media(max-width:760px){
+ .opsExplainGrid{grid-template-columns:1fr}
+ .opsSubnav{display:flex;overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ .opsSubnav::-webkit-scrollbar{display:none}
+ .opsSubnav a{flex:0 0 auto}
+ .opsHeader .lead{font-size:20px;line-height:1.32}
+ .opsPanel h2{font-size:32px}
+ .opsTableWrap{margin-inline:-2px}
+}
