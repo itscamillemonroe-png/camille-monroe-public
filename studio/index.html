@@ -1,1 +1,154 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#050505"><meta name="robots" content="noindex"><title>Creator Studio | Camille Monroe</title><link rel="stylesheet" href="/assets/style.css?v=20260918-covers2"></head><body data-page="studio"><nav class="nav"><div class="wrap navin"><a class="brand" href="/member/">CAMILLE MONROE</a><div class="navActions"><a href="/ops/inbox/">Founder Inbox</a><a href="/ops/">Control Room</a><a href="/member/">Member View</a><button id="signOut" class="navButton" type="button">Sign out</button></div></div></nav><main class="servicePage"><section class="serviceShell"><header class="serviceHeader"><div><p class="eyebrow">Owner only</p><h1>Creator Studio</h1><p class="serviceLead">Review first, then publish. Prepare protected SFW content, approve intelligence drafts, create sellable drops, and turn approved promo visuals into tracked revenue covers.</p></div><div class="heroButtons"><a class="heroButton primary" href="/ops/inbox/">Founder Inbox</a><a class="heroButton" href="/ops/">Founder Control Room</a><a class="heroButton" href="/member/">Member View</a></div></header><section class="publishedSection"><div class="feedBar"><div><p class="eyebrow">Review first</p><h2>Approval Queue</h2></div></div><p class="serviceLead">Nothing prepared by the autobot or uploaded as new media goes live until you approve it here.</p><p id="reviewStatus" class="formStatus" aria-live="polite"></p><div class="feedBar"><div><p class="eyebrow">Intelligence drafts</p><h3>Autobot</h3></div></div><div id="autobotReviewQueue" class="productCatalog"><p class="memberEmpty">Loading autobot drafts…</p></div><div class="feedBar" style="margin-top:24px"><div><p class="eyebrow">Media drafts</p><h3>Photos, video & audio</h3></div></div><div id="mediaReviewQueue" class="productCatalog"><p class="memberEmpty">Loading media drafts…</p></div></section><form id="publishForm" class="publishForm"><label>Post title<input id="contentTitle" maxlength="160" required placeholder="Give this drop a title"></label><label>Access level<input value="SFW members" disabled></label><label class="wideField">Post copy<textarea id="contentBody" maxlength="12000" required placeholder="Write the full post or teaser copy…"></textarea></label><label class="uploadDrop wideField">Photo, video, or audio<input id="contentFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,audio/mpeg,audio/mp4" required><span>Choose a file up to 512 MB</span></label><label class="checkRow wideField"><input id="rightsConfirm" type="checkbox" required><span>I own or control the commercial rights to this media.</span></label><button class="heroButton primary wideField" type="submit">Upload for Review</button></form><div id="uploadProgress" class="uploadProgress" hidden><span></span></div><p id="studioStatus" class="formStatus" aria-live="polite"></p><section class="publishedSection"><div class="feedBar"><div><p class="eyebrow">Protected SFW library</p><h2>Media Library</h2></div></div><div id="studioMedia" class="studioMedia"><p class="memberEmpty">Loading your library…</p></div></section><section class="publishedSection"><div class="feedBar"><div><p class="eyebrow">Sellable assets</p><h2>Product Catalog</h2></div></div><p class="serviceLead">Choose one approved, published SFW asset, set the price, and create a one-time Premium Drop. Keep it as a draft until it is the exact paid release you want members to buy.</p><form id="productForm" class="publishForm productForm"><label>Product name<input id="productName" maxlength="80" required placeholder="Example: Private Photo Drop"></label><label>Price (USD)<input id="productPrice" type="number" min="1" step="0.01" inputmode="decimal" required placeholder="10.00"></label><label class="wideField">Description<textarea id="productDescription" maxlength="300" placeholder="What the buyer receives"></textarea></label><label class="wideField">Protected media<select id="productMedia" required><option value="">Choose a published asset</option></select></label><label class="checkRow wideField"><input id="productActive" type="checkbox"><span>Activate for checkout immediately</span></label><button class="heroButton primary wideField" type="submit">Create Product</button></form><p id="productStatus" class="formStatus" aria-live="polite"></p><div id="productCatalog" class="productCatalog"><p class="memberEmpty">Loading product catalog…</p></div><section class="publishedSection"><div class="feedBar"><div><p class="eyebrow">Visual funnels</p><h2>Revenue Covers</h2></div></div><p class="serviceLead">One current cover per active lane. Uploading another image for the same lane replaces its picture and keeps the same tracked share link.</p><form id="coverForm" class="publishForm productForm"><label>Cover title<input id="coverTitle" maxlength="100" required placeholder="Example: Late Night Access"></label><label>Revenue lane<select id="coverLane" required><option value="">Choose a lane</option><option value="1">Membership</option><option value="2">Private Messaging</option><option value="3">Voice Calls</option><option value="5">Premium Drops</option><option value="6">A Little Extra</option></select></label><label class="wideField">Short copy<textarea id="coverCopy" maxlength="240" placeholder="Keep it short. The image should do most of the work."></textarea></label><label class="uploadDrop wideField">Public SFW cover image<input id="coverFile" type="file" accept="image/jpeg,image/png,image/webp" required><span>JPG, PNG, or WebP · up to 20 MB</span></label><button class="heroButton primary wideField" type="submit">Create / Replace Cover</button></form><p id="coverStatus" class="formStatus" aria-live="polite"></p><div id="coverCatalog" class="productCatalog"><p class="memberEmpty">Loading revenue covers…</p></div></section></section></main><script type="module" src="/assets/studio.js?v=20260918-productarchive1"></script><script src="/assets/analytics.js?v=20260919-traffic1" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Creator Studio | Camille Monroe</title>
+  <link rel="stylesheet" href="/assets/style.css?v=20260919-rev40">
+  <link rel="stylesheet" href="/assets/studio-control.css?v=20260919-rev40">
+</head>
+<body data-page="studio">
+  <nav class="nav">
+    <div class="wrap navin">
+      <a class="brand" href="/studio/">CAMILLE MONROE</a>
+      <div class="navActions">
+        <a href="/studio/social/">Social Flow</a>
+        <a href="/ops/inbox/">Needs Attention</a>
+        <a href="/ops/">Control Room</a>
+        <a href="/member/">Member View</a>
+        <button id="signOut" class="navButton" type="button">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="studioShell">
+    <header class="studioHero">
+      <div>
+        <p class="eyebrow">Owner only · content operations</p>
+        <h1>Creator Studio</h1>
+        <p class="lead">Create once, review it, then route it to the right place: your website, Metricool social publishing, inDM engagement follow-up, and back into the Camille funnel.</p>
+      </div>
+      <div class="studioStatusRow">
+        <span class="studioStatusPill good">Website connected</span>
+        <span id="metricoolState" class="studioStatusPill">Metricool</span>
+        <span id="indmState" class="studioStatusPill">inDM</span>
+      </div>
+    </header>
+
+    <nav class="studioTabs" aria-label="Creator Studio sections">
+      <a class="active" href="/studio/">Website Content</a>
+      <a href="/studio/social/">Metricool + inDM Flow</a>
+      <a href="#review">Review Queue</a>
+      <a href="#library">Member Library</a>
+      <a href="#products">Products</a>
+      <a href="#covers">Revenue Covers</a>
+    </nav>
+
+    <details class="studioGuide">
+      <summary>How the Creator Studio flow works</summary>
+      <div class="studioGuideGrid">
+        <div><strong>Create inside Camille</strong><p>Upload protected website content, prepare member posts, products, and revenue visuals here first.</p></div>
+        <div><strong>Public promotion goes through Metricool</strong><p>Public SFW social drafts stay review-first. Approval prepares them for Metricool scheduling instead of bypassing your publishing controls.</p></div>
+        <div><strong>inDM follows engagement</strong><p>inDM is for engagement-triggered Instagram follow-up. Cold automated DMs stay off, and the public post should point people back to your Camille site.</p></div>
+      </div>
+    </details>
+
+    <section class="studioFlow" aria-label="Creator distribution flow">
+      <article class="studioFlowCard"><span>Step 1</span><strong>Website Content</strong><p>Create protected member content, offers, and conversion assets inside Camille.</p></article>
+      <article class="studioFlowCard"><span>Step 2</span><strong>Metricool</strong><p>Prepare public SFW posts, review them, then schedule approved content across connected social accounts.</p></article>
+      <article class="studioFlowCard"><span>Step 3</span><strong>inDM</strong><p>Use engagement-triggered Instagram conversations after people interact with your public content.</p></article>
+      <article class="studioFlowCard"><span>Step 4</span><strong>Back to Camille</strong><p>Tagged links bring interested people back for member access, purchases, and measurable conversion.</p></article>
+    </section>
+
+    <section class="studioSummary">
+      <article class="studioMetric"><span>Website Library</span><strong id="studioLibraryCount">—</strong><small>published member posts + protected media</small></article>
+      <article class="studioMetric"><span>Waiting for Review</span><strong id="studioReviewCount">—</strong><small>media + AI drafts needing approval</small></article>
+      <article class="studioMetric"><span>Active Products</span><strong id="studioProductCount">—</strong><small>currently enabled sellable products</small></article>
+      <article class="studioMetric"><span>Revenue Covers</span><strong id="studioCoverCount">—</strong><small>active tracked promotional covers</small></article>
+    </section>
+
+    <section class="studioQuickGrid">
+      <a class="studioQuickCard" href="/studio/social/"><strong>Public Social Flow</strong><p>Instagram, Threads, TikTok, Metricool timing, social drafts, publishing jobs, and inDM handoff.</p><b>Open Metricool + inDM flow →</b></a>
+      <a class="studioQuickCard" href="/ops/traffic/"><strong>See What Converts</strong><p>Follow tagged traffic from social source → visit → access request → paid order → revenue.</p><b>Open visitor & conversion analytics →</b></a>
+      <a class="studioQuickCard" href="/ops/inbox/"><strong>Everything Waiting on You</strong><p>Member access requests, creator approvals, and unfinished tasks in one review queue.</p><b>Open Needs Attention →</b></a>
+    </section>
+
+    <section id="review" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Review first</span><h2>Approval Queue</h2><p>Nothing new goes live just because AI prepared it or media was uploaded. Review it here first.</p></div>
+        <span id="reviewQueuePill" class="studioStatusPill">Loading…</span>
+      </div>
+      <p id="reviewStatus" class="formStatus" aria-live="polite"></p>
+
+      <div class="feedBar"><div><p class="eyebrow">Website copy</p><h3>AI Drafts</h3></div></div>
+      <div id="autobotReviewQueue" class="productCatalog"><p class="memberEmpty">Loading AI drafts…</p></div>
+
+      <div class="feedBar" style="margin-top:24px"><div><p class="eyebrow">Website media</p><h3>Photos, Video & Audio</h3></div></div>
+      <div id="mediaReviewQueue" class="productCatalog"><p class="memberEmpty">Loading media drafts…</p></div>
+    </section>
+
+    <section id="upload" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Website member content</span><h2>Upload New Content</h2><p>Upload protected SFW media for the member side. Rights are recorded at upload, but the media still stays in review until you approve it.</p></div>
+        <span class="studioStatusPill">Private review queue</span>
+      </div>
+      <form id="publishForm" class="publishForm studioForm">
+        <label>Post title<input id="contentTitle" maxlength="160" required placeholder="Give this member post a title"></label>
+        <label>Access level<input value="SFW members" disabled></label>
+        <label class="wideField">Post copy<textarea id="contentBody" maxlength="12000" required placeholder="Write the full member post or teaser copy…"></textarea></label>
+        <label class="uploadDrop wideField">Photo, video, or audio<input id="contentFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,audio/mpeg,audio/mp4" required><span>Choose a file up to 512 MB</span></label>
+        <label class="checkRow wideField"><input id="rightsConfirm" type="checkbox" required><span>I own or control the commercial rights to this media.</span></label>
+        <button class="heroButton primary wideField" type="submit">Upload for Review</button>
+      </form>
+      <div id="uploadProgress" class="uploadProgress" hidden><span></span></div>
+      <p id="studioStatus" class="formStatus" aria-live="polite"></p>
+    </section>
+
+    <section id="library" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Protected website library</span><h2>Member Media Library</h2><p>Your approved protected photos, video, and audio. This is one part of the member library; published member posts are counted in the summary above too.</p></div>
+        <a class="heroButton" href="/member/">Open Member View</a>
+      </div>
+      <div id="studioMedia" class="studioMedia"><p class="memberEmpty">Loading your library…</p></div>
+    </section>
+
+    <section id="products" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Sellable website assets</span><h2>Premium Drop Products</h2><p>Attach one approved protected asset, set the price, and keep the product as a draft until you are ready to activate checkout.</p></div>
+        <a class="heroButton" href="/ops/revenue/">Revenue Analytics</a>
+      </div>
+      <form id="productForm" class="publishForm productForm studioForm">
+        <label>Product name<input id="productName" maxlength="80" required placeholder="Example: Private Photo Drop"></label>
+        <label>Price (USD)<input id="productPrice" type="number" min="1" step="0.01" inputmode="decimal" required placeholder="10.00"></label>
+        <label class="wideField">Description<textarea id="productDescription" maxlength="300" placeholder="What the buyer receives"></textarea></label>
+        <label class="wideField">Protected media<select id="productMedia" required><option value="">Choose a published asset</option></select></label>
+        <label class="checkRow wideField"><input id="productActive" type="checkbox"><span>Activate for checkout immediately</span></label>
+        <button class="heroButton primary wideField" type="submit">Create Product</button>
+      </form>
+      <p id="productStatus" class="formStatus" aria-live="polite"></p>
+      <div id="productCatalog" class="productCatalog"><p class="memberEmpty">Loading product catalog…</p></div>
+    </section>
+
+    <section id="covers" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Public conversion assets</span><h2>Revenue Covers</h2><p>One current SFW cover per revenue lane. Each cover keeps a tracked share link so you can connect promotion back to visits and revenue.</p></div>
+        <a class="heroButton" href="/ops/traffic/">Conversion Analytics</a>
+      </div>
+      <form id="coverForm" class="publishForm productForm studioForm">
+        <label>Cover title<input id="coverTitle" maxlength="100" required placeholder="Example: Late Night Access"></label>
+        <label>Revenue lane<select id="coverLane" required><option value="">Choose a lane</option><option value="1">Membership</option><option value="2">Private Messaging</option><option value="3">Voice Calls</option><option value="5">Premium Drops</option><option value="6">A Little Extra</option></select></label>
+        <label class="wideField">Short copy<textarea id="coverCopy" maxlength="240" placeholder="Keep it short. The image should do most of the work."></textarea></label>
+        <label class="uploadDrop wideField">Public SFW cover image<input id="coverFile" type="file" accept="image/jpeg,image/png,image/webp" required><span>JPG, PNG, or WebP · up to 20 MB</span></label>
+        <button class="heroButton primary wideField" type="submit">Create / Replace Cover</button>
+      </form>
+      <p id="coverStatus" class="formStatus" aria-live="polite"></p>
+      <div id="coverCatalog" class="productCatalog"><p class="memberEmpty">Loading revenue covers…</p></div>
+    </section>
+  </main>
+
+  <script type="module" src="/assets/studio.js?v=20260919-rev40"></script>
+  <script src="/assets/analytics.js?v=20260919-rev39" defer></script>
+</body>
+</html>
