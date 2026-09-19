@@ -13,5 +13,18 @@ status('Founder overview synchronized.','success');}
 async function setMode(mode,pause=false){status('Updating mode…');const {error}=await supabase.rpc('owner_set_ops_mode',{p_mode:mode,p_emergency_pause:pause});if(error)throw error;await load();}
 async function runNow(){status('Running operations cycle…');const {error}=await supabase.rpc('owner_run_ops_cycle');if(error)throw error;await load();}
 async function runWatchdog(){status('Running watchdog…');const {error}=await supabase.rpc('owner_run_operations_watchdog');if(error)throw error;await load();}
-async function init(){await requireOwner();$('#runNow').addEventListener('click',()=>runNow().catch(e=>status(e.message,'error')));$('#enableAuto').addEventListener('click',()=>setMode('autopilot',false).catch(e=>status(e.message,'error')));$('#manualMode').addEventListener('click',()=>setMode('manual',false).catch(e=>status(e.message,'error')));$('#pauseOps').addEventListener('click',()=>setMode('paused',true).catch(e=>status(e.message,'error')));$('#runWatchdog').addEventListener('click',()=>runWatchdog().catch(e=>status(e.message,'error')));await load();}
+
+function b64urlToBytes(s){const pad='='.repeat((4-s.length%4)%4);const raw=atob((s+pad).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...raw].map(ch=>ch.charCodeAt(0)));}
+async function enablePhoneAlerts(){
+ const el=$('#pushStatus'); if(el)el.textContent='Checking phone notification setup…';
+ if(!('serviceWorker'in navigator)||!('PushManager'in window)){if(el)el.textContent='This browser does not support web push.';return;}
+ const {data:cfg,error}=await supabase.rpc('owner_push_public_config'); if(error)throw error;
+ if(!cfg?.configured||!cfg?.vapid_public_key){if(el)el.textContent='Secure push signing is not configured yet.';return;}
+ const reg=await navigator.serviceWorker.register('/sw.js');
+ const permission=await Notification.requestPermission(); if(permission!=='granted'){if(el)el.textContent='Phone alerts were not allowed.';return;}
+ let sub=await reg.pushManager.getSubscription(); if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64urlToBytes(cfg.vapid_public_key)});
+ const j=sub.toJSON(); const {error:e}=await supabase.rpc('owner_register_push_subscription',{p_endpoint:j.endpoint,p_p256dh:j.keys?.p256dh||'',p_auth:j.keys?.auth||'',p_user_agent:navigator.userAgent}); if(e)throw e;
+ if(el)el.textContent='Phone alerts subscribed. Delivery service verification pending.';
+}
+async function init(){await requireOwner();$('#enablePhoneAlerts')?.addEventListener('click',()=>enablePhoneAlerts().catch(e=>{const el=$('#pushStatus');if(el)el.textContent=e.message||'Could not enable phone alerts.';}));$('#runNow').addEventListener('click',()=>runNow().catch(e=>status(e.message,'error')));$('#enableAuto').addEventListener('click',()=>setMode('autopilot',false).catch(e=>status(e.message,'error')));$('#manualMode').addEventListener('click',()=>setMode('manual',false).catch(e=>status(e.message,'error')));$('#pauseOps').addEventListener('click',()=>setMode('paused',true).catch(e=>status(e.message,'error')));$('#runWatchdog').addEventListener('click',()=>runWatchdog().catch(e=>status(e.message,'error')));await load();}
 init().catch(e=>status(e.message||'Control Room could not load.','error'));
