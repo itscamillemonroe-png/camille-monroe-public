@@ -7,9 +7,9 @@ async function requireOwner(){const s=await requireSession();wireSignOut();const
 function actionButtons(o){
   const parts=[];
   if((o.localized_message||'').trim()) parts.push(`<button class="opsButton giCopy" type="button" data-copy="${escapeHtml(o.localized_message)}">Copy localized draft</button>`);
-  if(o.queue!=='now') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="now">Move to NOW</button>`);
-  if(o.queue!=='watch') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="watch">Watch</button>`);
-  if(o.queue!=='learned') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="learned">Mark Learned</button>`);
+  if(o.queue!=='now') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="now">Move to Do Now</button>`);
+  if(o.queue!=='watch') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="watch">Move to Testing</button>`);
+  if(o.queue!=='learned') parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="learned">Mark Complete</button>`);
   if(o.approval_status==='pending'&&(o.localized_message||o.draft_message)) parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="approve">Approve Draft</button>`);
   parts.push(`<button class="opsButton giAction" type="button" data-id="${o.id}" data-action="archive">Archive</button>`);
   return parts.join('');
@@ -27,11 +27,11 @@ function render(snapshot){
   const s=snapshot.summary||{}, opportunities=Array.isArray(snapshot.opportunities)?snapshot.opportunities:[];
   $('#giNow').textContent=String(s.now_count??0);$('#giWatch').textContent=String(s.watch_count??0);$('#giLearned').textContent=String(s.learned_count??0);$('#giPlatforms').textContent=String(s.connected_platforms??0);
   const now=opportunities.filter(x=>x.queue==='now'&&x.status!=='archived'),watch=opportunities.filter(x=>x.queue==='watch'&&x.status!=='archived'),learned=opportunities.filter(x=>x.queue==='learned');
-  $('#giNowQueue').innerHTML=now.length?now.map(opportunityCard).join(''):'<p>No NOW items. Refresh intelligence after new traffic or content activity.</p>';
-  $('#giWatchQueue').innerHTML=watch.length?watch.map(opportunityCard).join(''):'<p>No WATCH items yet.</p>';
-  $('#giLearnedQueue').innerHTML=learned.length?learned.map(opportunityCard).join(''):'<p>No learned outcomes yet. This fills as tests finish.</p>';
+  $('#giNowQueue').innerHTML=now.length?now.map(opportunityCard).join(''):'<p>Nothing needs immediate attention right now.</p>';
+  $('#giWatchQueue').innerHTML=watch.length?watch.map(opportunityCard).join(''):'<p>No active tests right now.</p>';
+  $('#giLearnedQueue').innerHTML=learned.length?learned.map(opportunityCard).join(''):'<p>No completed findings yet. This fills as Camille confirms results.</p>';
   const focus=now[0]||watch[0];
-  $('#giBrief').innerHTML=focus?`<strong>Highest-priority signal · ${Number(focus.priority_score)||0}/100</strong><p>${escapeHtml(focus.signal||'')}</p><p><strong>Recommended move:</strong> ${escapeHtml(focus.recommended_action||'')}</p><small>Outbound automation is OFF. This is an intelligence recommendation, not an automatic action.</small>`:'<strong>No open intelligence action.</strong>';
+  $('#giBrief').innerHTML=focus?`<strong>Top thing to focus on · Priority ${Number(focus.priority_score)||0}/100</strong><p>${escapeHtml(focus.signal||'')}</p><p><strong>What to do next:</strong> ${escapeHtml(focus.recommended_action||'')}</p><small>This is a recommendation only. Nothing is posted, sent, or purchased automatically.</small>`:'<strong>Nothing urgent right now.</strong>';
 
   const markets=Array.isArray(snapshot.markets)?snapshot.markets:[];
   $('#giMarketRows').innerHTML=markets.length?markets.map(m=>`<tr><td><strong>${escapeHtml(m.region_label)}</strong><br><small>${escapeHtml((m.country_codes||[]).join(', '))}</small></td><td>${escapeHtml(m.language_label)}</td><td><span class="opsPill">${escapeHtml(m.stage)}</span></td><td>${escapeHtml(m.evidence_level)}<br><small>${escapeHtml(m.evidence_note||'')}</small></td><td>${escapeHtml((m.recommended_platforms||[]).join(', '))}</td><td><div class="giHook">${escapeHtml(m.localized_hook||'')}</div><button class="opsButton giCopy" type="button" data-copy="${escapeHtml(m.localized_hook||'')}">Copy</button></td></tr>`).join(''):'<tr><td colspan="6">No market experiments configured.</td></tr>';
@@ -51,7 +51,7 @@ async function load(){
   const {data,error}=await supabase.rpc('owner_global_intelligence_snapshot');
   if(error)throw error;
   render(data||{});
-  status('Global intelligence synchronized. Outbound automation remains off.','success');
+  status('Global intelligence updated. Nothing was sent or published.','success');
 }
 async function refresh(){
   status('Refreshing first-party intelligence…');
