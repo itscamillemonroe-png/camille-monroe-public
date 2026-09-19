@@ -7,6 +7,14 @@ async function requireOwner(){
   if(error||!data?.is_admin){location.replace('/member/');throw new Error('Owner access required.');}
 }
 function pct(a,b){return b?((a/b)*100).toFixed(1)+'%':'0%';}
+function rows(id,items,fn,cols){const el=$(id);if(!el)return;el.innerHTML=items.length?items.map(fn).join(''):`<tr><td colspan="${cols}">No data recorded yet.</td></tr>`;}
+function renderDeep(data){
+ const d=data||{};
+ rows('#trafficBrowserRows',d.browsers||[],x=>`<tr><td><strong>${escapeHtml(x.browser)}</strong></td><td>${x.views||0}</td><td>${x.visitors||0}</td></tr>`,3);
+ rows('#trafficOsRows',d.operating_systems||[],x=>`<tr><td>${escapeHtml(x.os)}</td><td>${x.views||0}</td></tr>`,2);
+ rows('#trafficLocationRows',d.locations||[],x=>`<tr><td><strong>${escapeHtml(x.region)}</strong></td><td>${escapeHtml(x.timezone)}</td><td>${x.views||0}</td><td>${x.visitors||0}</td></tr>`,4);
+ rows('#trafficLanguageRows',d.languages||[],x=>`<tr><td>${escapeHtml(x.language)}</td><td>${x.views||0}</td></tr>`,2);
+}
 function render(data){
   const s=data.summary||{};
   $('#trafficViews').textContent=String(s.page_views??0);
@@ -42,9 +50,9 @@ function render(data){
 }
 async function load(days=30){
   status('Loading sitewide traffic…');
-  const {data,error}=await supabase.rpc('owner_site_traffic_snapshot',{p_days:Number(days)||30});
-  if(error)throw error;
-  render(data||{});
+  const [{data,error},{data:deep,error:deepError}]=await Promise.all([supabase.rpc('owner_site_traffic_snapshot',{p_days:Number(days)||30}),supabase.rpc('owner_site_traffic_deep_snapshot',{p_days:Number(days)||30})]);
+  if(error)throw error;if(deepError)throw deepError;
+  render(data||{});renderDeep(deep||{});
   status('Traffic analytics synchronized. Internal Control Room and Studio views are stored separately and excluded from public totals.','success');
 }
 async function init(){
