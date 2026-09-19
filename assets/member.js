@@ -1,4 +1,4 @@
-import { supabase, $, escapeHtml, prettyDate, requireSession, wireSignOut } from './app-client.js';
+import { supabase, $, escapeHtml, prettyDate, requireSession, wireSignOut, captureAttribution } from './app-client.js';
 
 const PROFILE_BUCKET='member-profile-photos';
 const ALLOWED_PHOTO_TYPES=new Set(['image/jpeg','image/png','image/webp']);
@@ -28,7 +28,7 @@ async function loginPage(){
       const full_name=$('#signupName').value.trim(),email=$('#signupEmail').value.trim(),password=$('#signupPassword').value,file=$('#profilePhoto').files[0];
       if(!file)throw new Error('A profile picture is required to request access.');
       if(!ALLOWED_PHOTO_TYPES.has(file.type)||file.size>8*1024*1024)throw new Error('Use a JPG, PNG, or WebP picture smaller than 8 MB.');
-      const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name},emailRedirectTo:'https://itscamillemonroe.art/login/'}});
+      const attribution=captureAttribution();const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name,attribution},emailRedirectTo:'https://itscamillemonroe.art/login/'}});
       if(error)throw error;
       if(data.session){await uploadProfilePhoto(data.user,file);location.href='/member/';return;}
       setStatus('Account created. Confirm your email, sign in, then upload the required profile picture to finish your request.','success');
