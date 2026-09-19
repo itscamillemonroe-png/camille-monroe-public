@@ -25,6 +25,7 @@ async function enablePhoneAlerts(){
  const j=sub.toJSON(); const {error:e}=await supabase.rpc('owner_register_push_subscription',{p_endpoint:j.endpoint,p_p256dh:j.keys?.p256dh||'',p_auth:j.keys?.auth||'',p_user_agent:navigator.userAgent}); if(e)throw e;
  const {data:test,error:testError}=await supabase.functions.invoke('owner-push-send',{body:{title:'Camille Monroe',body:'Phone alerts are connected.',url:'/ops/',tag:'cm-owner-setup'}});
  if(testError)throw testError;
+ if(!test?.ok){if(el)el.textContent='Push setup error ('+(test?.stage||'unknown')+'): '+(test?.error||test?.message||'Delivery failed.');return;}
  if(el)el.textContent=test?.sent>0?'Phone alerts are LIVE. Test alert sent.':'Phone alerts subscribed. No active delivery target was found yet.';
 }
 async function init(){await requireOwner();$('#enablePhoneAlerts')?.addEventListener('click',()=>enablePhoneAlerts().catch(e=>{const el=$('#pushStatus');if(el)el.textContent=e.message||'Could not enable phone alerts.';}));$('#runNow').addEventListener('click',()=>runNow().catch(e=>status(e.message,'error')));$('#enableAuto').addEventListener('click',()=>setMode('autopilot',false).catch(e=>status(e.message,'error')));$('#manualMode').addEventListener('click',()=>setMode('manual',false).catch(e=>status(e.message,'error')));$('#pauseOps').addEventListener('click',()=>setMode('paused',true).catch(e=>status(e.message,'error')));$('#runWatchdog').addEventListener('click',()=>runWatchdog().catch(e=>status(e.message,'error')));await load();}
