@@ -1,0 +1,10 @@
+{
+  "name": "Camille Monroe Control Room",
+  "short_name": "CM Control",
+  "start_url": "/ops/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "description": "Founder-only Camille Monroe operations control room."
+}
