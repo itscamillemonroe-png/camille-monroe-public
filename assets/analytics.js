@@ -1,7 +1,7 @@
 (()=> {
   const endpoint='https://wybpxixkjimbpvufozub.supabase.co/functions/v1/track-site-event';
   const apikey='sb_publishable_0bNGPfELmwuT32zmhXXkMQ_sJIXotwE';
-  const attrKey='cm_public_attribution_v1';
+  const attrKey='cm_attribution_v1';
   const visitorKey='cm_visitor_id_v1';
   const sessionKey='cm_session_id_v1';
 
@@ -38,7 +38,9 @@
       medium:(q.get('utm_medium')||'').slice(0,120),
       campaign:(q.get('utm_campaign')||'').slice(0,120),
       content:(q.get('utm_content')||'').slice(0,120),
-      term:(q.get('utm_term')||'').slice(0,120)
+      term:(q.get('utm_term')||'').slice(0,120),
+      referrer_host:refHost(),
+      landing_path:location.pathname.slice(0,180)
     };
     const hasUtm=Object.values(incoming).some(Boolean);
     let stored=null;
@@ -46,7 +48,7 @@
     if(hasUtm){try{localStorage.setItem(attrKey,JSON.stringify(incoming));}catch{};return incoming;}
     if(stored)return stored;
     const host=refHost();
-    const first={source:host||'direct',medium:host?'referral':'none',campaign:'',content:'',term:''};
+    const first={source:host||'direct',medium:host?'referral':'none',campaign:'',content:'',term:'',referrer_host:host,landing_path:location.pathname.slice(0,180)};
     try{localStorage.setItem(attrKey,JSON.stringify(first));}catch{}
     return first;
   }
