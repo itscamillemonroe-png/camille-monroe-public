@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-18T17:21:12.534Z",
+  "updatedAt": "2026-09-19T16:53:00.202Z",
   "posts": [
+    {
+      "id": "soft-checkin",
+      "category": "Check-in",
+      "title": "Come sit with me for a minute",
+      "body": "No big announcement today—just a soft check-in. I hope you’re taking your time, protecting your peace, and doing one thing that feels good.",
+      "cta": "Keep up with me",
+      "href": "/login/",
+      "publishedAt": "2026-09-19T16:53:00.202Z"
+    },
     {
       "id": "behind-scenes",
       "category": "Behind the scenes",
