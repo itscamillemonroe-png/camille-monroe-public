@@ -86,6 +86,10 @@
     }).catch(()=>{});
   }
 
+  globalThis.CamilleAnalytics={track:(eventType,target='')=>send(eventType,target)};
+  const queued=Array.isArray(globalThis.cmTelemetryQueue)?globalThis.cmTelemetryQueue.splice(0):[];
+  queued.forEach(item=>send(item?.eventType||'page_view',item?.target||''));
+
   send('page_view');
 
   document.addEventListener('click',event=>{
