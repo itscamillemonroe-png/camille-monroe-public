@@ -31,6 +31,17 @@
     if(w<1100)return 'tablet';
     return 'desktop';
   }
+  function browserInfo(){
+    const ua=navigator.userAgent||'';
+    let browser='Other';
+    if(/Edg\//.test(ua))browser='Microsoft Edge'; else if(/CriOS|Chrome\//.test(ua))browser='Chrome'; else if(/FxiOS|Firefox\//.test(ua))browser='Firefox'; else if(/Safari\//.test(ua))browser='Safari';
+    let os='Other';
+    if(/iPhone|iPad|iPod/.test(ua))os='iOS/iPadOS'; else if(/Android/.test(ua))os='Android'; else if(/Windows/.test(ua))os='Windows'; else if(/Mac OS X/.test(ua))os='macOS'; else if(/Linux/.test(ua))os='Linux';
+    const lang=(navigator.language||'').slice(0,40);
+    let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch{}
+    const parts=lang.split('-'); const region=(parts.length>1?parts[parts.length-1]:'').toUpperCase().slice(0,20);
+    return {browser_name:browser,os_name:os,browser_language:lang,timezone_name:tz.slice(0,80),locale_region:region};
+  }
   function captureAttribution(){
     const q=new URLSearchParams(location.search);
     const incoming={
@@ -72,6 +83,7 @@
       term:attribution.term||'',
       device_class:device(),
       viewport_width:window.innerWidth||0,
+      ...browserInfo(),
       target:String(target||'').slice(0,240)
     };
   }
