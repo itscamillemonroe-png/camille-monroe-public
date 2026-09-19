@@ -19,11 +19,27 @@ function wirePayButtons({approved,active,route}){
       button.disabled=true;
       button.textContent='Opening secure checkout…';
       setStatus(selectedPaymentMethod==='card_ach'?'Opening secure card / wallet / ACH checkout…':'Opening secure crypto checkout…');
-      const {data,error}=await supabase.functions.invoke('create-checkout',{body:{product_id,payment_method:selectedPaymentMethod,attribution:getAttribution()}});
-      if(error||!data?.checkout_url){
+      const {data:{session}}=await supabase.auth.getSession();
+      if(!session?.access_token){
         button.disabled=false;
         button.textContent=original;
-        setStatus(data?.error||error?.message||'Checkout could not start. Please try again.','error');
+        setStatus('Your sign-in expired. Please sign in again.','error');
+        return;
+      }
+      const response=await fetch('https://wybpxixkjimbpvufozub.supabase.co/functions/v1/create-checkout',{
+        method:'POST',
+        headers:{
+          'Authorization':`Bearer ${session.access_token}`,
+          'apikey':'sb_publishable_0bNGPfELmwuT32zmhXXkMQ_sJIXotwE',
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({product_id,payment_method:selectedPaymentMethod,attribution:getAttribution()})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data?.checkout_url){
+        button.disabled=false;
+        button.textContent=original;
+        setStatus(data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`,'error');
         return;
       }
       location.href=data.checkout_url;
