@@ -39,7 +39,7 @@ function wirePayButtons({approved,active,route}){
       if(!response.ok||!data?.checkout_url){
         button.disabled=false;
         button.textContent=original;
-        setStatus(data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`,'error');
+        setStatus((data?.error||`Checkout could not start (HTTP ${response.status}). Please try again.`)+(data?.diagnostic?` [${data.diagnostic}]`:''),'error');
         return;
       }
       location.href=data.checkout_url;
