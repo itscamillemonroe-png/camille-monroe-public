@@ -2,14 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
-  <meta http-equiv="refresh" content="0;url=/ops/">
-  <link rel="canonical" href="https://itscamillemonroe.art/ops/">
-  <title>Redirecting | Camille Monroe</title>
+  <meta name="theme-color" content="#050505">
+  <title>Social Flow | Camille Monroe Creator Studio</title>
+  <link rel="stylesheet" href="/assets/style.css?v=20260919-rev40">
+  <link rel="stylesheet" href="/assets/ops-control.css?v=20260919-rev39">
+  <link rel="stylesheet" href="/assets/studio-control.css?v=20260919-rev40">
 </head>
-<body>
-  <p>Social Studio is paused. Redirecting to the Control Room…</p>
-  <script>location.replace('/ops/');</script>
-<script src="/assets/analytics.js?v=20260919-traffic1" defer></script></body>
+<body data-page="studio-social">
+  <nav class="nav">
+    <div class="wrap navin">
+      <a class="brand" href="/studio/">CAMILLE MONROE</a>
+      <div class="navActions">
+        <a href="/studio/">Website Studio</a>
+        <a href="/ops/traffic/">Conversion</a>
+        <a href="/ops/">Control Room</a>
+        <button id="signOut" class="navButton" type="button">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="studioShell">
+    <header class="studioHero">
+      <div>
+        <p class="eyebrow">Creator Studio · public distribution</p>
+        <h1>Metricool + inDM Flow</h1>
+        <p class="lead">Prepare public SFW content, approve it, route publishing through Metricool, use inDM only after engagement, then measure what comes back to your website.</p>
+      </div>
+      <div class="studioStatusRow">
+        <span id="socialMode" class="studioStatusPill">Loading…</span>
+        <span id="reviewPill" class="studioStatusPill">Review first</span>
+      </div>
+    </header>
+
+    <nav class="studioTabs" aria-label="Creator Studio sections">
+      <a href="/studio/">Website Content</a>
+      <a class="active" href="/studio/social/">Metricool + inDM Flow</a>
+      <a href="#drafts">Social Drafts</a>
+      <a href="#platforms">Connections</a>
+      <a href="#timing">Timing</a>
+      <a href="#jobs">Publish History</a>
+    </nav>
+
+    <details class="studioGuide">
+      <summary>How this social flow works</summary>
+      <div class="studioGuideGrid">
+        <div><strong>Metricool = public publishing</strong><p>Camille prepares drafts and media, but your approved public SFW content moves through Metricool for scheduling and publishing.</p></div>
+        <div><strong>inDM = engagement follow-up</strong><p>inDM is used after someone engages with the Instagram side. Cold automated DMs remain off.</p></div>
+        <div><strong>Website = destination</strong><p>Tagged social links point people back to Camille so visits, access requests, purchases, and revenue can be measured.</p></div>
+      </div>
+    </details>
+
+    <section class="studioFlow">
+      <article class="studioFlowCard"><span>1 · Create</span><strong>Camille Draft</strong><p>Prepare public-safe copy and exact media inside your Creator Studio.</p></article>
+      <article class="studioFlowCard"><span>2 · Approve</span><strong>Founder Review</strong><p>You approve the final post. Approval does not mean “send a DM.”</p></article>
+      <article class="studioFlowCard"><span>3 · Publish</span><strong>Metricool</strong><p>Approved public content is scheduled to connected social accounts.</p></article>
+      <article class="studioFlowCard"><span>4 · Convert</span><strong>inDM + Website</strong><p>Engagement can trigger inDM follow-up while tagged links bring people back to Camille.</p></article>
+    </section>
+
+    <section class="studioSummary">
+      <article class="studioMetric"><span>Connected Platforms</span><strong id="connectedCount">—</strong><small>social accounts available to the flow</small></article>
+      <article class="studioMetric"><span>Waiting Drafts</span><strong id="draftCount">—</strong><small>social drafts not yet approved</small></article>
+      <article class="studioMetric"><span>Ready for Metricool</span><strong id="readyCount">—</strong><small>approved social content</small></article>
+      <article class="studioMetric"><span>Published Records</span><strong id="publishedCount">—</strong><small>social posts recorded as published</small></article>
+    </section>
+
+    <section class="studioSummary">
+      <article class="studioMetric"><span>Metricool</span><strong id="executorName">—</strong><small id="metricoolDetail">publishing executor</small></article>
+      <article class="studioMetric"><span>inDM</span><strong id="indmFlowState">—</strong><small>Instagram engagement follow-up</small></article>
+      <article class="studioMetric"><span>Website Tracking</span><strong id="websiteReturnState">ACTIVE</strong><small>tagged links return to Camille</small></article>
+      <article class="studioMetric"><span>Open Content Tasks</span><strong id="taskCount">—</strong><small>work still waiting in the social lane</small></article>
+    </section>
+
+    <div id="socialStatus" class="opsStatus"></div>
+    <div class="socialFlowNote"><strong>Current rule:</strong> Public content stays review-first. Metricool handles the publishing lane. inDM is engagement-triggered only. Nothing here authorizes cold DMs or bypasses your approval requirement.</div>
+
+    <section id="platforms" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Connections</span><h2>Where Content Can Go</h2><p>Connected accounts are live inputs to the social flow. Staged networks stay untouched until separately connected and approved.</p></div>
+        <span class="studioStatusPill">Brand 6854489</span>
+      </div>
+      <div id="platformGrid" class="opsLaneGrid"><p>Loading platforms…</p></div>
+    </section>
+
+    <section id="timing" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Metricool timing</span><h2>Best Times to Test Posts</h2><p>These windows are starting points from connected-account timing signals. Judge them by website visits and paid conversion, not likes alone.</p></div>
+        <span id="postingHours" class="studioStatusPill">—</span>
+      </div>
+      <p id="contentLaneSummary" class="serviceLead"></p>
+      <div class="studioSummary" style="margin-top:14px">
+        <article class="studioMetric"><span>Draft Target</span><strong id="draftTarget">—</strong><small>draft opportunities per day</small></article>
+        <article class="studioMetric"><span>Analytics Rows</span><strong id="socialMetricRows">—</strong><small>post-performance records available</small></article>
+        <article class="studioMetric"><span>Tracked Link Clicks</span><strong id="socialLinkClicks">—</strong><small>from recorded social metrics</small></article>
+        <article class="studioMetric"><span>Paid Subscribers</span><strong id="socialPaidSubs">—</strong><small>attributed from social metrics</small></article>
+      </div>
+    </section>
+
+    <section id="drafts" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Review first</span><h2>Social Draft Queue</h2><p>Review the exact caption and media before approval. Approval prepares the item for the Metricool lane; it does not silently publish a new public post.</p></div>
+      </div>
+      <div id="socialPostQueue" class="productCatalog"><p class="memberEmpty">Loading social drafts…</p></div>
+    </section>
+
+    <section class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Create a public-safe draft</span><h2>New Social Draft</h2><p>Build one social post for review. Choose the platform, exact format, campaign tag, media, and planned time.</p></div>
+      </div>
+      <form id="socialDraftForm" class="publishForm productForm studioForm">
+        <label>Draft title<input id="socialTitle" maxlength="120" required placeholder="Internal title for this post"></label>
+        <label>Platform<select id="socialPlatform" required></select></label>
+        <label>Content type<select id="socialType" required><option value="post">Post</option><option value="photo">Photo</option><option value="video">Video</option><option value="story">Story</option></select></label>
+        <label>Campaign tag<input id="socialCampaign" maxlength="120" placeholder="Example: launch_04_member"></label>
+        <label class="wideField">Caption<textarea id="socialCaption" maxlength="5000" required placeholder="Public SFW caption…"></textarea></label>
+        <label>Planned time<input id="socialSchedule" type="datetime-local"></label>
+        <label>Public media URL<input id="socialMediaUrl" type="url" placeholder="Optional public image/video URL"></label>
+        <label class="uploadDrop wideField">Or attach exact media<input id="socialMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"><span>JPG, PNG, WebP, MP4, or MOV · up to 200 MB</span></label>
+        <label class="wideField">Media note<textarea id="socialMediaNote" maxlength="300" placeholder="Optional internal note about the exact image/video"></textarea></label>
+        <button class="heroButton primary wideField" type="submit">Save for Review</button>
+      </form>
+      <p id="draftStatus" class="formStatus" aria-live="polite"></p>
+    </section>
+
+    <section class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Work queue</span><h2>Social Content Tasks</h2><p>Open tasks related to public content preparation and distribution.</p></div>
+      </div>
+      <div id="contentTaskList" class="productCatalog"><p class="memberEmpty">Loading content tasks…</p></div>
+    </section>
+
+    <section id="jobs" class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Publishing history</span><h2>Metricool Handoff & Publish Jobs</h2><p>See what the Camille social lane requested, when it was planned, and whether the handoff completed or failed.</p></div>
+      </div>
+      <div class="studioTableWrap">
+        <table class="studioTable">
+          <thead><tr><th>Platform</th><th>Status</th><th>Scheduled</th><th>Result / Error</th></tr></thead>
+          <tbody id="socialJobRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Conversion destination</span><h2>Website Return Path</h2><p>The goal of public social activity is not just engagement. Tagged Camille links should bring interested people back to your official website where access requests, purchases, and revenue can be measured.</p></div>
+        <a class="heroButton" href="/ops/traffic/">Open Conversion Analytics</a>
+      </div>
+      <div class="studioQuickGrid">
+        <a class="studioQuickCard" href="/studio/"><strong>Website Content</strong><p>Build the member-side experience people arrive to after social promotion.</p><b>Open Website Studio →</b></a>
+        <a class="studioQuickCard" href="/ops/intelligence/"><strong>Growth Intelligence</strong><p>See what to do now, what is being tested, and what the system has learned.</p><b>Open Growth Intelligence →</b></a>
+        <a class="studioQuickCard" href="/ops/revenue/"><strong>Revenue</strong><p>See whether social and website traffic are turning into paid orders and settled money.</p><b>Open Revenue →</b></a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/assets/social-studio.js?v=20260919-rev40"></script>
+  <script src="/assets/analytics.js?v=20260919-rev39" defer></script>
+</body>
 </html>
