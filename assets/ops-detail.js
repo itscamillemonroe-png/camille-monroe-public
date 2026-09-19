@@ -2,6 +2,10 @@ import { supabase, $, escapeHtml, prettyDate, requireSession, wireSignOut } from
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);}
 function status(text,type=''){const el=$('#opsStatus');if(!el)return;el.textContent=text;el.className='opsStatus '+type;}
 function dimLabel(key){return key.replace(/^\\d+_/,'').replaceAll('_',' ');}
+function pct(a,b){return b?((Number(a)||0)/(Number(b)||0)*100).toFixed(1)+'%':'0%';}
+function plainKey(v=''){return String(v||'').replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase());}
+function ageText(value){if(!value)return '—';const ms=Date.now()-new Date(value).getTime();if(!Number.isFinite(ms)||ms<0)return '—';const h=Math.floor(ms/3600000);if(h<24)return h+'h';return Math.floor(h/24)+'d';}
+function summaryText(obj){if(!obj||typeof obj!=='object')return String(obj||'—');const parts=Object.entries(obj).slice(0,6).map(([k,v])=>plainKey(k)+': '+(typeof v==='object'?JSON.stringify(v):String(v)));return parts.join(' · ')||'No summary details.';}
 function coverPublicUrl(path=''){
   if(!path)return '';
   if(String(path).startsWith('/assets/'))return path;
