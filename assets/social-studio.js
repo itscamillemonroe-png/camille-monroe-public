@@ -39,7 +39,8 @@ function renderPlatforms(platforms=[]){
     </article>`).join('')||'<p>No platforms configured.</p>';
 
   const select=$('#socialPlatform');
-  select.innerHTML=platforms.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · ${p.connection_status==='connected'?'connected':'staged'}</option>`).join('');
+  const available=connected.length?connected:platforms;
+  select.innerHTML=available.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · ${p.connection_status==='connected'?'connected':'staged'}</option>`).join('');
 }
 
 function renderConfig(cfg={},counts={}){
@@ -52,7 +53,20 @@ function renderConfig(cfg={},counts={}){
   $('#draftCount').textContent=String(counts.drafts??0);
   $('#readyCount').textContent=String(counts.ready??0);
   $('#publishedCount').textContent=String(counts.published??0);
-  $('#contentLaneSummary').textContent=`${cfg.drafts_per_day??0} SFW draft opportunities per day across ${(cfg.target_platforms||[]).join(', ')}. AI may prepare/adapt copy and recommend timing; founder approval is required before Metricool scheduling.`;
+  $('#contentLaneSummary').textContent=`${cfg.drafts_per_day??0} public-safe draft opportunities per day across ${(cfg.target_platforms||[]).join(', ')}. Camille can prepare copy, media notes, campaign tags, and timing recommendations; you still approve the final post before the Metricool lane moves it forward.`;
+}
+
+function renderDistributionFlow(data={}){
+  const social=data.social||{},indm=data.indm||{};
+  const metricDetail=$('#metricoolDetail');
+  if(metricDetail)metricDetail.textContent=(social.metricool_brand_id?'brand '+social.metricool_brand_id+' · ':'')+(social.connected_platforms||0)+' connected platforms';
+  if($('#socialMetricRows'))$('#socialMetricRows').textContent=String(social.metric_rows||0);
+  if($('#socialLinkClicks'))$('#socialLinkClicks').textContent=String(social.link_clicks||0);
+  if($('#socialPaidSubs'))$('#socialPaidSubs').textContent=String(social.paid_subscribers||0);
+  const state=String(indm.status||'NOT_CONFIGURED');
+  const connected=state.includes('CONNECTED'),pending=state.includes('PENDING');
+  if($('#indmFlowState'))$('#indmFlowState').textContent=connected?(pending?'CONNECTED*':'CONNECTED'):'NOT SET';
+  if($('#websiteReturnState'))$('#websiteReturnState').textContent='ACTIVE';
 }
 
 function postCard(p){
@@ -93,17 +107,17 @@ function postCard(p){
 function wirePostActions(){
   document.querySelectorAll('.attachSocialCardMedia').forEach(btn=>btn.addEventListener('click',()=>attachCardMedia(btn)));
   document.querySelectorAll('.approveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
-    btn.disabled=true;setStatus('Approving social draft…');
+    btn.disabled=true;setStatus('Approving draft for the Metricool flow…');
     const {data,error}=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
-    setStatus(data?.ready_to_schedule?'Approved and ready for Metricool scheduling.':'Approved, but that platform still needs connection.','success');
+    setStatus(data?.ready_to_schedule?'Approved and ready for the Metricool publishing lane.':'Approved, but that social account is not connected yet.','success');
     await load();
   }));
   document.querySelectorAll('.archiveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
     btn.disabled=true;
     const {error}=await supabase.rpc('owner_archive_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
-    setStatus('Social draft archived.','success');
+    setStatus('Draft archived. Nothing was published.','success');
     await load();
   }));
 }
@@ -131,16 +145,21 @@ function renderJobs(jobs=[]){
 }
 
 async function load(){
-  setStatus('Synchronizing Social Studio…');
-  const {data,error}=await supabase.rpc('owner_social_studio_snapshot');
+  setStatus('Updating the social distribution flow…');
+  const [{data,error},{data:creator,error:creatorError}]=await Promise.all([
+    supabase.rpc('owner_social_studio_snapshot'),
+    supabase.rpc('owner_creator_studio_snapshot')
+  ]);
   if(error)throw error;
+  if(creatorError)throw creatorError;
   snapshot=data||{};
   renderPlatforms(snapshot.platforms||[]);
   renderConfig(snapshot.config||{},snapshot.counts||{});
+  renderDistributionFlow(creator||{});
   const enrichedPosts=[];for(const p of (snapshot.posts||[])){let preview=p.media_url||'';if(p.media_storage_path)preview=await signedSocial(p.media_storage_path);enrichedPosts.push({...p,preview_url:preview});}renderPosts(enrichedPosts);
   renderTasks(snapshot.tasks||[]);
   renderJobs(snapshot.jobs||[]);
-  setStatus('Social Studio synchronized.','success');
+  setStatus('Social flow updated. Nothing was published or messaged automatically.','success');
 }
 
 async function init(){
