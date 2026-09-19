@@ -16,6 +16,35 @@ function coverPublicUrl(path=''){
   return data?.publicUrl||'';
 }
 
+
+async function loadStudioSnapshot(){
+  const {data,error}=await supabase.rpc('owner_creator_studio_snapshot');
+  if(error)return;
+  const w=data?.website||{},s=data?.social||{},d=data?.indm||{};
+  const libraryTotal=Number(w.published_member_posts||0)+Number(w.published_protected_media||0);
+  const reviewTotal=Number(w.media_waiting_review||0)+Number(w.autobot_waiting_review||0);
+  if($('#studioLibraryCount'))$('#studioLibraryCount').textContent=String(libraryTotal);
+  if($('#studioReviewCount'))$('#studioReviewCount').textContent=String(reviewTotal);
+  if($('#studioProductCount'))$('#studioProductCount').textContent=String(w.active_products||0);
+  if($('#studioCoverCount'))$('#studioCoverCount').textContent=String(w.active_covers||0);
+  if($('#reviewQueuePill'))$('#reviewQueuePill').textContent=reviewTotal?reviewTotal+' WAITING':'CLEAR';
+  const metricool=$('#metricoolState');
+  if(metricool){
+    const connected=Number(s.connected_platforms||0);
+    metricool.textContent=(String(s.executor||'').toLowerCase()==='metricool'?'Metricool':'Social')+' · '+connected+' connected';
+    metricool.classList.toggle('good',connected>0);
+  }
+  const indm=$('#indmState');
+  if(indm){
+    const state=String(d.status||'NOT_CONFIGURED');
+    const connected=state.includes('CONNECTED');
+    const pending=state.includes('PENDING');
+    indm.textContent=connected?(pending?'inDM · setup pending':'inDM · connected'):'inDM · not connected';
+    indm.classList.toggle('good',connected&&!pending);
+    indm.classList.toggle('warn',pending);
+  }
+}
+
 async function signedPreview(item){const {data}=await supabase.storage.from('protected-media').createSignedUrl(item.storage_path,300);return {...item,signed_url:data?.signedUrl||''};}
 function reviewMediaPreview(d){if(!d.signed_url)return '<div style="padding:28px;border:1px dashed rgba(255,255,255,.15);border-radius:14px;margin-bottom:12px">Media preview unavailable.</div>';if(d.media_kind==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(d.signed_url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin-bottom:12px"></video>';if(d.media_kind==='audio')return '<audio controls preload="metadata" src="'+escapeHtml(d.signed_url)+'" style="width:100%;margin-bottom:12px"></audio>';return '<img src="'+escapeHtml(d.signed_url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin-bottom:12px">';}
 function refreshProductMediaOptions(){
@@ -36,7 +65,7 @@ async function loadAutobotReview(){
   if(error){target.innerHTML=`<p class="memberEmpty">${escapeHtml(error.message)}</p>`;return;}
   const drafts=Array.isArray(data)?data:[];
   target.innerHTML=drafts.length?drafts.map(d=>`<article class="productCatalogCard"><div><span class="productState">Review</span><strong>${escapeHtml(d.title||'Draft')}</strong><small>Lane ${escapeHtml(String(d.lane_no||'—'))} · ${escapeHtml(d.lane_name||'Revenue objective')} · score ${escapeHtml(String(d.intelligence_score??0))}</small><p>${escapeHtml(d.body||'')}</p><p><small>${escapeHtml(d.reason||'Prepared by the intelligence autobot.')}</small></p></div><div class="heroButtons"><button class="heroButton approveAutoDraft" data-id="${escapeHtml(d.id)}" type="button">Approve</button><button class="heroButton archiveAutoDraft" data-id="${escapeHtml(d.id)}" type="button">Archive</button></div></article>`).join(''):'<p class="memberEmpty">No autobot drafts are waiting for review.</p>';
-  target.querySelectorAll('.approveAutoDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;setReviewStatus('Publishing approved draft…');const {error}=await supabase.rpc('owner_approve_autobot_draft',{p_post_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Draft approved and published.','success');await loadAutobotReview();}));
+  target.querySelectorAll('.approveAutoDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;setReviewStatus('Publishing approved draft…');const {error}=await supabase.rpc('owner_approve_autobot_draft',{p_post_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Draft approved and published.','success');await Promise.all([loadAutobotReview(),loadStudioSnapshot()]);}));
   target.querySelectorAll('.archiveAutoDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;const {error}=await supabase.rpc('owner_archive_autobot_draft',{p_post_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Draft archived.','success');await loadAutobotReview();}));
 }
 
@@ -47,8 +76,8 @@ async function loadMediaReview(){
   const drafts=Array.isArray(data)?data:[];
   const enriched=await Promise.all(drafts.map(async d=>{const {data:signed}=await supabase.storage.from('protected-media').createSignedUrl(d.storage_path,300);return {...d,signed_url:signed?.signedUrl||''};}));
   target.innerHTML=enriched.length?enriched.map(d=>`<article class="productCatalogCard"><div>${reviewMediaPreview(d)}<span class="productState">Review</span><strong>${escapeHtml(d.title||'Media draft')}</strong><small>${escapeHtml(d.media_kind||'media')} · rights: ${escapeHtml(d.rights_status||'missing')}</small><p>${escapeHtml(d.body||'')}</p></div><div class="heroButtons"><button class="heroButton approveMediaDraft" data-id="${escapeHtml(d.media_id)}" type="button">Approve</button><button class="heroButton archiveMediaDraft" data-id="${escapeHtml(d.media_id)}" type="button">Archive</button></div></article>`).join(''):'<p class="memberEmpty">No media drafts are waiting for review.</p>';
-  target.querySelectorAll('.approveMediaDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;setReviewStatus('Publishing approved media…');const {error}=await supabase.rpc('owner_approve_media_review',{p_media_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Media approved and published.','success');await Promise.all([loadMediaReview(),loadLibrary(),loadProducts()]);}));
-  target.querySelectorAll('.archiveMediaDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;const {error}=await supabase.rpc('owner_archive_media_review',{p_media_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Media draft archived.','success');await Promise.all([loadMediaReview(),loadLibrary()]);}));
+  target.querySelectorAll('.approveMediaDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;setReviewStatus('Publishing approved media…');const {error}=await supabase.rpc('owner_approve_media_review',{p_media_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Media approved and published.','success');await Promise.all([loadMediaReview(),loadLibrary(),loadProducts(),loadStudioSnapshot()]);}));
+  target.querySelectorAll('.archiveMediaDraft').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;const {error}=await supabase.rpc('owner_archive_media_review',{p_media_id:button.dataset.id});if(error){setReviewStatus(error.message,'error');button.disabled=false;return;}setReviewStatus('Media draft archived.','success');await Promise.all([loadMediaReview(),loadLibrary(),loadStudioSnapshot()]);}));
 }
 
 async function loadProducts(){
@@ -63,7 +92,7 @@ async function loadProducts(){
     const {error}=await supabase.rpc('owner_set_digital_product_active',{p_product_id:button.dataset.productId,p_active:next});
     if(error){setProductStatus(error.message,'error');button.disabled=false;return;}
     setProductStatus(next?'Product activated. Premium Drops checkout can now surface it.':'Product paused.','success');
-    await loadProducts();
+    await Promise.all([loadProducts(),loadStudioSnapshot()]);
   }));
   target.querySelectorAll('.archiveProduct').forEach(button=>button.addEventListener('click',async()=>{
     if(!confirm('Archive this draft? Historical orders stay intact, but the product will disappear from Creator Studio.'))return;
@@ -93,7 +122,7 @@ async function init(){
   session=await requireSession();wireSignOut();
   const {data:profile,error}=await supabase.from('member_profiles').select('is_admin').eq('user_id',session.user.id).single();
   if(error||!profile?.is_admin){location.href='/member/';return;}
-  await Promise.all([loadLibrary(),loadProducts(),loadCovers(),loadAutobotReview(),loadMediaReview()]);
+  await Promise.all([loadStudioSnapshot(),loadLibrary(),loadProducts(),loadCovers(),loadAutobotReview(),loadMediaReview()]);
 
   $('#publishForm').addEventListener('submit',async event=>{
     event.preventDefault();
@@ -115,7 +144,7 @@ async function init(){
       if(rightsError){setStudioStatus(`Published, but rights clearance could not be recorded: ${rightsError.message}`,'error');button.disabled=false;await Promise.all([loadLibrary(),loadMediaReview()]);return;}
     }
     setStudioStatus('Uploaded for review and commercial rights recorded. Nothing is live until you approve it above.','success');event.target.reset();
-    $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await loadLibrary();
+    $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await Promise.all([loadLibrary(),loadStudioSnapshot()]);
   });
 
   $('#coverForm')?.addEventListener('submit',async event=>{
@@ -136,7 +165,7 @@ async function init(){
     }
     const share=`https://itscamillemonroe.art${data?.share_path||'/cover/'}`;
     const verb=data?.action==='updated'?'updated':'created';
-    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover ${verb}: ${share}`,'success');await loadCovers();
+    event.target.reset();button.disabled=false;setCoverStatus(`Revenue cover ${verb}: ${share}`,'success');await Promise.all([loadCovers(),loadStudioSnapshot()]);
   });
 
   $('#productForm').addEventListener('submit',async event=>{
