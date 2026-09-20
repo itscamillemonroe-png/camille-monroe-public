@@ -70,8 +70,8 @@ export const CREATOR_OS_CONFIG = {
 
   backend: {
     // NEVER hard-code Camille production values here.
-    supabaseUrl: "https://YOUR_PROJECT.supabase.co",
-    supabasePublishableKey: "YOUR_PUBLISHABLE_KEY",
+    supabaseUrl: "https://gebaqosgncyboutsujcv.supabase.co",
+    supabasePublishableKey: "sb_publishable_6tMgtr5PGdyB8Yr4-AR4ow_-mssHwha",
     checkoutFunction: "create-checkout",
     telemetryFunction: "track-site-event",
   },
