@@ -51,7 +51,8 @@ function renderPlatforms(platforms=[]){
   }).join('')||'<p>No platforms configured.</p>';
 
   const select=$('#socialPlatform');
-  select.innerHTML=connected.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · connected</option>`).join('');
+  const draftable=[...connected,...officialExternal.filter(p=>p.studio_role==='official_external')];
+  select.innerHTML=draftable.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · ${p.connection_status==='connected'?'Metricool connected':'manual / external'}</option>`).join('');
 }
 
 function renderConfig(cfg={},counts={}){
@@ -143,7 +144,8 @@ function wirePostActions(){
     btn.disabled=true;setStatus('Approving draft for the Metricool flow…');
     const {data,error}=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
-    setStatus(data?.ready_to_schedule?'Approved and ready for the Metricool publishing lane.':'Approved, but that social account is not connected yet.','success');
+    const mode=data?.handoff_mode||'not_connected';
+    setStatus(mode==='metricool'?'Approved and ready for the Metricool publishing lane.':mode==='manual_external'?'Approved. This official platform uses the manual/external publishing lane until a connector is linked.':'Approved, but that platform is not connected yet.','success');
     await load();
   }));
   document.querySelectorAll('.archiveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
