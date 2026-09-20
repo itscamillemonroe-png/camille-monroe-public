@@ -7,8 +7,8 @@ const runtime = globalThis.CREATOR_OS_RUNTIME || {};
 
 export const appConfig = {
   brandName: runtime.brandName || 'Creator Private OS Demo',
-  supabaseUrl: runtime.supabaseUrl || 'https://demo-project.supabase.co',
-  supabasePublishableKey: runtime.supabasePublishableKey || 'demo-publishable-key',
+  supabaseUrl: runtime.supabaseUrl || 'https://gebaqosgncyboutsujcv.supabase.co',
+  supabasePublishableKey: runtime.supabasePublishableKey || 'sb_publishable_6tMgtr5PGdyB8Yr4-AR4ow_-mssHwha',
   checkoutFunction: runtime.checkoutFunction || 'create-checkout',
   telemetryFunction: runtime.telemetryFunction || 'track-site-event',
   attributionKey: runtime.attributionKey || 'creator_os_attribution_v1'
