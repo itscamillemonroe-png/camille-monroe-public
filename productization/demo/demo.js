@@ -69,3 +69,28 @@ document.querySelectorAll('[data-scroll]').forEach(button=>button.addEventListen
 document.querySelector('#closeDrawer').addEventListener('click',closeView);
 scrim.addEventListener('click',closeView);
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeView();});
+
+
+const DEMO_BACKEND='https://gebaqosgncyboutsujcv.supabase.co';
+const DEMO_KEY='sb_publishable_6tMgtr5PGdyB8Yr4-AR4ow_-mssHwha';
+
+async function loadLiveDemoSnapshot(){
+  const state=document.querySelector('#backendState');
+  try{
+    const response=await fetch(DEMO_BACKEND+'/rest/v1/rpc/creator_os_public_demo_snapshot',{
+      method:'POST',
+      headers:{'apikey':DEMO_KEY,'Content-Type':'application/json'},
+      body:'{}'
+    });
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const data=await response.json();
+    document.querySelector('#liveMembers').textContent=String(data.members??'—');
+    document.querySelector('#liveActiveMembers').textContent=String(data.active_members??'—');
+    document.querySelector('#liveOrders').textContent=String(data.paid_orders??'—');
+    document.querySelector('#liveRevenue').textContent=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(data.sample_revenue_cents)||0)/100);
+    state.textContent='Isolated demo backend connected · synthetic records only · live charges disabled.';
+  }catch(error){
+    state.textContent='Demo backend status unavailable. The presentation shell remains usable.';
+  }
+}
+loadLiveDemoSnapshot();
