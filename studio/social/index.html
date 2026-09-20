@@ -100,6 +100,25 @@
       </div>
     </section>
 
+    <section class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Live Metricool mirror</span><h2>What Metricool Currently Has</h2><p>This mirrors the latest verified Metricool schedule into Creator Studio so you can see what is sitting in the external publishing lane without leaving the workflow.</p></div>
+        <span id="metricoolMirrorFreshness" class="studioStatusPill">Sync pending</span>
+      </div>
+      <section class="studioSummary">
+        <article class="studioMetric"><span>Metricool Items</span><strong id="metricoolMirrorItems">—</strong><small>latest mirrored schedule records</small></article>
+        <article class="studioMetric"><span>Metricool Drafts</span><strong id="metricoolMirrorDrafts">—</strong><small>still marked draft externally</small></article>
+        <article class="studioMetric"><span>Auto-Publish</span><strong id="metricoolMirrorAuto">—</strong><small>items currently set to auto-publish</small></article>
+        <article class="studioMetric"><span>Next Planned</span><strong id="metricoolMirrorNext">—</strong><small>next future item in the mirror</small></article>
+      </section>
+      <div class="studioTableWrap">
+        <table class="studioTable">
+          <thead><tr><th>Planned</th><th>Networks</th><th>State</th><th>Auto</th><th>Post</th></tr></thead>
+          <tbody id="metricoolMirrorRows"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section id="drafts" class="studioSection">
       <div class="studioSectionHead">
         <div><span class="studioKicker">Review first</span><h2>Social Draft Queue</h2><p>Review the exact caption and media before approval. Approval prepares the item for the Metricool lane; it does not silently publish a new public post.</p></div>
