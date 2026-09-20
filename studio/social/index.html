@@ -8,7 +8,7 @@
   <title>Social Flow | Camille Monroe Creator Studio</title>
   <link rel="stylesheet" href="/assets/style.css?v=20260919-rev40">
   <link rel="stylesheet" href="/assets/ops-control.css?v=20260919-rev39">
-  <link rel="stylesheet" href="/assets/studio-control.css?v=20260919-rev40">
+  <link rel="stylesheet" href="/assets/studio-control.css?v=20260920-rev43">
 </head>
 <body data-page="studio-social">
   <nav class="nav">
@@ -134,11 +134,31 @@
       </div>
     </section>
 
-    <section id="drafts" class="studioSection">
-      <div class="studioSectionHead">
-        <div><span class="studioKicker">Review first</span><h2>Social Draft Queue</h2><p>Review the exact caption and media before approval. Approval prepares the item for the Metricool lane; it does not silently publish a new public post.</p></div>
+    <section id="drafts" class="studioSection socialDraftSection">
+      <div class="studioSectionHead socialDraftHead">
+        <div>
+          <span class="studioKicker">Your traffic posts</span>
+          <h2>Social Draft Queue</h2>
+          <p>Only posts that still need your approval show here. Read the copy, add media when needed, then approve or archive it.</p>
+        </div>
+        <div class="socialDraftCounts" aria-label="Draft queue summary">
+          <span><b id="draftNeedsMedia">—</b> need media</span>
+          <span><b id="draftReadyReview">—</b> ready to review</span>
+        </div>
       </div>
-      <div id="socialPostQueue" class="productCatalog"><p class="memberEmpty">Loading social drafts…</p></div>
+
+      <div class="socialDraftHow">
+        <div><b>1</b><span><strong>Read it</strong><small>Check the exact public wording.</small></span></div>
+        <div><b>2</b><span><strong>Add media</strong><small>Only when the card asks for a photo/video.</small></span></div>
+        <div><b>3</b><span><strong>Approve</strong><small>Approval moves it toward Metricool. It does not publish instantly.</small></span></div>
+      </div>
+
+      <div id="socialPostQueue" class="socialDraftQueue"><p class="memberEmpty">Loading social drafts…</p></div>
+
+      <details class="socialApprovedDetails">
+        <summary>Already approved / handed off <span id="approvedSocialCount">0</span></summary>
+        <div id="approvedSocialQueue" class="socialApprovedQueue"><p class="memberEmpty">Nothing approved yet.</p></div>
+      </details>
     </section>
 
     <section class="studioSection">
@@ -193,7 +213,7 @@
     </section>
   </main>
 
-  <script type="module" src="/assets/social-studio.js?v=20260920-rev41"></script>
+  <script type="module" src="/assets/social-studio.js?v=20260920-rev43"></script>
   <script src="/assets/analytics.js?v=20260919-rev39" defer></script>
 </body>
 </html>
