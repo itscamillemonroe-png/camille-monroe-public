@@ -55,3 +55,85 @@
 .studioTable th{color:#94876e;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:820px){.studioFlow{grid-template-columns:1fr 1fr}.studioFlowCard:nth-child(2):after{display:none}.studioSummary{grid-template-columns:1fr 1fr}.studioQuickGrid,.socialPlatformGrid,.studioGuideGrid{grid-template-columns:1fr}.studioHero{align-items:flex-start}.studioSection{padding:15px}.studioSectionHead h2{font-size:34px}}
 @media(max-width:520px){.studioFlow{grid-template-columns:1fr}.studioFlowCard:after{content:'↓';right:14px;top:auto;bottom:-15px;transform:none}.studioSummary{grid-template-columns:1fr 1fr}.studioMetric strong{font-size:25px}}
+
+
+/* REV42 — task-first, ADHD-friendly Creator Studio */
+.studioShellClean{max-width:1040px;padding-top:22px}
+.studioHeroClean{align-items:center;margin-bottom:18px;padding:4px 2px 2px}
+.studioHeroClean h1{font-size:clamp(46px,7vw,68px);margin-bottom:4px}
+.studioHeroLine{margin:0;color:#a99d86;font-size:15px;letter-spacing:.015em}
+.studioStart{margin:6px 0 12px;padding:18px;border:1px solid rgba(215,180,106,.2);border-radius:20px;background:linear-gradient(150deg,#120d10,#080808)}
+.studioStartHead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
+.studioStartHead h2{font-family:'Instrument Serif',Georgia,serif;font-size:34px;line-height:1;margin:4px 0 0;font-weight:400}
+.studioActionGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.studioActionCard{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;text-decoration:none;padding:14px;border:1px solid rgba(215,180,106,.14);border-radius:15px;background:#090909;min-width:0}
+.studioActionCard:hover,.studioActionCard:focus-visible{border-color:rgba(215,180,106,.5);outline:none;transform:translateY(-1px)}
+.studioActionCard.priority{background:linear-gradient(145deg,#1b1110,#0a0908);border-color:rgba(215,180,106,.3)}
+.studioActionCard>span{display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(215,180,106,.22);border-radius:50%;font-family:'Instrument Serif',serif;color:#d7b46a;font-size:18px}
+.studioActionCard strong{display:block;color:#f1deaa;font-size:13px}
+.studioActionCard small{display:block;color:#8f846e;font-size:10px;line-height:1.35;margin-top:2px}
+.studioActionCard small b{color:#f1deaa;font-weight:700}
+.studioActionCard i{font-style:normal;color:#d7b46a}
+.studioSummaryClean{margin:0 0 12px}
+.studioMetricLink{text-decoration:none}
+.studioMetricLink:hover{border-color:rgba(215,180,106,.45)}
+.studioGuideClean{margin:0 0 12px}
+.studioMiniFlow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:0 14px 14px;color:#a99d86;font-size:11px}
+.studioMiniFlow span{padding:7px 10px;border:1px solid rgba(215,180,106,.12);border-radius:999px;background:#090909}
+.studioMiniFlow b{color:#d7b46a;font-weight:400}
+.studioWorkSection{margin:10px 0 0;border:1px solid rgba(215,180,106,.18);border-radius:18px;background:linear-gradient(155deg,#0e0c0d,#070707);overflow:hidden}
+.studioWorkSummary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 17px;user-select:none}
+.studioWorkSummary::-webkit-details-marker{display:none}
+.studioWorkSummary>div{display:flex;align-items:center;gap:12px;min-width:0}
+.studioWorkSummary small{display:block;color:#8d816b;font-size:9px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px}
+.studioWorkSummary strong{display:block;color:#f2dfaa;font-family:'Instrument Serif',Georgia,serif;font-size:26px;font-weight:400;line-height:1}
+.studioWorkNo{display:grid;place-items:center;width:36px;height:36px;border:1px solid rgba(215,180,106,.22);border-radius:50%;color:#d7b46a;font-family:'Instrument Serif',serif;font-size:19px;flex:0 0 auto}
+.studioWorkSummary:after{content:'+';color:#d7b46a;font-size:20px;line-height:1;margin-left:3px}
+.studioWorkSection[open]>.studioWorkSummary:after{content:'−'}
+.studioWorkSection[open]>.studioWorkSummary{border-bottom:1px solid rgba(215,180,106,.11)}
+.studioWorkBody{padding:16px}
+.studioHelper{margin:0;color:#9f947d;font-size:12px;line-height:1.5}
+.studioSubsection{margin-top:12px;padding:14px;border:1px solid rgba(215,180,106,.1);border-radius:14px;background:#090909}
+.studioSubsection:first-of-type{margin-top:0}
+.studioSubhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:10px}
+.studioSubhead span{display:block;color:#8d816b;font-size:9px;text-transform:uppercase;letter-spacing:.12em}
+.studioSubhead strong{display:block;color:#f0dba8;font-size:15px;margin-top:2px}
+.studioSubhead>small{color:#7f755f;font-size:10px}
+.studioInlineAction{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.studioFormClean{margin-top:0;padding:15px;border-radius:14px;background:#080808}
+.studioFormClean textarea{min-height:76px}
+.studioCatalogClean{display:grid;gap:9px}
+.studioCatalogClean .productCatalogCard{padding:13px!important;border-radius:13px!important;background:#080808!important}
+.studioCatalogClean .productCatalogCard strong{font-size:16px}
+.studioCatalogClean .productCatalogCard p{font-size:12px;line-height:1.5;margin:6px 0}
+.studioCatalogClean .productCatalogCard small{font-size:10px;line-height:1.4}
+.studioCatalogClean .heroButtons{margin-top:10px}
+.studioCatalogClean .heroButton{min-height:38px;padding:8px 12px}
+.studioWorkBody .memberEmpty{padding:16px}
+.studioWorkBody .revenueCoverCard{margin-top:8px}
+@media(max-width:860px){
+  .studioActionGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .studioShellClean{width:min(100% - 16px,1040px);padding-top:14px}
+  .studioHeroClean{display:grid;gap:10px}
+  .studioHeroClean h1{font-size:48px}
+  .studioHeroLine{font-size:13px}
+  .studioActionGrid{grid-template-columns:1fr}
+  .studioStart{padding:14px}
+  .studioStartHead h2{font-size:29px}
+  .studioSummaryClean{grid-template-columns:1fr 1fr}
+  .studioMetric{padding:12px}
+  .studioMetric strong{font-size:24px}
+  .studioMetric small{font-size:10px}
+  .studioWorkSummary{padding:13px}
+  .studioWorkSummary strong{font-size:23px}
+  .studioWorkSummary>.studioStatusPill{display:none}
+  .studioWorkBody{padding:12px}
+  .studioInlineAction{display:grid;grid-template-columns:1fr}
+  .studioInlineAction .heroButton{width:100%}
+  .studioSubhead{align-items:flex-start}
+  .studioMiniFlow{gap:6px}
+  .studioMiniFlow b{display:none}
+  .studioMiniFlow span{font-size:10px}
+}
