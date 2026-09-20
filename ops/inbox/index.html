@@ -39,7 +39,8 @@
     <section class="opsSummary inboxSummary">
       <a class="opsStat inboxJump" href="#access"><span>New Member Requests</span><strong id="accessCount">—</strong><small>approve or deny</small></a>
       <a class="opsStat inboxJump" href="#membership-status"><span>Approved / Waiting Payment</span><strong id="waitingPaymentCount">—</strong><small>approved but not active</small></a>
-      <a class="opsStat inboxJump" href="#membership-status"><span>Active Paid Members</span><strong id="activePaidCount">—</strong><small>membership currently active</small></a>
+      <a class="opsStat inboxJump" href="#membership-status"><span>Active Paid Members</span><strong id="activePaidCount">—</strong><small>verified paid membership</small></a>
+      <a class="opsStat inboxJump" href="#membership-status"><span>Active Access · No Paid Record</span><strong id="unverifiedAccessCount">—</strong><small>manual/test/unreconciled access</small></a>
       <a class="opsStat inboxJump" href="#creator"><span>Creator Approvals</span><strong id="creatorCount">—</strong><small>media + AI drafts</small></a>
       <a class="opsStat inboxJump" href="#tasks"><span>Work To Finish</span><strong id="taskCount">—</strong><small>work queue</small></a>
     </section>
@@ -59,7 +60,9 @@
       <div class="inboxSubhead"><h3>Approved · waiting for payment</h3></div>
       <div id="waitingPaymentMembers" class="inboxGrid"><p class="memberEmpty">Loading approved members…</p></div>
       <div class="inboxSubhead"><h3>Active paid members</h3></div>
-      <div id="activePaidMembers" class="inboxGrid"><p class="memberEmpty">Loading active members…</p></div>
+      <div id="activePaidMembers" class="inboxGrid"><p class="memberEmpty">Loading active paid members…</p></div>
+      <div class="inboxSubhead"><h3>Active access without a verified paid order</h3></div>
+      <div id="unverifiedAccessMembers" class="inboxGrid"><p class="memberEmpty">Loading access records…</p></div>
       <div class="inboxSubhead"><h3>Expired membership</h3></div>
       <div id="expiredMembers" class="inboxGrid"><p class="memberEmpty">Loading expired members…</p></div>
     </section>
@@ -69,6 +72,8 @@
         <div><p class="eyebrow">Creator Studio</p><h2>Creator Approvals</h2><p>Review AI copy drafts and protected photo/video/audio media before anything goes live.</p></div>
         <a class="heroButton" href="/studio/">Open Creator Studio</a>
       </div>
+      <div class="inboxSubhead"><h3>Social Studio drafts</h3></div>
+      <div id="socialApprovals" class="inboxGrid"><p class="memberEmpty">Loading social approvals…</p></div>
       <div class="inboxSubhead"><h3>Media drafts</h3></div>
       <div id="mediaApprovals" class="inboxGrid"><p class="memberEmpty">Loading media approvals…</p></div>
       <div class="inboxSubhead"><h3>AI copy drafts</h3></div>
