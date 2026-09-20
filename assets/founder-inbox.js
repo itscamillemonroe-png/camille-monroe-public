@@ -29,6 +29,8 @@ function renderCounts(c){
   const creator=(Number(c.autobot_approvals)||0)+(Number(c.media_approvals)||0);
   const total=(Number(c.access_requests)||0)+creator+(Number(c.tasks)||0);
   $('#accessCount').textContent=String(c.access_requests||0);
+  if($('#waitingPaymentCount'))$('#waitingPaymentCount').textContent=String(c.approved_waiting_payment||0);
+  if($('#activePaidCount'))$('#activePaidCount').textContent=String(c.active_paid_members||0);
   $('#creatorCount').textContent=String(creator);
   $('#taskCount').textContent=String(c.tasks||0);
   $('#inboxTotal').textContent=total?String(total)+' WAITING':'CLEAR';
@@ -76,6 +78,21 @@ async function decideAccess(btn,decision){
   const q=await supabase.functions.invoke('manual-member-approval',{body:{action:'decide',user_id:btn.dataset.id,decision}});
   if(q.error||q.data?.error){setStatus(q.data?.error||q.error?.message||'Access decision failed.','error');btn.disabled=false;return;}
   setStatus(q.data?.message||'Access request updated.','success');await load();
+}
+function memberStatusCard(m,state){
+  const name=escapeHtml(m.full_name||'Unnamed member');
+  const email=escapeHtml(m.email||'');
+  let stateText='Approved · waiting for payment',detail='Member access is still closed until a membership payment activates access.';
+  if(state==='active'){stateText='ACTIVE PAID MEMBER';detail=m.access_until?'Access through '+escapeHtml(prettyDate(m.access_until)):'Membership active';}
+  if(state==='expired'){stateText='EXPIRED';detail=m.access_until?'Expired '+escapeHtml(prettyDate(m.access_until)):'Membership expired';}
+  return '<article class="productCatalogCard"><div><span class="productState '+(state==='active'?'active':'')+'">'+stateText+'</span><strong>'+name+'</strong><small>'+email+'</small><p>'+detail+'</p></div></article>';
+}
+function renderMemberStatus(data){
+  const waiting=data.approved_waiting_payment||[],active=data.active_paid_members||[],expired=data.expired_members||[];
+  const waitingTarget=$('#waitingPaymentMembers'),activeTarget=$('#activePaidMembers'),expiredTarget=$('#expiredMembers');
+  if(waitingTarget)waitingTarget.innerHTML=waiting.length?waiting.map(m=>memberStatusCard(m,'waiting')).join(''):'<p class="inboxEmpty">No approved members are waiting for payment.</p>';
+  if(activeTarget)activeTarget.innerHTML=active.length?active.map(m=>memberStatusCard(m,'active')).join(''):'<p class="inboxEmpty">No active paid members yet.</p>';
+  if(expiredTarget)expiredTarget.innerHTML=expired.length?expired.map(m=>memberStatusCard(m,'expired')).join(''):'<p class="inboxEmpty">No expired memberships.</p>';
 }
 function socialCard(p){
   const requires=['photo','video','story'].includes(p.content_type);
@@ -171,6 +188,7 @@ async function load(){
   const media=await enrichMedia(data.media_drafts||[]);
   renderCounts(data.counts||{});
   renderAccess(access);
+  renderMemberStatus(data);
   renderAutobot(data.autobot_drafts||[]);
   renderMedia(media);
   renderTasks(data.tasks||[]);
