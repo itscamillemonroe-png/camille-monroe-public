@@ -68,3 +68,20 @@ Retain:
 
 ## Production protection rule
 No productization work may rewire the live Camille stack, change production auth, change production payments, replace the Supabase project, replace the repository, or publish public changes without explicit founder approval.
+
+
+## Demo backend status — 2026-09-20
+
+A clean isolated Supabase project now exists for the sales/demo environment.
+
+- Project: Creator Private OS Demo
+- Project ref: `gebaqosgncyboutsujcv`
+- Region: `us-east-1`
+- No Camille members, messages, media, transactions or private analytics were copied.
+- Core reusable schema is installed for profiles, approvals, memberships, wallets, credits, messaging, voice-call holds/refunds, member content, demo products/orders, notifications, content tasks and traffic.
+- Storage buckets are isolated.
+- Deployed demo Edge Functions: `track-site-event`, `manual-member-approval`, `member-media`, `create-checkout`.
+- `create-checkout` is a non-billable DEMO simulator. It can create synthetic paid orders for an approved demo account; it does not connect to Camille Stripe/NOWPayments or collect money.
+- Video calls remain retired from the baseline.
+- Owner-only RPCs verify owner status before returning operational data.
+- Public demo metrics are clearly labeled synthetic/illustrative.
