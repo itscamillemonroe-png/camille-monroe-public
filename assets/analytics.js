@@ -2,8 +2,8 @@
   // Productization branch: telemetry is OFF unless an isolated deployment
   // explicitly injects CREATOR_OS_RUNTIME with its own endpoint + public key.
   const runtime=globalThis.CREATOR_OS_RUNTIME||{};
-  const endpoint=runtime.telemetryEndpoint||'';
-  const apikey=runtime.supabasePublishableKey||'';
+  const endpoint=runtime.telemetryEndpoint||'https://gebaqosgncyboutsujcv.supabase.co/functions/v1/track-site-event';
+  const apikey=runtime.supabasePublishableKey||'sb_publishable_6tMgtr5PGdyB8Yr4-AR4ow_-mssHwha';
   const attrKey=runtime.attributionKey||'creator_os_attribution_v1';
   const visitorKey='creator_os_visitor_id_v1';
   const sessionKey='creator_os_session_id_v1';
