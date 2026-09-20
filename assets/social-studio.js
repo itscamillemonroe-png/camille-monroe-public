@@ -4,7 +4,15 @@ let snapshot={};
 let session;
 const safeName=name=>String(name||'upload').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'upload';
 async function signedSocial(path){if(!path)return '';const {data,error}=await supabase.storage.from('social-draft-media').createSignedUrl(path,1800);return error?'':(data?.signedUrl||'');}
-function socialMediaPreview(p){const url=p.preview_url||'';if(!url)return '<div style="margin:12px 0;padding:34px 14px;border:1px dashed rgba(255,255,255,.16);border-radius:14px;text-align:center;color:#aaa">Media not attached yet.</div>';const type=String(p.media_mime_type||'').toLowerCase();if(type.startsWith('video/'))return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';if(type.startsWith('image/'))return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';if(p.content_type==='video')return '<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0"></video>';return '<img src="'+escapeHtml(url)+'" alt="" style="width:100%;max-height:620px;object-fit:contain;border-radius:14px;background:#080808;margin:12px 0">';}
+function socialMediaPreview(p){
+  const url=p.preview_url||'';
+  if(!url)return '';
+  const type=String(p.media_mime_type||'').toLowerCase();
+  if(type.startsWith('video/')||p.content_type==='video'){
+    return '<div class="socialDraftMedia"><video controls playsinline preload="metadata" src="'+escapeHtml(url)+'"></video></div>';
+  }
+  return '<div class="socialDraftMedia"><img src="'+escapeHtml(url)+'" alt=""></div>';
+}
 const setStatus=(text,type='')=>{const el=$('#socialStatus');if(!el)return;el.textContent=text;el.className='opsStatus '+type;};
 const setDraftStatus=(text,type='')=>{const el=$('#draftStatus');if(!el)return;el.textContent=text;el.className='formStatus '+type;};
 
@@ -103,8 +111,10 @@ function renderDistributionFlow(data={}){
   }).join(''):'<tr><td colspan="5">No mirrored Metricool items in the current window.</td></tr>';
 }
 
+function draftNeedsMedia(p){
+  return ['photo','video','story'].includes(p.content_type)&&!p.preview_url;
+}
 function postCard(p){
-  const canReview=p.status==='draft';
   const requiresMedia=['photo','video','story'].includes(p.content_type);
   const hasMedia=Boolean(p.preview_url);
   const type=String(p.media_mime_type||'').toLowerCase();
@@ -113,28 +123,69 @@ function postCard(p){
     (p.content_type==='photo'&&type.startsWith('image/'))||
     (p.content_type==='video'&&type.startsWith('video/'))||
     (p.content_type==='story'&&(type.startsWith('image/')||type.startsWith('video/')));
-  const mediaMismatch=hasMedia&&requiresMedia&&!mediaCompatible?'<p><small>The attached file does not match this post type. Replace it with the exact '+escapeHtml(p.content_type)+' media before approval.</small></p>':'';
-  const note=p.publish_error?'<p><small>'+escapeHtml(p.publish_error)+'</small></p>':'';
-  let attach='';
-  if(canReview&&requiresMedia&&(!hasMedia||!mediaCompatible)){
-    attach='<label style="display:block;margin:12px 0">Attach exact media<input class="socialCardMediaFile" data-id="'+escapeHtml(p.id)+'" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"></label><button class="heroButton attachSocialCardMedia" data-id="'+escapeHtml(p.id)+'" type="button">Attach Media</button>';
-  }
-  return `<article class="productCatalogCard">
-    <div style="width:100%">
-      <span class="productState ${p.status==='published'?'active':''}">${escapeHtml(String(p.status||'draft').toUpperCase())}</span>
-      <strong>${escapeHtml(p.title||'Social draft')}</strong>
-      <small>${escapeHtml(p.platform||'')} · ${escapeHtml(p.content_type||'post')} · approval: ${escapeHtml(p.approval_status||'pending')} · publish: ${escapeHtml(p.publish_status||'not submitted')}</small>
-      ${socialMediaPreview(p)}
-      <p style="white-space:pre-wrap;line-height:1.55">${escapeHtml(p.caption||'')}</p>
-      ${mediaMismatch}
-      ${p.media_note?'<p><small>'+escapeHtml(p.media_note)+'</small></p>':''}
-      ${attach}${note}
+  const needsMedia=requiresMedia&&(!hasMedia||!mediaCompatible);
+  const stateLabel=needsMedia?'NEEDS MEDIA':'READY TO REVIEW';
+  const stateClass=needsMedia?'needs':'ready';
+  const planned=p.scheduled_for?prettyDate(p.scheduled_for):'No planned time';
+  const mediaMismatch=hasMedia&&requiresMedia&&!mediaCompatible
+    ?'<div class="socialDraftAlert">That file does not match this '+escapeHtml(p.content_type)+' post. Replace it before approval.</div>'
+    :'';
+  const error=p.publish_error
+    ?'<div class="socialDraftAlert">'+escapeHtml(p.publish_error)+'</div>'
+    :'';
+  const direction=p.media_note
+    ?'<div class="socialDraftDirection"><span>MEDIA DIRECTION</span><p>'+escapeHtml(p.media_note)+'</p></div>'
+    :'';
+  const attach=needsMedia
+    ?'<div class="socialDraftAttach"><label><span>ADD THE '+escapeHtml(String(p.content_type||'media').toUpperCase())+'</span><input class="socialCardMediaFile" data-id="'+escapeHtml(p.id)+'" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"></label><button class="heroButton attachSocialCardMedia" data-id="'+escapeHtml(p.id)+'" type="button">Attach Media</button></div>'
+    :'';
+  return `<article class="socialDraftCard">
+    <header class="socialDraftCardHead">
+      <div class="socialDraftBadges">
+        <span class="socialPlatformBadge">${escapeHtml(p.platform||'Social')}</span>
+        <span class="socialReviewBadge ${stateClass}">${stateLabel}</span>
+      </div>
+      <time>${escapeHtml(planned)}</time>
+    </header>
+
+    <h3>${escapeHtml(p.title||'Social draft')}</h3>
+
+    <div class="socialDraftCopy">
+      <span>PUBLIC POST COPY</span>
+      <p>${escapeHtml(p.caption||'')}</p>
     </div>
-    <div class="heroButtons">
-      ${canReview?'<button class="heroButton approveSocial" data-id="'+escapeHtml(p.id)+'" type="button" '+((!requiresMedia||(hasMedia&&mediaCompatible))?'':'disabled')+'>Approve</button><button class="heroButton archiveSocial" data-id="'+escapeHtml(p.id)+'" type="button">Archive</button>':''}
-      ${p.status==='ready'?'<span class="opsPill">READY FOR METRICOOL</span>':''}
-      ${p.external_post_url?'<a class="heroButton" href="'+escapeHtml(p.external_post_url)+'" target="_blank" rel="noopener">Open Post</a>':''}
+
+    ${socialMediaPreview(p)}
+    ${direction}
+    ${mediaMismatch}
+    ${attach}
+    ${error}
+
+    <details class="socialDraftMeta">
+      <summary>Post details</summary>
+      <div>
+        <span><b>Format</b> ${escapeHtml(p.content_type||'post')}</span>
+        <span><b>Campaign</b> ${escapeHtml(p.campaign||'—')}</span>
+      </div>
+    </details>
+
+    <footer class="socialDraftActions">
+      <button class="heroButton primary approveSocial" data-id="${escapeHtml(p.id)}" type="button" ${needsMedia?'disabled':''}>Approve Post</button>
+      <button class="heroButton archiveSocial" data-id="${escapeHtml(p.id)}" type="button">Archive</button>
+    </footer>
+  </article>`;
+}
+
+function approvedCard(p){
+  const planned=p.scheduled_for?prettyDate(p.scheduled_for):'No planned time';
+  const status=p.status==='scheduled'?'SCHEDULED':p.status==='published'?'PUBLISHED':'APPROVED';
+  return `<article class="socialApprovedCard">
+    <div>
+      <span>${escapeHtml(p.platform||'Social')} · ${escapeHtml(status)}</span>
+      <strong>${escapeHtml(p.title||'Social post')}</strong>
+      <small>${escapeHtml(planned)}</small>
     </div>
+    ${p.external_post_url?'<a class="heroButton" href="'+escapeHtml(p.external_post_url)+'" target="_blank" rel="noopener">Open Post</a>':''}
   </article>`;
 }
 
@@ -161,7 +212,25 @@ async function attachCardMedia(btn){const input=document.querySelector('.socialC
 
 function renderPosts(posts=[]){
   const visible=posts.filter(p=>p.status!=='archived');
-  $('#socialPostQueue').innerHTML=visible.length?visible.map(postCard).join(''):'<p class="memberEmpty">No social drafts are waiting.</p>';
+  const drafts=visible.filter(p=>p.status==='draft');
+  const approved=visible.filter(p=>p.status!=='draft');
+
+  const needs=drafts.filter(draftNeedsMedia).length;
+  const ready=drafts.length-needs;
+  if($('#draftNeedsMedia'))$('#draftNeedsMedia').textContent=String(needs);
+  if($('#draftReadyReview'))$('#draftReadyReview').textContent=String(ready);
+  if($('#approvedSocialCount'))$('#approvedSocialCount').textContent=String(approved.length);
+
+  $('#socialPostQueue').innerHTML=drafts.length
+    ?drafts.map(postCard).join('')
+    :'<p class="memberEmpty">You have no social drafts waiting for approval.</p>';
+
+  const approvedTarget=$('#approvedSocialQueue');
+  if(approvedTarget){
+    approvedTarget.innerHTML=approved.length
+      ?approved.map(approvedCard).join('')
+      :'<p class="memberEmpty">Nothing has been approved or handed off yet.</p>';
+  }
   wirePostActions();
 }
 
