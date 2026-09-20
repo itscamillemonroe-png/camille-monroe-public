@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-19T16:53:00.202Z",
+  "updatedAt": "2026-09-20T17:05:50.846Z",
   "posts": [
+    {
+      "id": "member-preview",
+      "category": "Members",
+      "title": "A little preview of what’s next",
+      "body": "I’m preparing fresh photos, personal updates, and closer moments for members. The public feed gets the hint; the private side gets the full story.",
+      "cta": "Join the private side",
+      "href": "/login/",
+      "publishedAt": "2026-09-20T17:05:50.846Z"
+    },
     {
       "id": "soft-checkin",
       "category": "Check-in",
