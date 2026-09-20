@@ -141,10 +141,10 @@ async function init(){
     const mediaId=published?.media_id;
     if(mediaId&&$('#rightsConfirm').checked){
       const {error:rightsError}=await supabase.rpc('owner_confirm_asset_rights',{p_media_id:mediaId,p_rights_status:'owned',p_rights_basis:'Owner confirmed original/controlled commercial rights at upload',p_commercial_use_allowed:true,p_creator_or_licensor:'Camille Monroe',p_evidence_reference:null,p_notes:'Confirmed in Creator Studio upload flow'});
-      if(rightsError){setStudioStatus(`Published, but rights clearance could not be recorded: ${rightsError.message}`,'error');button.disabled=false;await Promise.all([loadLibrary(),loadMediaReview()]);return;}
+      if(rightsError){setStudioStatus(`Uploaded for review, but rights clearance could not be recorded: ${rightsError.message}`,'error');button.disabled=false;await Promise.all([loadLibrary(),loadMediaReview(),loadStudioSnapshot()]);return;}
     }
     setStudioStatus('Uploaded for review and commercial rights recorded. Nothing is live until you approve it above.','success');event.target.reset();
-    $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await Promise.all([loadLibrary(),loadStudioSnapshot()]);
+    $('#uploadProgress span').style.width='100%';setTimeout(()=>{$('#uploadProgress').hidden=true;$('#uploadProgress span').style.width='0';},800);button.disabled=false;await Promise.all([loadLibrary(),loadMediaReview(),loadStudioSnapshot()]);
   });
 
   $('#coverForm')?.addEventListener('submit',async event=>{
