@@ -57,7 +57,7 @@ function renderConfig(cfg={},counts={}){
 }
 
 function renderDistributionFlow(data={}){
-  const social=data.social||{},indm=data.indm||{};
+  const social=data.social||{},indm=data.indm||{},mirror=social.metricool_mirror||{};
   const metricDetail=$('#metricoolDetail');
   if(metricDetail)metricDetail.textContent=(social.metricool_brand_id?'brand '+social.metricool_brand_id+' · ':'')+(social.connected_platforms||0)+' connected platforms';
   if($('#socialMetricRows'))$('#socialMetricRows').textContent=String(social.metric_rows||0);
@@ -67,6 +67,19 @@ function renderDistributionFlow(data={}){
   const connected=state.includes('CONNECTED'),pending=state.includes('PENDING');
   if($('#indmFlowState'))$('#indmFlowState').textContent=connected?(pending?'SETUP PENDING':'CONNECTED'):'NOT CONNECTED';
   if($('#websiteReturnState'))$('#websiteReturnState').textContent='ACTIVE';
+
+  if($('#metricoolMirrorItems'))$('#metricoolMirrorItems').textContent=String(mirror.items||0);
+  if($('#metricoolMirrorDrafts'))$('#metricoolMirrorDrafts').textContent=String(mirror.draft_items||0);
+  if($('#metricoolMirrorAuto'))$('#metricoolMirrorAuto').textContent=String(mirror.auto_publish_items||0);
+  const next=Array.isArray(mirror.next_posts)?mirror.next_posts:[];
+  if($('#metricoolMirrorNext'))$('#metricoolMirrorNext').textContent=next[0]?.publication_at?prettyDate(next[0].publication_at):'—';
+  if($('#metricoolMirrorFreshness'))$('#metricoolMirrorFreshness').textContent=mirror.last_synced_at?'Synced '+prettyDate(mirror.last_synced_at):'Sync pending';
+  if($('#metricoolMirrorRows'))$('#metricoolMirrorRows').innerHTML=next.length?next.map(p=>{
+    const networks=(p.networks||[]).join(', ')||'—';
+    const statuses=(p.provider_statuses||[]).join(', ')||'—';
+    const copy=String(p.post_text||'').length>150?String(p.post_text).slice(0,147)+'…':String(p.post_text||'');
+    return `<tr><td>${p.publication_at?escapeHtml(prettyDate(p.publication_at)):'—'}</td><td>${escapeHtml(networks)}</td><td>${escapeHtml(statuses)}${p.is_draft?' · DRAFT':''}</td><td>${p.auto_publish?'Yes':'No'}</td><td>${escapeHtml(copy||'—')}</td></tr>`;
+  }).join(''):'<tr><td colspan="5">No mirrored Metricool items in the current window.</td></tr>';
 }
 
 function postCard(p){
