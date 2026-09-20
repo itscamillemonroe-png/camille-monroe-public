@@ -16,31 +16,42 @@ async function requireOwner(){
   return session;
 }
 
-function pill(status){
-  const s=String(status||'not_connected');
+function pill(status,role){
+  const s=String(status||'not_connected'),r=String(role||'candidate');
   if(s==='connected')return '<span class="opsPill">CONNECTED</span>';
+  if(r==='external_destination')return '<span class="opsPill">EXTERNAL DESTINATION</span>';
+  if(r==='official_external')return '<span class="opsPill">OFFICIAL LINK</span>';
   if(s==='expired'||s==='error')return '<span class="opsPill">ATTENTION</span>';
-  return '<span class="opsPill">STAGED</span>';
+  return '<span class="opsPill">NOT CONNECTED</span>';
 }
 
 function renderPlatforms(platforms=[]){
   const connected=platforms.filter(p=>p.connection_status==='connected');
+  const officialExternal=platforms.filter(p=>['official_external','external_destination'].includes(String(p.studio_role||'')));
   $('#connectedCount').textContent=String(connected.length);
+  if($('#officialExternalCount'))$('#officialExternalCount').textContent=String(officialExternal.length);
   const target=$('#platformGrid');
-  target.innerHTML=platforms.map(p=>`
+  target.innerHTML=platforms.map(p=>{
+    const timing=Array.isArray(p.best_hours)&&p.best_hours.length
+      ?'Best test times: '+p.best_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · ')+' · '+(p.timing_source==='metricool'?'Metricool':'shared timing')
+      :(p.connection_status==='connected'?'Timing intelligence not available yet':'Not in the active Metricool publishing connection');
+    const profile=p.external_url?'<small><a href="'+escapeHtml(p.external_url)+'" target="_blank" rel="noopener">Open official profile ↗</a></small>':'';
+    const note=p.notes?'<small>'+escapeHtml(p.notes)+'</small>':'';
+    return `
     <article class="opsLane">
       <span class="opsLaneNo">${escapeHtml((p.platform||'?').slice(0,2).toUpperCase())}</span>
       <div>
         <strong>${escapeHtml(p.platform||'Platform')}</strong>
-        <small>${escapeHtml(p.account_label|| (p.connection_status==='connected'?'Connected':'Ready to connect'))}</small>
-        <small>${Array.isArray(p.best_hours)&&p.best_hours.length?'Best: '+p.best_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · ')+' · '+(p.timing_source==='metricool'?'Metricool':'shared default'):'Timing intelligence not available yet'}</small>
+        <small>${escapeHtml(p.account_label|| (p.connection_status==='connected'?'Connected account':'No verified working account in this flow'))}</small>
+        <small>${escapeHtml(timing)}</small>
+        ${note}${profile}
       </div>
-      <b>${pill(p.connection_status)}</b>
-    </article>`).join('')||'<p>No platforms configured.</p>';
+      <b>${pill(p.connection_status,p.studio_role)}</b>
+    </article>`;
+  }).join('')||'<p>No platforms configured.</p>';
 
   const select=$('#socialPlatform');
-  const available=connected.length?connected:platforms;
-  select.innerHTML=available.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · ${p.connection_status==='connected'?'connected':'staged'}</option>`).join('');
+  select.innerHTML=connected.map(p=>`<option value="${escapeHtml(p.platform)}">${escapeHtml(p.platform)} · connected</option>`).join('');
 }
 
 function renderConfig(cfg={},counts={}){
@@ -49,7 +60,7 @@ function renderConfig(cfg={},counts={}){
   $('#draftTarget').textContent=String(cfg.drafts_per_day??0);
   $('#postingHours').textContent=Array.isArray(cfg.posting_hours)?cfg.posting_hours.map(h=>String(h).padStart(2,'0')+':00').join(' · '):'—';
   $('#executorName').textContent=String(cfg.executor||'metricool').toUpperCase();
-  $('#taskCount').textContent=String(counts.content_tasks??0);
+  $('#taskCount').textContent=String(counts.content_tasks??0)+' open';
   $('#draftCount').textContent=String(counts.drafts??0);
   $('#readyCount').textContent=String(counts.ready??0);
   $('#publishedCount').textContent=String(counts.published??0);
