@@ -118,8 +118,16 @@ async function loadCovers(){
   target.querySelectorAll('.copyCoverLink').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.url||'');setCoverStatus('Share link copied.','success');}catch{setCoverStatus('Open the link and copy it from the address bar.','error');}}));
 }
 
+function openHashSection(){
+  const id=(location.hash||'').replace('#','');
+  if(!id)return;
+  const section=document.getElementById(id);
+  if(section?.tagName==='DETAILS')section.open=true;
+}
+window.addEventListener('hashchange',openHashSection);
+
 async function init(){
-  session=await requireSession();wireSignOut();
+  session=await requireSession();wireSignOut();openHashSection();
   const {data:profile,error}=await supabase.from('member_profiles').select('is_admin').eq('user_id',session.user.id).single();
   if(error||!profile?.is_admin){location.href='/member/';return;}
   await Promise.all([loadStudioSnapshot(),loadLibrary(),loadProducts(),loadCovers(),loadAutobotReview(),loadMediaReview()]);
