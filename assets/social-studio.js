@@ -179,6 +179,8 @@ function renderJobs(jobs=[]){
 
 async function load(){
   setStatus('Updating the social distribution flow…');
+  const {error:reconcileError}=await supabase.rpc('owner_reconcile_metricool_mirror');
+  if(reconcileError)throw reconcileError;
   const [{data,error},{data:creator,error:creatorError}]=await Promise.all([
     supabase.rpc('owner_social_studio_snapshot'),
     supabase.rpc('owner_creator_studio_snapshot')
