@@ -78,6 +78,21 @@
     <div id="socialStatus" class="opsStatus"></div>
     <div class="socialFlowNote"><strong>Current rule:</strong> Public content stays review-first. Metricool handles the publishing lane. inDM is engagement-triggered only. Nothing here authorizes cold DMs or bypasses your approval requirement.</div>
 
+    <section class="studioSection">
+      <div class="studioSectionHead">
+        <div><span class="studioKicker">Integration health</span><h2>How the Three Systems Talk</h2><p>This shows what is truly connected versus what is an external handoff. It does not label a service “live” unless we can verify the connection.</p></div>
+        <span class="studioStatusPill">No fake connections</span>
+      </div>
+      <section class="studioSummary">
+        <article class="studioMetric"><span>Website → Metricool</span><strong id="metricoolBridgeState">—</strong><small>approved-post handoff + mirrored schedule</small></article>
+        <article class="studioMetric"><span>Matched Metricool Jobs</span><strong id="metricoolMatchedJobs">—</strong><small>Camille records matched to Metricool items</small></article>
+        <article class="studioMetric"><span>Approved / Not Handed Off</span><strong id="metricoolUnmatchedReady">—</strong><small>approved items still waiting for Metricool</small></article>
+        <article class="studioMetric"><span>inDM → Website</span><strong id="indmBridgeState">—</strong><small>engagement-triggered DM return tracking</small></article>
+      </section>
+      <div class="socialFlowNote"><strong>inDM tracked return link:</strong> <span id="indmTrackedLink">Loading…</span> <button id="copyIndmLink" class="heroButton" type="button">Copy Link</button></div>
+      <p id="integrationNote" class="serviceLead"></p>
+    </section>
+
     <section id="platforms" class="studioSection">
       <div class="studioSectionHead">
         <div><span class="studioKicker">Connections</span><h2>All Working & Available Platforms</h2><p>Connected publishers appear first. Official working profiles that sit outside Metricool are kept here too, so they are not lost from the operating picture. Unused candidates stay clearly marked as not connected.</p></div>
@@ -178,7 +193,7 @@
     </section>
   </main>
 
-  <script type="module" src="/assets/social-studio.js?v=20260919-rev40"></script>
+  <script type="module" src="/assets/social-studio.js?v=20260919-rev40b"></script>
   <script src="/assets/analytics.js?v=20260919-rev39" defer></script>
 </body>
 </html>
