@@ -25,10 +25,11 @@ async function loginPage(){
   $('#signupForm')?.addEventListener('submit',async(e)=>{
     e.preventDefault();const button=e.currentTarget.querySelector('[type="submit"]');button.disabled=true;setStatus('Creating your request…');
     try{
-      const full_name=$('#signupName').value.trim(),email=$('#signupEmail').value.trim(),password=$('#signupPassword').value,file=$('#profilePhoto').files[0];
+      const full_name=$('#signupName').value.trim(),email=$('#signupEmail').value.trim(),password=$('#signupPassword').value,file=$('#profilePhoto').files[0],ageConfirmed=Boolean($('#signupAge')?.checked);
+      if(!ageConfirmed)throw new Error('You must confirm that you are 18 or older.');
       if(!file)throw new Error('A profile picture is required to request access.');
       if(!ALLOWED_PHOTO_TYPES.has(file.type)||file.size>8*1024*1024)throw new Error('Use a JPG, PNG, or WebP picture smaller than 8 MB.');
-      const attribution=captureAttribution();const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name,attribution},emailRedirectTo:'https://itscamillemonroe.art/login/'}});
+      const attribution=captureAttribution();const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name,age_confirmed:true,attribution},emailRedirectTo:'https://itscamillemonroe.art/login/'}});
       if(error)throw error;
       if(data.session){await uploadProfilePhoto(data.user,file);location.href='/member/';return;}
       setStatus('Account created. Confirm your email, sign in, then upload the required profile picture to finish your request.','success');
@@ -45,6 +46,20 @@ function renderPosts(posts){
 }
 
 function mediaElement(item){if(item.media_kind==='video')return `<video controls playsinline preload="metadata" src="${escapeHtml(item.signed_url)}"></video>`;if(item.media_kind==='audio')return `<audio controls preload="metadata" src="${escapeHtml(item.signed_url)}"></audio>`;return `<img loading="lazy" src="${escapeHtml(item.signed_url)}" alt="${escapeHtml(item.title)}">`;}
+function lockMemberServices(active,approved,admin){
+  if(admin||active)return;
+  const gated=['/messages/','/calls/?type=voice','/lane/premium-drops/','/lane/support/'];
+  document.querySelectorAll('.memberServices a.serviceCard').forEach(card=>{
+    const href=card.getAttribute('href')||'';
+    if(gated.includes(href)){
+      card.classList.add('lockedService');
+      card.setAttribute('aria-disabled','true');
+      card.addEventListener('click',event=>event.preventDefault());
+      const small=card.querySelector('small');
+      if(small)small.textContent=approved?'Activate membership first.':'Available after approval and active membership.';
+    }
+  });
+}
 
 async function loadGallery(){
   const gallery=$('#memberGallery');if(!gallery)return;
@@ -66,12 +81,13 @@ async function memberPage(){
   if(!profile.is_admin&&!profile.profile_photo_path){location.replace('/verify/');return;}
   $('#memberName').textContent=profile.full_name||'Member';$('#memberEmail').textContent=profile.email||user.email||'';
   $('#approvalStatus').textContent=(profile.status||'pending').replaceAll('_',' ');$('#profileStatus').textContent=profile.profile_photo_path?'submitted':'required';$('#accessUntil').textContent=prettyDate(sub.access_until);
-  const approved=profile.status==='approved',active=sub.access_until&&new Date(sub.access_until)>new Date(),admin=Boolean(profile.is_admin);
+  const approved=profile.status==='approved',active=Boolean(sub.access_until&&new Date(sub.access_until)>new Date()),admin=Boolean(profile.is_admin);
   if(admin){const services=$('.memberServices');services?.insertAdjacentHTML('afterbegin','<a class="serviceCard" href="/ops/"><span>00</span><div><strong>Founder Control Room</strong><small>See autopilot, revenue lanes, watchdog health, treasury, and escalations.</small></div><b>→</b></a><a class="serviceCard" href="/studio/"><span>01</span><div><strong>Creator Studio</strong><small>Upload and publish SFW protected content.</small></div><b>→</b></a>');}
   const banner=$('#memberBanner');
   if(admin){banner.innerHTML='<strong>Owner controls active</strong><span>Founder Control Room, Creator Studio, and member management are ready.</span>';banner.classList.add('activeAccess');}
   else if(approved&&active){banner.innerHTML='<strong>Member access active</strong><span>Your approved SFW member experience is open.</span>';banner.classList.add('activeAccess');}
-  else{const next=!approved?'Your profile picture is submitted and waiting for Camille’s approval.':!active?'Your approval is complete. Activate membership access to open the member feed.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${escapeHtml(next)}</span>`;}
+  else{const next=!approved?'Your profile picture is submitted and waiting for Camille’s approval.':!active?'Your approval is complete. Activate membership access to open the member feed.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${escapeHtml(next)}</span>${approved&&!active?'<a class="heroButton primary" href="/payments/">Activate membership</a>':''}`;}
+  lockMemberServices(active,approved,admin);
   if(!admin&&(!approved||!active)){renderPosts([]);$('#memberGallery').innerHTML='<article class="memberEmpty">Your member gallery opens after approval and active membership.</article>';return;}
   const {data:posts,error:postsError}=await supabase.from('member_posts').select('id,title,body,visibility_scope,published_at').eq('visibility_scope','sfw_member').eq('status','published').order('published_at',{ascending:false}).limit(30);
   if(postsError)renderPosts([]);else renderPosts(posts||[]);
