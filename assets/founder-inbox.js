@@ -26,11 +26,12 @@ function mediaHtml(url,mime,kind){
   return '<div class="inboxMedia"><img src="'+escapeHtml(url)+'" alt=""></div>';
 }
 function renderCounts(c){
-  const creator=(Number(c.autobot_approvals)||0)+(Number(c.media_approvals)||0);
+  const creator=(Number(c.social_approvals)||0)+(Number(c.autobot_approvals)||0)+(Number(c.media_approvals)||0);
   const total=(Number(c.access_requests)||0)+creator+(Number(c.tasks)||0);
   $('#accessCount').textContent=String(c.access_requests||0);
   if($('#waitingPaymentCount'))$('#waitingPaymentCount').textContent=String(c.approved_waiting_payment||0);
   if($('#activePaidCount'))$('#activePaidCount').textContent=String(c.active_paid_members||0);
+  if($('#unverifiedAccessCount'))$('#unverifiedAccessCount').textContent=String(c.active_access_without_paid_record||0);
   $('#creatorCount').textContent=String(creator);
   $('#taskCount').textContent=String(c.tasks||0);
   $('#inboxTotal').textContent=total?String(total)+' WAITING':'CLEAR';
@@ -83,15 +84,17 @@ function memberStatusCard(m,state){
   const name=escapeHtml(m.full_name||'Unnamed member');
   const email=escapeHtml(m.email||'');
   let stateText='Approved · waiting for payment',detail='Member access is still closed until a membership payment activates access.';
-  if(state==='active'){stateText='ACTIVE PAID MEMBER';detail=m.access_until?'Access through '+escapeHtml(prettyDate(m.access_until)):'Membership active';}
+  if(state==='active'){stateText='ACTIVE PAID MEMBER';detail=(m.access_until?'Access through '+escapeHtml(prettyDate(m.access_until)):'Membership active')+(m.amount_cents?' · '+new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(m.amount_cents)/100):'');}
+  if(state==='unverified'){stateText='ACTIVE ACCESS · NO PAID RECORD';detail=(m.access_until?'Access through '+escapeHtml(prettyDate(m.access_until))+'. ':'')+'This access is active, but it is not backed by a verified paid membership order in the current ledger.';}
   if(state==='expired'){stateText='EXPIRED';detail=m.access_until?'Expired '+escapeHtml(prettyDate(m.access_until)):'Membership expired';}
   return '<article class="productCatalogCard"><div><span class="productState '+(state==='active'?'active':'')+'">'+stateText+'</span><strong>'+name+'</strong><small>'+email+'</small><p>'+detail+'</p></div></article>';
 }
 function renderMemberStatus(data){
-  const waiting=data.approved_waiting_payment||[],active=data.active_paid_members||[],expired=data.expired_members||[];
-  const waitingTarget=$('#waitingPaymentMembers'),activeTarget=$('#activePaidMembers'),expiredTarget=$('#expiredMembers');
+  const waiting=data.approved_waiting_payment||[],active=data.active_paid_members||[],unverified=data.active_access_without_paid_record||[],expired=data.expired_members||[];
+  const waitingTarget=$('#waitingPaymentMembers'),activeTarget=$('#activePaidMembers'),unverifiedTarget=$('#unverifiedAccessMembers'),expiredTarget=$('#expiredMembers');
   if(waitingTarget)waitingTarget.innerHTML=waiting.length?waiting.map(m=>memberStatusCard(m,'waiting')).join(''):'<p class="inboxEmpty">No approved members are waiting for payment.</p>';
-  if(activeTarget)activeTarget.innerHTML=active.length?active.map(m=>memberStatusCard(m,'active')).join(''):'<p class="inboxEmpty">No active paid members yet.</p>';
+  if(activeTarget)activeTarget.innerHTML=active.length?active.map(m=>memberStatusCard(m,'active')).join(''):'<p class="inboxEmpty">No verified active paid memberships yet.</p>';
+  if(unverifiedTarget)unverifiedTarget.innerHTML=unverified.length?unverified.map(m=>memberStatusCard(m,'unverified')).join(''):'<p class="inboxEmpty">No unmatched active access records.</p>';
   if(expiredTarget)expiredTarget.innerHTML=expired.length?expired.map(m=>memberStatusCard(m,'expired')).join(''):'<p class="inboxEmpty">No expired memberships.</p>';
 }
 function socialCard(p){
@@ -122,7 +125,7 @@ function renderSocial(items){
     btn.disabled=true;setStatus('Approving social post…');
     const q=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(q.error){setStatus(q.error.message,'error');btn.disabled=false;return;}
-    setStatus(q.data?.ready_to_schedule?'Post approved and ready for Metricool scheduling.':'Post approved; platform connection is still required.','success');await load();
+    const mode=q.data?.handoff_mode||'not_connected';setStatus(mode==='metricool'?'Post approved and ready for Metricool scheduling.':mode==='manual_external'?'Post approved for the manual/external publishing lane.':'Post approved; platform connection is still required.','success');await load();
   }));
   target.querySelectorAll('.archiveSocialInbox').forEach(btn=>btn.addEventListener('click',async()=>{
     btn.disabled=true;const q=await supabase.rpc('owner_archive_social_draft',{p_post_id:btn.dataset.id});
@@ -187,8 +190,10 @@ async function load(){
   const access=await enrichAccess(data.access_requests||[]);
   const media=await enrichMedia(data.media_drafts||[]);
   renderCounts(data.counts||{});
+  const social=await enrichSocial(data.social_posts||[]);
   renderAccess(access);
   renderMemberStatus(data);
+  renderSocial(social);
   renderAutobot(data.autobot_drafts||[]);
   renderMedia(media);
   renderTasks(data.tasks||[]);
