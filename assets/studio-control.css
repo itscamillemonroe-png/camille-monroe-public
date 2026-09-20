@@ -137,3 +137,77 @@
   .studioMiniFlow b{display:none}
   .studioMiniFlow span{font-size:10px}
 }
+
+
+/* REV43 — Social Draft Queue clarity */
+.socialDraftSection{padding:20px}
+.socialDraftHead{align-items:flex-end}
+.socialDraftCounts{display:flex;gap:8px;flex-wrap:wrap}
+.socialDraftCounts span{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(215,180,106,.16);border-radius:999px;background:#090909;color:#9b9078;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.socialDraftCounts b{color:#f0dca8;font-size:13px}
+.socialDraftHow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 14px}
+.socialDraftHow>div{display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:center;padding:11px;border:1px solid rgba(215,180,106,.11);border-radius:13px;background:#090909}
+.socialDraftHow b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid rgba(215,180,106,.25);color:#d7b46a;font-family:'Instrument Serif',serif;font-size:17px;font-weight:400}
+.socialDraftHow strong{display:block;color:#ead7a6;font-size:11px}
+.socialDraftHow small{display:block;color:#887e69;font-size:9px;line-height:1.35;margin-top:2px}
+.socialDraftQueue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.socialDraftCard{min-width:0;padding:16px;border:1px solid rgba(215,180,106,.16);border-radius:17px;background:linear-gradient(150deg,#0d0b0a,#080808)}
+.socialDraftCardHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+.socialDraftBadges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.socialPlatformBadge,.socialReviewBadge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:9px;line-height:1;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(215,180,106,.18)}
+.socialPlatformBadge{color:#f0dca8;background:#15100a}
+.socialReviewBadge.needs{color:#efc38c;border-color:rgba(231,167,86,.28);background:rgba(123,75,16,.1)}
+.socialReviewBadge.ready{color:#bcd5ae;border-color:rgba(131,190,115,.24);background:rgba(65,103,53,.08)}
+.socialDraftCardHead time{color:#837965;font-size:9px;text-align:right}
+.socialDraftCard h3{font-family:'Instrument Serif',Georgia,serif;font-size:27px;line-height:1.05;font-weight:400;color:#f3e2b5;margin:4px 0 12px}
+.socialDraftCopy{padding:12px;border:1px solid rgba(215,180,106,.11);border-radius:12px;background:#070707}
+.socialDraftCopy>span,.socialDraftDirection>span,.socialDraftAttach label>span{display:block;color:#837760;font-size:8px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:5px}
+.socialDraftCopy p{margin:0;color:#dfd3bb;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.socialDraftMedia{margin-top:10px;overflow:hidden;border:1px solid rgba(215,180,106,.14);border-radius:12px;background:#050505}
+.socialDraftMedia img,.socialDraftMedia video{display:block;width:100%;height:260px;object-fit:contain;background:#050505}
+.socialDraftDirection{margin-top:10px;padding:10px 11px;border-left:2px solid rgba(215,180,106,.5);background:rgba(215,180,106,.025)}
+.socialDraftDirection p{margin:0;color:#a99d86;font-size:11px;line-height:1.45}
+.socialDraftAlert{margin-top:10px;padding:10px 11px;border:1px solid rgba(205,112,90,.28);border-radius:10px;color:#ddb0a2;background:rgba(121,50,34,.09);font-size:11px;line-height:1.4}
+.socialDraftAttach{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:end;margin-top:10px;padding:11px;border:1px dashed rgba(215,180,106,.26);border-radius:12px;background:#080808}
+.socialDraftAttach label{display:grid;gap:4px;color:#a99c82;font-size:10px}
+.socialDraftAttach input{width:100%;color:#a99c82;font-size:10px}
+.socialDraftMeta{margin-top:9px;border-top:1px solid rgba(215,180,106,.08);padding-top:8px}
+.socialDraftMeta summary{cursor:pointer;color:#8e826d;font-size:10px;list-style:none}
+.socialDraftMeta summary::-webkit-details-marker{display:none}
+.socialDraftMeta summary:after{content:' +';color:#d7b46a}
+.socialDraftMeta[open] summary:after{content:' −'}
+.socialDraftMeta>div{display:grid;gap:4px;margin-top:7px;color:#857b68;font-size:10px;overflow-wrap:anywhere}
+.socialDraftMeta b{color:#bbaa86;font-weight:600}
+.socialDraftActions{display:flex;gap:8px;align-items:center;margin-top:12px;padding-top:11px;border-top:1px solid rgba(215,180,106,.09)}
+.socialDraftActions .heroButton{min-height:38px;padding:8px 11px;font-size:10px}
+.socialDraftActions .heroButton.primary{flex:1}
+.socialApprovedDetails{margin-top:14px;border:1px solid rgba(215,180,106,.11);border-radius:13px;background:#080808;overflow:hidden}
+.socialApprovedDetails>summary{cursor:pointer;list-style:none;padding:11px 13px;color:#a99c82;font-size:11px}
+.socialApprovedDetails>summary::-webkit-details-marker{display:none}
+.socialApprovedDetails>summary span{display:inline-grid;place-items:center;min-width:23px;height:23px;margin-left:6px;border:1px solid rgba(215,180,106,.16);border-radius:999px;color:#d7b46a}
+.socialApprovedQueue{display:grid;gap:7px;padding:0 11px 11px}
+.socialApprovedCard{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 11px;border:1px solid rgba(215,180,106,.08);border-radius:10px;background:#090909}
+.socialApprovedCard>div{display:grid;min-width:0}
+.socialApprovedCard span{color:#8c816c;font-size:8px;text-transform:uppercase;letter-spacing:.1em}
+.socialApprovedCard strong{color:#ddcfaf;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.socialApprovedCard small{color:#756d5d;font-size:9px}
+.socialApprovedCard .heroButton{min-height:34px;padding:7px 9px;font-size:9px}
+@media(max-width:850px){
+  .socialDraftQueue{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .socialDraftSection{padding:14px}
+  .socialDraftHow{grid-template-columns:1fr}
+  .socialDraftCounts{width:100%}
+  .socialDraftCounts span{flex:1;justify-content:center}
+  .socialDraftCard{padding:13px}
+  .socialDraftCardHead{align-items:flex-start}
+  .socialDraftCard h3{font-size:24px}
+  .socialDraftCopy p{font-size:12px}
+  .socialDraftMedia img,.socialDraftMedia video{height:220px}
+  .socialDraftAttach{grid-template-columns:1fr}
+  .socialDraftAttach .heroButton{width:100%}
+  .socialDraftActions{display:grid;grid-template-columns:1fr 1fr}
+  .socialApprovedCard{display:grid}
+  .socialApprovedCard .heroButton{width:100%}
+}
