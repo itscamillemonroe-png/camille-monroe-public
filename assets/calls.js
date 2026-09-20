@@ -8,7 +8,7 @@ async function refreshWallet(){const {data}=await supabase.from('member_wallets'
 function updateEstimate(){const minutes=Math.max(Number($('#callMinutes').value)||settings.minimum_call_minutes,settings.minimum_call_minutes),rate=settings.voice_price_per_minute_credits;$('#callEstimate').textContent=`${rate} credits/minute · ${minutes*rate} credits held when requested. Unused credits return when the call ends.`;}
 
 async function loadRequests(){
-  let query=supabase.from('call_requests').select('id,member_id,call_type,requested_minutes,price_per_minute_credits,total_credits,status,member_note,requested_for,scheduled_for,refunded_at,created_at').order('created_at',{ascending:false}).limit(50);
+  let query=supabase.from('call_requests').select('id,member_id,call_type,requested_minutes,price_per_minute_credits,total_credits,status,member_note,requested_for,scheduled_for,refunded_at,created_at').eq('call_type','voice').order('created_at',{ascending:false}).limit(50);
   if(!profile.is_admin)query=query.eq('member_id',session.user.id);
   const {data:requests,error}=await query;if(error){setCallStatus(error.message,'error');return;}
   const ids=(requests||[]).map(item=>item.id);let rooms=[];if(ids.length){rooms=(await supabase.from('call_rooms').select('id,call_request_id,member_id,owner_id,call_type,status,started_at,ended_at,refunded_credits').in('call_request_id',ids)).data||[];}
@@ -35,12 +35,13 @@ async function handleSignal(signal){
 async function pollSignals(){if(!activeRoom||!peer)return;let query=supabase.from('call_signals').select('id,sender_id,signal_type,payload,created_at').eq('room_id',activeRoom.id).gt('id',lastSignalId).order('id',{ascending:true});const {data}=await query;for(const signal of data||[]){lastSignalId=Math.max(lastSignalId,Number(signal.id));await handleSignal(signal);} }
 
 async function beginCall(){
-  if(!activeRoom||peer)return;const video=activeRoom.call_type==='video';
-  try{localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:'user'}:false});}
-  catch(error){setCallStatus('Camera or microphone access was blocked. Allow access in your browser settings and try again.','error');return;}
-  $('#localVideo').srcObject=localStream;$('#localVideo').hidden=!video;$('#remoteVideo').hidden=!video;$('#audioCallMark').hidden=video;$('#toggleCamera').hidden=!video;$('#joinCall').hidden=true;
+  if(!activeRoom||peer)return;
+  if(activeRoom.call_type!=='voice'){setCallStatus('Video calls are retired. This room is voice-only.','error');return;}
+  try{localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});}
+  catch(error){setCallStatus('Microphone access was blocked. Allow microphone access in your browser settings and try again.','error');return;}
+  $('#joinCall').hidden=true;
   peer=new RTCPeerConnection({iceServers:[{urls:['stun:stun.cloudflare.com:3478','stun:stun.l.google.com:19302']}]});localStream.getTracks().forEach(track=>peer.addTrack(track,localStream));
-  peer.ontrack=event=>{$('#remoteVideo').srcObject=event.streams[0];};peer.onicecandidate=event=>{if(event.candidate)sendSignal('ice',event.candidate.toJSON()).catch(()=>{});};peer.onconnectionstatechange=async()=>{$('#connectionState').textContent=peer.connectionState.replaceAll('-',' ');if(peer.connectionState==='connected'){await supabase.from('call_rooms').update({status:'active'}).eq('id',activeRoom.id);setCallStatus('Connected.','success');}if(['failed','closed'].includes(peer.connectionState))setCallStatus('The call disconnected. You can end it to settle unused credits.','error');};
+  peer.ontrack=event=>{$('#remoteAudio').srcObject=event.streams[0];};peer.onicecandidate=event=>{if(event.candidate)sendSignal('ice',event.candidate.toJSON()).catch(()=>{});};peer.onconnectionstatechange=async()=>{$('#connectionState').textContent=peer.connectionState.replaceAll('-',' ');if(peer.connectionState==='connected'){await supabase.from('call_rooms').update({status:'active'}).eq('id',activeRoom.id);setCallStatus('Voice call connected.','success');}if(['failed','closed'].includes(peer.connectionState))setCallStatus('The call disconnected. You can end it to settle unused credits.','error');};
   lastSignalId=0;signalTimer=setInterval(()=>pollSignals().catch(()=>{}),900);await sendSignal('ready');await pollSignals();$('#connectionState').textContent='Waiting for the other side…';
 }
 
@@ -55,7 +56,7 @@ async function init(){
   if(profile.is_admin)$('#callRequestForm').hidden=true;else{const {data:sub}=await supabase.from('member_subscriptions').select('access_until').eq('user_id',session.user.id).maybeSingle();const active=sub?.access_until&&new Date(sub.access_until)>new Date();if(profile.status!=='approved'||!profile.profile_photo_path||!active){$('#callRequestForm').hidden=true;setCallStatus('Approved active membership is required for voice calls.','error');}}
   const requestedType=new URLSearchParams(location.search).get('type');if(requestedType==='voice')$('#callType').value='voice';$('#callMinutes').min=settings.minimum_call_minutes;$('#callMinutes').value=Math.max(Number($('#callMinutes').value),settings.minimum_call_minutes);updateEstimate();$('#callType').addEventListener('change',updateEstimate);$('#callMinutes').addEventListener('input',updateEstimate);
   $('#callRequestForm').addEventListener('submit',async event=>{event.preventDefault();const call_type='voice',requested_minutes=Number($('#callMinutes').value),member_note=$('#callNote').value.trim();setCallStatus('Holding credits and sending your request…');const {error}=await supabase.from('call_requests').insert({member_id:session.user.id,call_type,requested_minutes,member_note});if(error){setCallStatus(error.message,'error');return;}event.target.reset();$('#callMinutes').value=settings.minimum_call_minutes;updateEstimate();setCallStatus('Request sent. Camille can accept it from this same call desk.','success');await Promise.all([refreshWallet(),loadRequests()]);});
-  $('#joinCall').addEventListener('click',beginCall);$('#endCall').addEventListener('click',()=>finishCall(true));$('#toggleMute').addEventListener('click',()=>{const track=localStream?.getAudioTracks()[0];if(!track)return;track.enabled=!track.enabled;$('#toggleMute').textContent=track.enabled?'Mute':'Unmute';});$('#toggleCamera').addEventListener('click',()=>{const track=localStream?.getVideoTracks()[0];if(!track)return;track.enabled=!track.enabled;$('#toggleCamera').textContent=track.enabled?'Camera Off':'Camera On';});
+  $('#joinCall').addEventListener('click',beginCall);$('#endCall').addEventListener('click',()=>finishCall(true));$('#toggleMute').addEventListener('click',()=>{const track=localStream?.getAudioTracks()[0];if(!track)return;track.enabled=!track.enabled;$('#toggleMute').textContent=track.enabled?'Mute':'Unmute';});
   await Promise.all([refreshWallet(),loadRequests()]);setInterval(()=>{loadRequests();refreshWallet();},5000);
 }
 init().catch(error=>setCallStatus(error.message||'Calls could not load.','error'));
