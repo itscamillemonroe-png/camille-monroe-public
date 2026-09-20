@@ -37,16 +37,31 @@
     <div id="inboxStatus" class="opsStatus"></div><details class="opsExplain"><summary>How to read this page</summary><div class="opsExplainGrid"><div><strong>What this tells you</strong><p>Everything currently waiting for your review or action.</p></div><div><strong>What needs attention</strong><p>Member access requests, media or AI drafts awaiting approval, and unfinished work tasks.</p></div><div><strong>How to use it</strong><p>Work from the top down. Approvals stay review-first; nothing public is published just because it appears here.</p></div></div></details>
 
     <section class="opsSummary inboxSummary">
-      <a class="opsStat inboxJump" href="#access"><span>Member Access Requests</span><strong id="accessCount">—</strong><small>people waiting</small></a>
-      <a class="opsStat inboxJump" href="#creator"><span>Creator Studio Approvals</span><strong id="creatorCount">—</strong><small>media + AI drafts</small></a>
+      <a class="opsStat inboxJump" href="#access"><span>New Member Requests</span><strong id="accessCount">—</strong><small>approve or deny</small></a>
+      <a class="opsStat inboxJump" href="#membership-status"><span>Approved / Waiting Payment</span><strong id="waitingPaymentCount">—</strong><small>approved but not active</small></a>
+      <a class="opsStat inboxJump" href="#membership-status"><span>Active Paid Members</span><strong id="activePaidCount">—</strong><small>membership currently active</small></a>
+      <a class="opsStat inboxJump" href="#creator"><span>Creator Approvals</span><strong id="creatorCount">—</strong><small>media + AI drafts</small></a>
       <a class="opsStat inboxJump" href="#tasks"><span>Work To Finish</span><strong id="taskCount">—</strong><small>work queue</small></a>
     </section>
 
     <section id="access" class="opsPanel inboxSection">
       <div class="opsItemHead">
-        <div><p class="eyebrow">Membership</p><h2>Access Requests</h2><p>See the applicant’s actual profile photo before you approve or deny SFW member access.</p></div>
+        <div><p class="eyebrow">Membership</p><h2>New Member Requests</h2><p>This is the lane where you accept or deny new members. A submitted profile photo is required before approval.</p></div>
       </div>
       <div id="accessRequests" class="inboxGrid"><p class="memberEmpty">Loading access requests…</p></div>
+    </section>
+
+    <section id="membership-status" class="opsPanel inboxSection">
+      <div class="opsItemHead">
+        <div><p class="eyebrow">Membership status</p><h2>Approved & Paid Members</h2><p>Your current flow is approval first, then payment. This section shows who is approved but still waiting to activate membership, who has an active paid membership, and who has expired.</p></div>
+        <a class="heroButton" href="/ops/revenue/">Open Revenue</a>
+      </div>
+      <div class="inboxSubhead"><h3>Approved · waiting for payment</h3></div>
+      <div id="waitingPaymentMembers" class="inboxGrid"><p class="memberEmpty">Loading approved members…</p></div>
+      <div class="inboxSubhead"><h3>Active paid members</h3></div>
+      <div id="activePaidMembers" class="inboxGrid"><p class="memberEmpty">Loading active members…</p></div>
+      <div class="inboxSubhead"><h3>Expired membership</h3></div>
+      <div id="expiredMembers" class="inboxGrid"><p class="memberEmpty">Loading expired members…</p></div>
     </section>
 
     <section id="creator" class="opsPanel inboxSection">
@@ -68,6 +83,6 @@
     </section>
   </main>
 
-  <script type="module" src="/assets/founder-inbox.js?v=20260919-rev39"></script>
+  <script type="module" src="/assets/founder-inbox.js?v=20260919-rev40-members"></script>
 <script src="/assets/analytics.js?v=20260919-rev39" defer></script></body>
 </html>
