@@ -1,8 +1,22 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+// Productization branch safety rule:
+// This branch MUST NOT default to Camille production infrastructure.
+// A future isolated MASTER/DEMO deployment injects its own public backend config.
+const runtime = globalThis.CREATOR_OS_RUNTIME || {};
+
+export const appConfig = {
+  brandName: runtime.brandName || 'Creator Private OS Demo',
+  supabaseUrl: runtime.supabaseUrl || 'https://demo-project.supabase.co',
+  supabasePublishableKey: runtime.supabasePublishableKey || 'demo-publishable-key',
+  checkoutFunction: runtime.checkoutFunction || 'create-checkout',
+  telemetryFunction: runtime.telemetryFunction || 'track-site-event',
+  attributionKey: runtime.attributionKey || 'creator_os_attribution_v1'
+};
+
 export const supabase = createClient(
-  'https://wybpxixkjimbpvufozub.supabase.co',
-  'sb_publishable_0bNGPfELmwuT32zmhXXkMQ_sJIXotwE'
+  appConfig.supabaseUrl,
+  appConfig.supabasePublishableKey
 );
 
 export const $ = selector => document.querySelector(selector);
@@ -21,8 +35,7 @@ export function wireSignOut() {
   $('#signOut')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.href='/'; });
 }
 
-
-const attributionKey='cm_attribution_v1';
+const attributionKey=appConfig.attributionKey;
 const clipValue=(value,max=120)=>String(value||'').trim().slice(0,max);
 function currentReferrerHost(){
   try{return document.referrer?new URL(document.referrer).hostname.slice(0,160):'';}catch{return '';}
