@@ -14,7 +14,11 @@ export const prettyDate = value => {
 };
 export async function requireSession() {
   const {data:{session}} = await supabase.auth.getSession();
-  if (!session) { location.href='/login/'; throw new Error('Authentication required'); }
+  if (!session) {
+    const ownerPath=/^\/(ops|studio)(\/|$)/.test(location.pathname);
+    location.href=ownerPath?'/owner-login/':'/login/';
+    throw new Error('Authentication required');
+  }
   return session;
 }
 export function wireSignOut() {
