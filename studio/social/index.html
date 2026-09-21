@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#050505">
-  <title>Social Flow | Camille Monroe Creator Studio</title>
+  <title>Social Studio | Camille Monroe Creator Studio</title>
   <link rel="stylesheet" href="/assets/style.css?v=20260919-rev40">
   <link rel="stylesheet" href="/assets/ops-control.css?v=20260919-rev39">
-  <link rel="stylesheet" href="/assets/studio-control.css?v=20260920-rev43">
+  <link rel="stylesheet" href="/assets/studio-control.css?v=20260921-rev44">
 </head>
 <body data-page="studio-social">
   <nav class="nav">
@@ -27,8 +27,8 @@
     <header class="studioHero">
       <div>
         <p class="eyebrow">Creator Studio · public distribution</p>
-        <h1>Metricool + inDM Flow</h1>
-        <p class="lead">Prepare public SFW content, approve it, route publishing through Metricool, use inDM only after engagement, then measure what comes back to your website.</p>
+        <h1>Social Studio</h1>
+        <p class="lead">Prepare public SFW content, approve it, publish through Metricool, and track which social traffic comes back to Camille.</p>
       </div>
       <div class="studioStatusRow">
         <span id="socialMode" class="studioStatusPill">Loading…</span>
@@ -38,7 +38,7 @@
 
     <nav class="studioTabs" aria-label="Creator Studio sections">
       <a href="/studio/">Website Content</a>
-      <a class="active" href="/studio/social/">Metricool + inDM Flow</a>
+      <a class="active" href="/studio/social/">Social Studio</a>
       <a href="#drafts">Social Drafts</a>
       <a href="#platforms">Connections</a>
       <a href="#timing">Timing</a>
@@ -46,19 +46,19 @@
     </nav>
 
     <details class="studioGuide">
-      <summary>How this social flow works</summary>
+      <summary>How the social publishing flow works</summary>
       <div class="studioGuideGrid">
-        <div><strong>Metricool = public publishing</strong><p>Camille prepares drafts and media. Approval makes a post ready for the Metricool lane; it is only considered scheduled or published after a matching Metricool record is verified.</p></div>
-        <div><strong>inDM = engagement follow-up</strong><p>inDM is used after someone engages with the Instagram side. Cold automated DMs remain off.</p></div>
-        <div><strong>Website = destination</strong><p>Tagged social links point people back to Camille so visits, access requests, purchases, and revenue can be measured.</p></div>
+        <div><strong>1 · Camille prepares</strong><p>Create the exact public-safe copy and attach the exact media inside Social Studio.</p></div>
+        <div><strong>2 · You approve</strong><p>Nothing moves toward publishing until you approve the finished post.</p></div>
+        <div><strong>3 · Metricool publishes</strong><p>Approved posts are handed to Metricool for connected accounts, then tracked links bring visitors back to Camille.</p></div>
       </div>
     </details>
 
     <section class="studioFlow">
-      <article class="studioFlowCard"><span>1 · Create</span><strong>Camille Draft</strong><p>Prepare public-safe copy and exact media inside your Creator Studio.</p></article>
-      <article class="studioFlowCard"><span>2 · Approve</span><strong>Founder Review</strong><p>You approve the final post. Approval does not mean “send a DM.”</p></article>
-      <article class="studioFlowCard"><span>3 · Publish</span><strong>Metricool</strong><p>Approved public content moves into the Metricool handoff. Scheduling and publishing are confirmed only after Metricool reports the matching item.</p></article>
-      <article class="studioFlowCard"><span>4 · Convert</span><strong>inDM + Website</strong><p>Engagement can trigger inDM follow-up while tagged links bring people back to Camille.</p></article>
+      <article class="studioFlowCard"><span>1 · Create</span><strong>Social Draft</strong><p>Prepare the exact public-safe copy and media inside Camille.</p></article>
+      <article class="studioFlowCard"><span>2 · Approve</span><strong>Founder Review</strong><p>You approve the finished post before it can move forward.</p></article>
+      <article class="studioFlowCard"><span>3 · Publish</span><strong>Metricool</strong><p>Approved posts move to Metricool for connected Instagram, Threads, and TikTok accounts.</p></article>
+      <article class="studioFlowCard"><span>4 · Measure</span><strong>Back to Camille</strong><p>Tracked links show which platforms send visitors, members, and purchases back to your site.</p></article>
     </section>
 
     <section class="studioSummary">
@@ -69,33 +69,32 @@
     </section>
 
     <section class="studioSummary">
-      <article class="studioMetric"><span>Metricool</span><strong id="executorName">—</strong><small id="metricoolDetail">publishing executor</small></article>
-      <article class="studioMetric"><span>inDM</span><strong id="indmFlowState">—</strong><small>Instagram engagement follow-up</small></article>
-      <article class="studioMetric"><span>Official External</span><strong id="officialExternalCount">—</strong><small>working profiles outside Metricool publishing</small></article>
+      <article class="studioMetric"><span>Publishing Engine</span><strong id="executorName">METRICOOL</strong><small id="metricoolDetail">connected publishing accounts</small></article>
+      <article class="studioMetric"><span>Official External</span><strong id="officialExternalCount">—</strong><small>profiles outside automatic Metricool publishing</small></article>
       <article class="studioMetric"><span>Website Tracking</span><strong id="websiteReturnState">ACTIVE</strong><small>tagged links return to Camille</small></article>
+      <article class="studioMetric"><span>Approval Rule</span><strong>FOUNDER</strong><small>nothing publishes without approval</small></article>
     </section>
 
     <div id="socialStatus" class="opsStatus"></div>
-    <div class="socialFlowNote"><strong>Current rule:</strong> Public content stays review-first. Metricool handles the publishing lane. inDM is engagement-triggered only. Nothing here authorizes cold DMs or bypasses your approval requirement.</div>
+    <div class="socialFlowNote"><strong>Current rule:</strong> Public content stays review-first. Metricool is the publishing engine for connected accounts. Nothing publishes before your approval.</div>
 
     <section class="studioSection">
       <div class="studioSectionHead">
-        <div><span class="studioKicker">Integration health</span><h2>How the Three Systems Talk</h2><p>This shows what is truly connected versus what is an external handoff. It does not label a service “live” unless we can verify the connection.</p></div>
-        <span class="studioStatusPill">No fake connections</span>
+        <div><span class="studioKicker">Publishing connection</span><h2>Website → Metricool → Social</h2><p>This shows the publishing handoff that matters now: approved Camille posts move toward Metricool, while tracked links bring people back to your site.</p></div>
+        <span class="studioStatusPill">Founder approval required</span>
       </div>
       <section class="studioSummary">
-        <article class="studioMetric"><span>Website → Metricool</span><strong id="metricoolBridgeState">—</strong><small>approved-post handoff + mirrored schedule</small></article>
+        <article class="studioMetric"><span>Camille → Metricool</span><strong id="metricoolBridgeState">—</strong><small>approved-post handoff + verified schedule snapshot</small></article>
         <article class="studioMetric"><span>Matched Metricool Jobs</span><strong id="metricoolMatchedJobs">—</strong><small>Camille records matched to Metricool items</small></article>
-        <article class="studioMetric"><span>Approved / Not Handed Off</span><strong id="metricoolUnmatchedReady">—</strong><small>approved items still waiting for Metricool</small></article>
-        <article class="studioMetric"><span>inDM → Website</span><strong id="indmBridgeState">—</strong><small>engagement-triggered DM return tracking</small></article>
+        <article class="studioMetric"><span>Approved / Waiting</span><strong id="metricoolUnmatchedReady">—</strong><small>approved items not handed off yet</small></article>
+        <article class="studioMetric"><span>Return Tracking</span><strong>ACTIVE</strong><small>social → Camille conversion tracking</small></article>
       </section>
-      <div class="socialFlowNote"><strong>inDM tracked return link:</strong> <span id="indmTrackedLink">Loading…</span> <button id="copyIndmLink" class="heroButton" type="button">Copy Link</button></div>
       <p id="integrationNote" class="serviceLead"></p>
     </section>
 
     <section id="platforms" class="studioSection">
       <div class="studioSectionHead">
-        <div><span class="studioKicker">Connections</span><h2>All Working & Available Platforms</h2><p>Connected publishers appear first. Official working profiles that sit outside Metricool are kept here too, so they are not lost from the operating picture. Unused candidates stay clearly marked as not connected.</p></div>
+        <div><span class="studioKicker">Connections</span><h2>Social Platforms</h2><p>Instagram, Threads, and TikTok are connected to Metricool. Other official profiles remain visible here, and unconnected platforms are clearly marked.</p></div>
         <span class="studioStatusPill">Brand 6854489</span>
       </div>
       <div id="platformGrid" class="opsLaneGrid"><p>Loading platforms…</p></div>
@@ -190,7 +189,7 @@
 
     <section id="jobs" class="studioSection">
       <div class="studioSectionHead">
-        <div><span class="studioKicker">Publishing history</span><h2>Metricool Handoff & Publish Jobs</h2><p>See what the Camille social lane requested, when it was planned, and whether the handoff completed or failed.</p></div>
+        <div><span class="studioKicker">Publishing history</span><h2>Metricool Publish Jobs</h2><p>See what Camille handed to Metricool, when it was planned, and whether the publishing handoff completed or failed.</p></div>
       </div>
       <div class="studioTableWrap">
         <table class="studioTable">
@@ -213,7 +212,7 @@
     </section>
   </main>
 
-  <script type="module" src="/assets/social-studio.js?v=20260920-rev43"></script>
+  <script type="module" src="/assets/social-studio.js?v=20260921-rev44"></script>
   <script src="/assets/analytics.js?v=20260919-rev39" defer></script>
 </body>
 </html>
