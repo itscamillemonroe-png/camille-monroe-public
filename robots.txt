@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /login/
+Disallow: /owner-login/
 Disallow: /member/
 Disallow: /payments/
 Disallow: /studio/
