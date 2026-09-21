@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-20T17:05:50.846Z",
+  "updatedAt": "2026-09-21T18:57:48.940Z",
   "posts": [
+    {
+      "id": "main-character",
+      "category": "Mood",
+      "title": "Main-character energy, naturally",
+      "body": "Not performing. Not forcing it. Just showing up like I belong in every room I choose to enter.",
+      "cta": "Stay close",
+      "href": "/login/",
+      "publishedAt": "2026-09-21T18:57:48.940Z"
+    },
     {
       "id": "member-preview",
       "category": "Members",
