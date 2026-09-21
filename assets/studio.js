@@ -20,7 +20,7 @@ function coverPublicUrl(path=''){
 async function loadStudioSnapshot(){
   const {data,error}=await supabase.rpc('owner_creator_studio_snapshot');
   if(error)return;
-  const w=data?.website||{},s=data?.social||{},d=data?.indm||{};
+  const w=data?.website||{},s=data?.social||{};
   const libraryTotal=Number(w.published_member_posts||0)+Number(w.published_protected_media||0);
   const reviewTotal=Number(w.media_waiting_review||0)+Number(w.autobot_waiting_review||0);
   if($('#studioLibraryCount'))$('#studioLibraryCount').textContent=String(libraryTotal);
@@ -33,15 +33,6 @@ async function loadStudioSnapshot(){
     const connected=Number(s.connected_platforms||0);
     metricool.textContent=(String(s.executor||'').toLowerCase()==='metricool'?'Metricool':'Social')+' · '+connected+' connected';
     metricool.classList.toggle('good',connected>0);
-  }
-  const indm=$('#indmState');
-  if(indm){
-    const state=String(d.status||'NOT_CONFIGURED');
-    const connected=state.includes('CONNECTED');
-    const pending=state.includes('PENDING');
-    indm.textContent=connected?(pending?'inDM · setup pending':'inDM · connected'):'inDM · not connected';
-    indm.classList.toggle('good',connected&&!pending);
-    indm.classList.toggle('warn',pending);
   }
 }
 
