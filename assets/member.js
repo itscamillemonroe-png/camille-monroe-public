@@ -82,9 +82,9 @@ async function memberPage(){
   $('#memberName').textContent=profile.full_name||'Member';$('#memberEmail').textContent=profile.email||user.email||'';
   $('#approvalStatus').textContent=(profile.status||'pending').replaceAll('_',' ');$('#profileStatus').textContent=profile.profile_photo_path?'submitted':'required';$('#accessUntil').textContent=prettyDate(sub.access_until);
   const approved=profile.status==='approved',active=Boolean(sub.access_until&&new Date(sub.access_until)>new Date()),admin=Boolean(profile.is_admin);
-  if(admin){const services=$('.memberServices');services?.insertAdjacentHTML('afterbegin','<a class="serviceCard" href="/ops/"><span>00</span><div><strong>Founder Control Room</strong><small>See autopilot, revenue lanes, watchdog health, treasury, and escalations.</small></div><b>→</b></a><a class="serviceCard" href="/studio/"><span>01</span><div><strong>Creator Studio</strong><small>Upload and publish SFW protected content.</small></div><b>→</b></a>');}
+  if(admin){const services=$('.memberServices');services?.insertAdjacentHTML('afterbegin','<a class="serviceCard" href="/studio/"><span>01</span><div><strong>Creator Studio</strong><small>Upload and publish SFW protected content.</small></div><b>→</b></a>');}
   const banner=$('#memberBanner');
-  if(admin){banner.innerHTML='<strong>Owner controls active</strong><span>Founder Control Room, Creator Studio, and member management are ready.</span>';banner.classList.add('activeAccess');}
+  if(admin){banner.innerHTML='<strong>Creator access active</strong><span>Creator Studio is available for content management.</span>';banner.classList.add('activeAccess');}
   else if(approved&&active){banner.innerHTML='<strong>Member access active</strong><span>Your approved SFW member experience is open.</span>';banner.classList.add('activeAccess');}
   else{const next=!approved?'Your profile picture is submitted and waiting for Camille’s approval.':!active?'Your approval is complete. Activate membership access to open the member feed.':'Your account is being prepared.';banner.innerHTML=`<strong>Access status</strong><span>${escapeHtml(next)}</span>${approved&&!active?'<a class="heroButton primary" href="/payments/">Activate membership</a>':''}`;}
   lockMemberServices(active,approved,admin);
