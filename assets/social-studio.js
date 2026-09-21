@@ -77,24 +77,19 @@ function renderConfig(cfg={},counts={}){
 }
 
 function renderDistributionFlow(data={}){
-  const social=data.social||{},indm=data.indm||{},mirror=social.metricool_mirror||{};
+  const social=data.social||{},mirror=social.metricool_mirror||{};
   const metricDetail=$('#metricoolDetail');
   if(metricDetail)metricDetail.textContent=(social.metricool_brand_id?'brand '+social.metricool_brand_id+' · ':'')+(social.connected_platforms||0)+' connected platforms';
   if($('#socialMetricRows'))$('#socialMetricRows').textContent=String(social.metric_rows||0);
   if($('#socialLinkClicks'))$('#socialLinkClicks').textContent=String(social.link_clicks||0);
   if($('#socialPaidSubs'))$('#socialPaidSubs').textContent=String(social.paid_subscribers||0);
-  const state=String(indm.status||'NOT_CONFIGURED');
-  const connected=state.includes('CONNECTED'),pending=state.includes('PENDING');
-  if($('#indmFlowState'))$('#indmFlowState').textContent=connected?(pending?'SETUP PENDING':'CONNECTED'):'NOT CONNECTED';
   if($('#websiteReturnState'))$('#websiteReturnState').textContent='ACTIVE';
 
   if($('#metricoolBridgeState'))$('#metricoolBridgeState').textContent=Number(mirror.items||0)>0?'SNAPSHOT READY':'NO SNAPSHOT';
   if($('#metricoolMatchedJobs'))$('#metricoolMatchedJobs').textContent=String(social.metricool_matched_jobs||0);
   if($('#metricoolUnmatchedReady'))$('#metricoolUnmatchedReady').textContent=String(social.ready_without_metricool||0);
-  if($('#indmBridgeState'))$('#indmBridgeState').textContent=connected?'TRACKED HANDOFF':'NOT READY';
-  if($('#indmTrackedLink'))$('#indmTrackedLink').textContent=indm.tracked_return_link||'https://itscamillemonroe.art/go/indm/?c=engagement';
   if($('#integrationNote'))$('#integrationNote').textContent=social.background_direct_api===false
-    ?'Metricool is handled through the connected Metricool workflow and Camille’s verified schedule snapshot. The snapshot is not a secret background API and is only as current as its last sync time. inDM remains an external Instagram automation service, while its return traffic is tracked through the Camille link above.'
+    ?'Founder-approved posts are handed to Metricool through the Camille social publishing workflow. The schedule shown here is a verified snapshot and is only as current as its last sync time.'
     :'The direct publishing bridge is active.';
 
   if($('#metricoolMirrorItems'))$('#metricoolMirrorItems').textContent=String(mirror.items||0);
@@ -271,13 +266,6 @@ async function load(){
 async function init(){
   await requireOwner();
   await load();
-  $('#copyIndmLink')?.addEventListener('click',async()=>{
-    const link=$('#indmTrackedLink')?.textContent?.trim();
-    if(!link)return;
-    try{await navigator.clipboard.writeText(link);setStatus('inDM tracked website link copied.','success');}
-    catch{setStatus('Copy the inDM tracked link shown on the page.','error');}
-  });
-
   $('#socialDraftForm').addEventListener('submit',async event=>{
     event.preventDefault();
     const title=$('#socialTitle').value.trim();
