@@ -89,7 +89,7 @@ function renderDistributionFlow(data={}){
   if($('#metricoolMatchedJobs'))$('#metricoolMatchedJobs').textContent=String(social.metricool_matched_jobs||0);
   if($('#metricoolUnmatchedReady'))$('#metricoolUnmatchedReady').textContent=String(social.ready_without_metricool||0);
   if($('#integrationNote'))$('#integrationNote').textContent=social.background_direct_api===false
-    ?'Founder-approved posts are handed to Metricool through the Camille social publishing workflow. The schedule shown here is a verified snapshot and is only as current as its last sync time.'
+    ?'Founder-approved posts are picked up by the automatic Metricool handoff. The handoff checks hourly, schedules only approved content, and never publishes pending drafts. The schedule shown here is a verified snapshot and is only as current as its last sync time.'
     :'The direct publishing bridge is active.';
 
   if($('#metricoolMirrorItems'))$('#metricoolMirrorItems').textContent=String(mirror.items||0);
@@ -191,7 +191,7 @@ function wirePostActions(){
     const {data,error}=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(error){setStatus(error.message,'error');btn.disabled=false;return;}
     const mode=data?.handoff_mode||'not_connected';
-    setStatus(mode==='metricool'?'Approved and ready for the Metricool publishing lane.':mode==='manual_external'?'Approved. This official platform uses the manual/external publishing lane until a connector is linked.':'Approved, but that platform is not connected yet.','success');
+    setStatus(mode==='metricool'?'Approved. The automatic Metricool handoff will pick this up on its next check.':mode==='manual_external'?'Approved. This official platform uses the manual/external publishing lane until a connector is linked.':'Approved, but that platform is not connected yet.','success');
     await load();
   }));
   document.querySelectorAll('.archiveSocial').forEach(btn=>btn.addEventListener('click',async()=>{
