@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-21T18:57:48.940Z",
+  "updatedAt": "2026-09-22T17:49:12.143Z",
   "posts": [
+    {
+      "id": "golden-hour",
+      "category": "Photo diary",
+      "title": "Meet me at golden hour",
+      "body": "Some light makes everything feel softer. Consider this your reminder to catch the glow before the day slips away.",
+      "cta": "See more",
+      "href": "/login/",
+      "publishedAt": "2026-09-22T17:49:12.143Z"
+    },
     {
       "id": "main-character",
       "category": "Mood",
