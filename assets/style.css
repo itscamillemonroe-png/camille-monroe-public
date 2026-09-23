@@ -72,3 +72,95 @@ footer{font-size:13px}
 @media(max-width:760px){.revenueCoverCard{grid-template-columns:86px 1fr}.revenueCoverThumb{width:86px;height:116px}.revenueCoverCard>.heroButton{grid-column:1/-1;width:100%}}
 
 .lockedService{opacity:.48;filter:saturate(.65);cursor:not-allowed}.memberBanner .heroButton{margin-top:10px;display:inline-flex}
+
+
+/* Production Home + Blog split — Sept 22, 2026 */
+.homeMinimal{background:#050505}
+.homeMinimal .homeNav{
+  position:absolute;
+  inset:0 0 auto;
+  z-index:40;
+  background:linear-gradient(180deg,rgba(5,5,5,.58),rgba(5,5,5,.08) 72%,transparent);
+  border:0;
+  backdrop-filter:none;
+}
+.homeMinimal .homeNav .navin{min-height:72px}
+.homeMinimal .homeNav .brand{color:#fff7e6;text-shadow:0 2px 18px rgba(0,0,0,.65)}
+.homeNavLinks{display:flex;align-items:center;justify-content:flex-end;gap:clamp(14px,3vw,30px)}
+.homeNavLinks a{
+  position:relative;
+  padding:9px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:rgba(255,247,230,.9);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  text-shadow:0 2px 18px rgba(0,0,0,.7);
+}
+.homeNavLinks a::after{
+  content:"";
+  position:absolute;
+  left:0;right:100%;bottom:4px;
+  height:1px;
+  background:var(--gold-soft);
+  transition:right .2s ease;
+}
+.homeNavLinks a:hover::after,.homeNavLinks a:focus-visible::after{right:0}
+.homeNavLinks a:focus-visible{outline:none;color:#fff}
+.homeMinimal .homePhotoHero{min-height:100svh;background-position:center 18%}
+.homeMinimal .homeHeroContent{padding:0 0 clamp(42px,8vh,84px)}
+.homeMinimal .heroShade{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.10) 0%,rgba(0,0,0,.02) 38%,rgba(0,0,0,.82) 100%),
+    radial-gradient(circle at 82% 18%,rgba(52,20,67,.16),transparent 34%);
+}
+.homeBio{
+  max-width:590px;
+  margin:0;
+  color:rgba(255,247,230,.92);
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(18px,2.7vw,27px);
+  line-height:1.35;
+  letter-spacing:.005em;
+  text-wrap:balance;
+  text-shadow:0 3px 20px rgba(0,0,0,.75);
+}
+.blogPage{background:#050505}
+.blogMain{min-height:calc(100svh - 64px)}
+.blogStage{
+  min-height:calc(100svh - 64px);
+  padding:48px 16px 64px;
+  background:
+    radial-gradient(circle at 88% 2%,rgba(54,22,70,.18),transparent 28rem),
+    #050505;
+}
+.blogFrame{width:min(820px,100%);background:linear-gradient(155deg,#101010,#070707 72%)}
+.blogFrame .feedBar{align-items:flex-end}
+.blogFrame .feedBar h1{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(50px,9vw,76px);
+  font-weight:400;
+  line-height:.88;
+  margin:5px 0;
+  color:#fff7e6;
+}
+.blogFeed{height:auto;max-height:none;overflow:visible;padding-right:0}
+.blogNavLinks a{color:#d9cfbd}
+.blogNavLinks a:hover,.blogNavLinks a:focus-visible{color:var(--gold-soft)}
+@media(max-width:760px){
+  .homeMinimal .homeNav .navin{min-height:64px;align-items:flex-start;padding-top:17px}
+  .homeMinimal .homeNav .brand{font-size:10px;letter-spacing:.13em}
+  .homeNavLinks{gap:12px}
+  .homeNavLinks a{font-size:9px;letter-spacing:.08em;padding-top:1px}
+  .homeMinimal .homePhotoHero{min-height:100svh;background-position:center 10%}
+  .homeMinimal .homeHeroContent{padding-bottom:38px}
+  .homeMinimal .scriptTitle{font-size:66px!important;margin-bottom:13px!important}
+  .homeBio{max-width:330px;font-size:19px}
+  .blogStage{padding:30px 10px 48px}
+  .blogFrame{padding:18px 14px}
+  .blogNavLinks{display:flex;gap:12px;font-size:10px}
+}
