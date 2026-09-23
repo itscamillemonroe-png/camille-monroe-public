@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-22T17:49:12.143Z",
+  "updatedAt": "2026-09-23T18:03:10.476Z",
   "posts": [
+    {
+      "id": "weekend-note",
+      "category": "Weekend",
+      "title": "A slow weekend looks good on me",
+      "body": "Less rushing, better music, something sweet, and enough space to enjoy the moment. That’s the whole plan.",
+      "cta": "Come closer",
+      "href": "/login/",
+      "publishedAt": "2026-09-23T18:03:10.476Z"
+    },
     {
       "id": "golden-hour",
       "category": "Photo diary",
