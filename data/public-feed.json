@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-23T18:03:10.476Z",
+  "updatedAt": "2026-09-24T18:02:07.015Z",
   "posts": [
+    {
+      "id": "new-drop-loading",
+      "category": "Coming soon",
+      "title": "Something pretty is loading",
+      "body": "I’m putting together the next release now. Clean, personal, and just mysterious enough to keep you wondering.",
+      "cta": "Get access",
+      "href": "/login/",
+      "publishedAt": "2026-09-24T18:02:07.015Z"
+    },
     {
       "id": "weekend-note",
       "category": "Weekend",
