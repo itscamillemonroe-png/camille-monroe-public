@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-24T18:02:07.015Z",
+  "updatedAt": "2026-09-25T18:08:08.226Z",
   "posts": [
+    {
+      "id": "playlist-mood",
+      "category": "Now playing",
+      "title": "The playlist is setting the tone",
+      "body": "Deep R&B, low lights, and a little room to think. Music changes the entire mood—and today’s mood is very Camille.",
+      "cta": "Stay in the loop",
+      "href": "/login/",
+      "publishedAt": "2026-09-25T18:08:08.226Z"
+    },
     {
       "id": "new-drop-loading",
       "category": "Coming soon",
