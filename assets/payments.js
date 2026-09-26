@@ -3,13 +3,13 @@ import { supabase, $, escapeHtml, requireSession, wireSignOut, getAttribution } 
 function setStatus(text,type=''){const el=$('#paymentStatus');if(!el)return;el.textContent=text;el.className=`formStatus ${type}`.trim();}
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format((Number(cents)||0)/100);}
 
-let selectedPaymentMethod='crypto';
+let selectedPaymentMethod='card_ach';
 function trackCheckout(eventType,target=''){
   if(globalThis.CamilleAnalytics?.track){globalThis.CamilleAnalytics.track(eventType,target);return;}
   globalThis.cmTelemetryQueue=Array.isArray(globalThis.cmTelemetryQueue)?globalThis.cmTelemetryQueue:[];
   globalThis.cmTelemetryQueue.push({eventType,target});
 }
-function updatePaymentMethodUI(route){const card=$('#chooseCard'),crypto=$('#chooseCrypto');if(card){card.disabled=!route?.card_ach_ready;card.classList.toggle('primary',selectedPaymentMethod==='card_ach');card.classList.toggle('glass',selectedPaymentMethod!=='card_ach');}if(crypto){crypto.disabled=!route?.crypto_ready;crypto.classList.toggle('primary',selectedPaymentMethod==='crypto');crypto.classList.toggle('glass',selectedPaymentMethod!=='crypto');}}
+function updatePaymentMethodUI(route){const card=$('#chooseCard');if(card){card.disabled=!route?.card_ach_ready;card.classList.toggle('primary',Boolean(route?.card_ach_ready));card.classList.toggle('glass',!route?.card_ach_ready);}}
 function wirePayButtons({approved,active,route}){
   document.querySelectorAll('.payButton:not([data-wired])').forEach(button=>{
     button.dataset.wired='true';
@@ -24,7 +24,7 @@ function wirePayButtons({approved,active,route}){
       trackCheckout('checkout_attempt',`${selectedPaymentMethod}:${product_id}`);
       button.disabled=true;
       button.textContent='Opening secure checkout…';
-      setStatus(selectedPaymentMethod==='card_ach'?'Opening secure card / wallet / ACH checkout…':'Opening secure crypto checkout…');
+      setStatus('Opening secure card / wallet / ACH checkout…');
       const {data:{session}}=await supabase.auth.getSession();
       if(!session?.access_token){
         button.disabled=false;
@@ -84,10 +84,9 @@ async function init(){
   const active=Boolean(subscription?.access_until&&new Date(subscription.access_until)>new Date());
   const gate=$('#paymentGate');
   const provider=$('#paymentProvider');
-  if(route?.card_ach_ready){selectedPaymentMethod='card_ach';provider.classList.add('activeAccess');provider.innerHTML='<strong>Two payment options</strong><span>Card / wallet / ACH routes toward Bluevine Business Checking. Crypto stays available through NOWPayments.</span>';}else{selectedPaymentMethod='crypto';provider.innerHTML='<strong>Crypto available now</strong><span>Card / wallet / ACH is temporarily unavailable while the secure Stripe checkout route is being completed. Crypto remains available now.</span>';}
+  if(route?.card_ach_ready){selectedPaymentMethod='card_ach';provider.classList.add('activeAccess');provider.innerHTML='<strong>Secure checkout ready</strong><span>Card / wallet / ACH is processed through Stripe and settles to Bluevine Business Checking.</span>';}else{selectedPaymentMethod='card_ach';provider.innerHTML='<strong>Checkout temporarily unavailable</strong><span>The Stripe checkout route needs attention. No alternate payment processor is active.</span>';}
   updatePaymentMethodUI(route);
-  $('#chooseCard')?.addEventListener('click',()=>{if(!route?.card_ach_ready){setStatus('Card / wallet / ACH is temporarily unavailable. Crypto is available now.','error');return;}selectedPaymentMethod='card_ach';updatePaymentMethodUI(route);setStatus('Card / wallet / ACH selected.','success');});
-  $('#chooseCrypto')?.addEventListener('click',()=>{if(!route?.crypto_ready)return;selectedPaymentMethod='crypto';updatePaymentMethodUI(route);setStatus('Crypto selected.','success');});
+  $('#chooseCard')?.addEventListener('click',()=>{if(!route?.card_ach_ready){setStatus('Stripe checkout is temporarily unavailable. Please try again after the payment route is restored.','error');return;}selectedPaymentMethod='card_ach';updatePaymentMethodUI(route);setStatus('Card / wallet / ACH selected.','success');});
 
   if(!approved){
     trackCheckout('checkout_blocked','approval_gate');
