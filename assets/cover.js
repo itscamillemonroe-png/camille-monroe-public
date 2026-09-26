@@ -19,9 +19,20 @@ async function init(){
   $('#coverCta').textContent=data.cta_primary||'Continue';
   $('#coverError').hidden=true;$('#coverStage').hidden=false;
   const attribution=captureAttribution();
-  await supabase.rpc('track_revenue_cover_event',{p_slug:slug,p_event_type:'view',p_source:attribution.source||'direct',p_medium:attribution.medium||'none',p_campaign:attribution.campaign||('cover_'+slug),p_referrer_host:safeHost()});
+  const trackCover=async(event_type)=>{
+    try{
+      await supabase.functions.invoke('track-revenue-cover-event',{body:{
+        slug,event_type,
+        source:attribution.source||'direct',
+        medium:attribution.medium||(event_type==='click'?'visual':'none'),
+        campaign:attribution.campaign||('cover_'+slug),
+        referrer_host:safeHost()
+      }});
+    }catch{}
+  };
+  void trackCover('view');
   $('#coverCta').addEventListener('click',async()=>{
-    await supabase.rpc('track_revenue_cover_event',{p_slug:slug,p_event_type:'click',p_source:attribution.source||'direct',p_medium:attribution.medium||'visual',p_campaign:attribution.campaign||('cover_'+slug),p_referrer_host:safeHost()});
+    await trackCover('click');
     const target=new URL(data.destination_path||'/',location.origin);
     target.searchParams.set('utm_source','lane_cover');
     target.searchParams.set('utm_medium','visual');
