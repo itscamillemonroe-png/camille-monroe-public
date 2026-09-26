@@ -28,12 +28,6 @@ async function loadStudioSnapshot(){
   if($('#studioProductCount'))$('#studioProductCount').textContent=String(w.active_products||0);
   if($('#studioCoverCount'))$('#studioCoverCount').textContent=String(w.active_covers||0);
   if($('#reviewQueuePill'))$('#reviewQueuePill').textContent=reviewTotal?reviewTotal+' WAITING':'CLEAR';
-  const metricool=$('#metricoolState');
-  if(metricool){
-    const connected=Number(s.connected_platforms||0);
-    metricool.textContent=(String(s.executor||'').toLowerCase()==='metricool'?'Metricool':'Social')+' · '+connected+' connected';
-    metricool.classList.toggle('good',connected>0);
-  }
 }
 
 async function signedPreview(item){const {data}=await supabase.storage.from('protected-media').createSignedUrl(item.storage_path,300);return {...item,signed_url:data?.signedUrl||''};}
