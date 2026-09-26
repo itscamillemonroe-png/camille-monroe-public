@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-25T18:08:08.226Z",
+  "updatedAt": "2026-09-26T17:28:28.621Z",
   "posts": [
+    {
+      "id": "confidence-note",
+      "category": "Note to self",
+      "title": "Confidence can be quiet",
+      "body": "You don’t have to explain every move. Sometimes the most powerful thing you can do is know exactly who you are and keep going.",
+      "cta": "Keep up with me",
+      "href": "/login/",
+      "publishedAt": "2026-09-26T17:28:28.621Z"
+    },
     {
       "id": "playlist-mood",
       "category": "Now playing",
