@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-26T17:28:28.621Z",
+  "updatedAt": "2026-09-27T17:58:36.208Z",
   "posts": [
+    {
+      "id": "private-update",
+      "category": "Members",
+      "title": "The private side is getting an update",
+      "body": "I’m adding more personal posts and protected releases so members always have something new waiting for them.",
+      "cta": "Request access",
+      "href": "/login/",
+      "publishedAt": "2026-09-27T17:58:36.208Z"
+    },
     {
       "id": "confidence-note",
       "category": "Note to self",
