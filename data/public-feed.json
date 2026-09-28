@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-27T17:58:36.208Z",
+  "updatedAt": "2026-09-28T20:18:39.767Z",
   "posts": [
+    {
+      "id": "camera-roll",
+      "category": "Camera roll",
+      "title": "A favorite almost made the cut",
+      "body": "There’s always one picture that keeps pulling me back. I might save this one for the people paying attention.",
+      "cta": "Join the private side",
+      "href": "/login/",
+      "publishedAt": "2026-09-28T20:18:39.767Z"
+    },
     {
       "id": "private-update",
       "category": "Members",
