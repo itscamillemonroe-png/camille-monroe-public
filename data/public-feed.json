@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-28T20:18:39.767Z",
+  "updatedAt": "2026-09-29T18:58:45.246Z",
   "posts": [
+    {
+      "id": "fresh-week",
+      "category": "Monday mood",
+      "title": "Fresh week, same standards",
+      "body": "This week is about being intentional: better choices, cleaner plans, and no shrinking to make anyone else comfortable.",
+      "cta": "Stay close",
+      "href": "/login/",
+      "publishedAt": "2026-09-29T18:58:45.246Z"
+    },
     {
       "id": "camera-roll",
       "category": "Camera roll",
