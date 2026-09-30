@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-29T18:58:45.246Z",
+  "updatedAt": "2026-09-30T18:41:09.483Z",
   "posts": [
+    {
+      "id": "night-note",
+      "category": "Late note",
+      "title": "For the ones still awake",
+      "body": "If you’re reading this late, take it as your sign to breathe, unclench your jaw, and let tomorrow wait until morning.",
+      "cta": "Come back tomorrow",
+      "href": "/login/",
+      "publishedAt": "2026-09-30T18:41:09.483Z"
+    },
     {
       "id": "fresh-week",
       "category": "Monday mood",
