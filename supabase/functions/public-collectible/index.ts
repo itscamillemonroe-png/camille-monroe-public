@@ -100,12 +100,24 @@ Deno.serve(async(req:Request)=>{
       const {data:assetRows,error:assetError}=await admin.rpc("public_collectible_asset_status");
       const asset=Array.isArray(assetRows)?assetRows[0]:null;
       if(assetError||!asset)return reply(req,{error:"Delivery is temporarily unavailable."},409);
+      const buyerEmail=String(session?.customer_details?.email||session?.customer_email||"").trim();
+      const {data:purchaseRows,error:purchaseError}=await admin.rpc("record_collectible_purchase",{
+        p_stripe_session_id:sessionId,
+        p_offer_key:OFFER,
+        p_media_id:MEDIA_ID,
+        p_buyer_email:buyerEmail,
+        p_amount_cents:PRICE_CENTS,
+        p_currency:"usd"
+      });
+      if(purchaseError)throw purchaseError;
+      const purchase=Array.isArray(purchaseRows)?purchaseRows[0]:null;
       const {data,error}=await admin.storage.from("protected-media").createSignedUrl(asset.storage_path,600,{download:"Camille-Monroe-Digital-Collectible-001.png"});
       if(error||!data?.signedUrl)throw error||new Error("Signed delivery URL missing.");
       return reply(req,{
         download_url:data.signedUrl,
         expires_in:600,
         title:"Camille Monroe — Digital Collectible No. 001",
+        edition_number:purchase?.edition_number||null,
         license:"Personal use only. No resale, redistribution, sublicensing, or commercial reuse."
       });
     }
