@@ -5,7 +5,7 @@ const buy=document.getElementById('buyCollectible');
 const status=document.getElementById('collectibleStatus');
 const panel=document.getElementById('deliveryPanel');
 const download=document.getElementById('downloadCollectible');
-const license=document.getElementById('deliveryLicense');
+const license=document.getElementById('deliveryLicense');\nconst edition=document.getElementById('editionRecord');
 const setStatus=(text,type='')=>{if(!status)return;status.textContent=text;status.className=('formStatus '+type).trim();};
 async function call(body){
   const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','apikey':apikey},body:JSON.stringify(body)});
@@ -36,7 +36,7 @@ async function loadDelivery(){
   try{
     const data=await call({action:'delivery',session_id:sessionId});
     download.href=data.download_url;
-    license.textContent=data.license||'Personal use only.';
+    license.textContent=data.license||'Personal use only.';\n    if(data.edition_number){edition.textContent='First Edition · Collector #'+String(data.edition_number).padStart(3,'0');edition.hidden=false;}
     panel.hidden=false;
     setStatus('Payment verified. Your collectible is ready.','success');
     panel.scrollIntoView({behavior:'smooth',block:'start'});
