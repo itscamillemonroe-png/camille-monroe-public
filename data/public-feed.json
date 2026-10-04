@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-09-30T18:41:09.483Z",
+  "updatedAt": "2026-10-04T22:21:00.000Z",
   "posts": [
+    {
+      "id": "collectible-001-launch",
+      "category": "First edition",
+      "title": "Collectible No. 001 is here",
+      "body": "My first public digital collectible is officially available. One original SFW image, released as No. 001 with secure delivery after purchase.",
+      "cta": "Collect No. 001 — $25",
+      "href": "/collectible/001/",
+      "publishedAt": "2026-10-04T22:21:00.000Z"
+    },
     {
       "id": "night-note",
       "category": "Late note",
