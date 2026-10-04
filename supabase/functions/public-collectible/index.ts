@@ -49,14 +49,10 @@ Deno.serve(async(req:Request)=>{
     const action=typeof body.action==="string"?body.action:"";
 
     if(action==="create_checkout"){
-      const [{data:rights},{data:media}]=await Promise.all([
-        admin.from("asset_rights_ledger").select("rights_status,territory,expires_at,permitted_uses,commercial_use_allowed").eq("media_id",MEDIA_ID).maybeSingle(),
-        admin.from("protected_media").select("id,title,status,media_kind,storage_path,audience_scope").eq("id",MEDIA_ID).maybeSingle()
-      ]);
-      const digitalSale=Array.isArray(rights?.permitted_uses)&&rights.permitted_uses.includes("digital_sale");
-      const rightsCurrent=!rights?.expires_at||new Date(rights.expires_at).getTime()>Date.now();
-      if(!media||media.status!=="published"||rights?.rights_status!=="owned"||!rights?.commercial_use_allowed||!digitalSale||!rightsCurrent){
-        console.error("collectible rights gate",JSON.stringify({media_status:media?.status||null,rights_status:rights?.rights_status||null,commercial_use_allowed:rights?.commercial_use_allowed??null,permitted_uses:rights?.permitted_uses||null,digitalSale,rightsCurrent}));
+      const {data:assetRows,error:assetError}=await admin.rpc("public_collectible_asset_status");
+      const asset=Array.isArray(assetRows)?assetRows[0]:null;
+      if(assetError||!asset){
+        console.error("collectible rights gate",assetError?.message||"asset unavailable");
         return reply(req,{error:"This collectible is not available for sale."},409);
       }
 
@@ -101,16 +97,10 @@ Deno.serve(async(req:Request)=>{
         String(session?.currency||"").toLowerCase()==="usd";
       if(!valid)return reply(req,{error:"Payment could not be verified for this collectible."},403);
 
-      const [{data:rights},{data:media}]=await Promise.all([
-        admin.from("asset_rights_ledger").select("rights_status,expires_at,permitted_uses,commercial_use_allowed").eq("media_id",MEDIA_ID).maybeSingle(),
-        admin.from("protected_media").select("storage_path,status").eq("id",MEDIA_ID).maybeSingle()
-      ]);
-      const digitalSale=Array.isArray(rights?.permitted_uses)&&rights.permitted_uses.includes("digital_sale");
-      const rightsCurrent=!rights?.expires_at||new Date(rights.expires_at).getTime()>Date.now();
-      if(!media||media.status!=="published"||rights?.rights_status!=="owned"||!rights?.commercial_use_allowed||!digitalSale||!rightsCurrent){
-        return reply(req,{error:"Delivery is temporarily unavailable."},409);
-      }
-      const {data,error}=await admin.storage.from("protected-media").createSignedUrl(media.storage_path,600,{download:"Camille-Monroe-Digital-Collectible-001.png"});
+      const {data:assetRows,error:assetError}=await admin.rpc("public_collectible_asset_status");
+      const asset=Array.isArray(assetRows)?assetRows[0]:null;
+      if(assetError||!asset)return reply(req,{error:"Delivery is temporarily unavailable."},409);
+      const {data,error}=await admin.storage.from("protected-media").createSignedUrl(asset.storage_path,600,{download:"Camille-Monroe-Digital-Collectible-001.png"});
       if(error||!data?.signedUrl)throw error||new Error("Signed delivery URL missing.");
       return reply(req,{
         download_url:data.signedUrl,
