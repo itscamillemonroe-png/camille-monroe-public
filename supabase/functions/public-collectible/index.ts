@@ -56,6 +56,7 @@ Deno.serve(async(req:Request)=>{
       const digitalSale=Array.isArray(rights?.permitted_uses)&&rights.permitted_uses.includes("digital_sale");
       const rightsCurrent=!rights?.expires_at||new Date(rights.expires_at).getTime()>Date.now();
       if(!media||media.status!=="published"||rights?.rights_status!=="owned"||!rights?.commercial_use_allowed||!digitalSale||!rightsCurrent){
+        console.error("collectible rights gate",JSON.stringify({media_status:media?.status||null,rights_status:rights?.rights_status||null,commercial_use_allowed:rights?.commercial_use_allowed??null,permitted_uses:rights?.permitted_uses||null,digitalSale,rightsCurrent}));
         return reply(req,{error:"This collectible is not available for sale."},409);
       }
 
