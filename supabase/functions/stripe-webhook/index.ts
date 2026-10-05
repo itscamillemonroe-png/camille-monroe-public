@@ -100,6 +100,15 @@ Deno.serve(async(req:Request)=>{
           p_currency:"USD"
         });
         if(purchaseError)throw purchaseError;
+        await admin.from("admin_education_purchases").update({
+          source:String(session?.metadata?.source||"direct").slice(0,120),
+          medium:String(session?.metadata?.medium||"none").slice(0,120),
+          campaign:String(session?.metadata?.campaign||"").slice(0,120)||null,
+          content:String(session?.metadata?.content||"").slice(0,120)||null,
+          term:String(session?.metadata?.term||"").slice(0,120)||null,
+          referrer_host:String(session?.metadata?.referrer_host||"").slice(0,160)||null,
+          landing_path:String(session?.metadata?.landing_path||"").slice(0,180)||null
+        }).eq("stripe_session_id",String(session.id));
         const {data:adminTreasury}=await admin.from("treasury_reconciliation")
           .select("id").eq("source_provider","stripe").eq("source_reference",String(event.id)).maybeSingle();
         if(!adminTreasury){
