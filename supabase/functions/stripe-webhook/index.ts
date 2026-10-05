@@ -66,6 +66,23 @@ Deno.serve(async(req:Request)=>{
         });
         if(purchaseError)throw purchaseError;
         if(!Array.isArray(purchaseRows)||!purchaseRows[0]?.edition_number)throw new Error("Collectible purchase record missing.");
+        const {data:collectibleTreasury}=await admin.from("treasury_reconciliation")
+          .select("id").eq("source_provider","stripe").eq("source_reference",String(event.id)).maybeSingle();
+        if(!collectibleTreasury){
+          await admin.from("treasury_reconciliation").insert({
+            payment_order_id:null,
+            source_provider:"stripe",
+            source_reference:String(event.id),
+            gross_amount_cents:2500,
+            fees_cents:0,
+            net_amount_cents:null,
+            source_currency:"USD",
+            settlement_stage:"provider_confirmed",
+            destination_mask:"••••2609",
+            evidence_reference:String(session.id||event.id),
+            notes:"Stripe confirmed Digital Collectible No. 001 payment. Bluevine bank settlement remains pending until bank-side evidence is observed."
+          });
+        }
         return new Response("ok",{status:200});
       }
       if(session.payment_status==="paid" && session?.metadata?.offer==="documentation_starter_kit_v1"){
@@ -83,6 +100,23 @@ Deno.serve(async(req:Request)=>{
           p_currency:"USD"
         });
         if(purchaseError)throw purchaseError;
+        const {data:adminTreasury}=await admin.from("treasury_reconciliation")
+          .select("id").eq("source_provider","stripe").eq("source_reference",String(event.id)).maybeSingle();
+        if(!adminTreasury){
+          await admin.from("treasury_reconciliation").insert({
+            payment_order_id:null,
+            source_provider:"stripe",
+            source_reference:String(event.id),
+            gross_amount_cents:1900,
+            fees_cents:0,
+            net_amount_cents:null,
+            source_currency:"USD",
+            settlement_stage:"provider_confirmed",
+            destination_mask:"••••2609",
+            evidence_reference:String(session.id||event.id),
+            notes:"Stripe confirmed Documentation Workflow Starter Kit payment. Bluevine bank settlement remains pending until bank-side evidence is observed."
+          });
+        }
         return new Response("ok",{status:200});
       }
       if(session.payment_status==="paid" && orderId){
