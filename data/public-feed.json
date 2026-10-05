@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-10-04T22:21:00.000Z",
+  "updatedAt": "2026-10-05T13:05:00.000Z",
   "posts": [
+    {
+      "id": "documentation-starter-kit-launch",
+      "category": "Camille Monroe Systems",
+      "title": "A different kind of release",
+      "body": "I built a simple system for the people with too much paperwork, too many follow-ups, and too many tabs open. The Documentation Workflow Starter Kit is live: practical trackers, correspondence logs, deadline systems, and a weekly reset.",
+      "cta": "Get the Starter Kit — $19",
+      "href": "/admin-education/starter-kit/",
+      "publishedAt": "2026-10-05T13:05:00.000Z"
+    },
     {
       "id": "collectible-001-launch",
       "category": "First edition",
