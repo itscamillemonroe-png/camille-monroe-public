@@ -3,6 +3,19 @@ import { createClient } from "npm:@supabase/supabase-js@2.57.4";
 
 const origins=new Set(["https://itscamillemonroe.art","https://www.itscamillemonroe.art"]);
 const PRODUCT_KEY="documentation_starter_kit_v1";
+const safe=(v:unknown,n=120)=>typeof v==="string"?v.trim().slice(0,n):"";
+const attribution=(v:unknown)=>{
+  const x=v&&typeof v==="object"?v as Record<string,unknown>:{};
+  return {
+    source:safe(x.source)||"direct",
+    medium:safe(x.medium)||"none",
+    campaign:safe(x.campaign),
+    content:safe(x.content),
+    term:safe(x.term),
+    referrer_host:safe(x.referrer_host,160),
+    landing_path:safe(x.landing_path,180)
+  };
+};
 
 const cors=(req:Request)=>{
   const origin=req.headers.get("origin")||"";
@@ -60,6 +73,7 @@ Deno.serve(async(req:Request)=>{
 
     const body=await req.json().catch(()=>({}));
     const action=typeof body.action==="string"?body.action:"";
+    const attr=attribution(body.attribution);
 
     if(action==="create_checkout"){
       const form=new URLSearchParams();
@@ -71,6 +85,13 @@ Deno.serve(async(req:Request)=>{
       form.set("line_items[0][quantity]","1");
       form.set("metadata[offer]",PRODUCT_KEY);
       form.set("metadata[product_key]",PRODUCT_KEY);
+      form.set("metadata[source]",attr.source);
+      form.set("metadata[medium]",attr.medium);
+      if(attr.campaign)form.set("metadata[campaign]",attr.campaign);
+      if(attr.content)form.set("metadata[content]",attr.content);
+      if(attr.term)form.set("metadata[term]",attr.term);
+      if(attr.referrer_host)form.set("metadata[referrer_host]",attr.referrer_host);
+      if(attr.landing_path)form.set("metadata[landing_path]",attr.landing_path);
       form.set("payment_intent_data[metadata][offer]",PRODUCT_KEY);
       form.set("success_url","https://itscamillemonroe.art/admin-education/starter-kit/access/?session_id={CHECKOUT_SESSION_ID}");
       form.set("cancel_url","https://itscamillemonroe.art/admin-education/starter-kit/?payment=cancelled");
@@ -117,6 +138,15 @@ Deno.serve(async(req:Request)=>{
           p_currency:String(product.currency||"USD")
         });
         if(recordError)throw recordError;
+        await admin.from("admin_education_purchases").update({
+          source:String(session?.metadata?.source||"direct").slice(0,120),
+          medium:String(session?.metadata?.medium||"none").slice(0,120),
+          campaign:String(session?.metadata?.campaign||"").slice(0,120)||null,
+          content:String(session?.metadata?.content||"").slice(0,120)||null,
+          term:String(session?.metadata?.term||"").slice(0,120)||null,
+          referrer_host:String(session?.metadata?.referrer_host||"").slice(0,160)||null,
+          landing_path:String(session?.metadata?.landing_path||"").slice(0,180)||null
+        }).eq("stripe_session_id",sessionId);
 
         ({data:purchase}=await admin.from("admin_education_purchases")
           .select("id,buyer_email,amount_cents,currency,status,purchased_at,access_count")
