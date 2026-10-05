@@ -125,7 +125,7 @@ function renderSocial(items){
     btn.disabled=true;setStatus('Approving social post…');
     const q=await supabase.rpc('owner_approve_social_draft',{p_post_id:btn.dataset.id});
     if(q.error){setStatus(q.error.message,'error');btn.disabled=false;return;}
-    const mode=q.data?.handoff_mode||'not_connected';setStatus(mode==='metricool'?'Post approved and ready for Metricool scheduling.':mode==='manual_external'?'Post approved for the manual/external publishing lane.':'Post approved; platform connection is still required.','success');await load();
+    const mode=q.data?.handoff_mode||'not_connected';setStatus(mode==='metricool_manual'?'Post approved for Metricool handoff. Automatic Supabase publishing is retired, so schedule or publish through Metricool.':mode==='metricool'?'Post approved and ready for Metricool scheduling.':mode==='manual_external'?'Post approved for the manual/external publishing lane.':'Post approved; platform connection is still required.','success');await load();
   }));
   target.querySelectorAll('.archiveSocialInbox').forEach(btn=>btn.addEventListener('click',async()=>{
     btn.disabled=true;const q=await supabase.rpc('owner_archive_social_draft',{p_post_id:btn.dataset.id});
