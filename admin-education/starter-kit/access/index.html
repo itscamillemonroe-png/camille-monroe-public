@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#09060d">
+  <title>Your Documentation Workflow Starter Kit | Camille Monroe Systems</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/admin-education.css?v=20261005-1">
+</head>
+<body class="systemsPage kitAccessPage">
+<nav class="nav noPrint"><div class="wrap navin"><a class="brand" href="/">CAMILLE MONROE</a><div class="navlinks"><a href="/admin-education/">Systems</a><a href="/policies/">Policies</a></div></div></nav>
+<main class="wrap kitAccessMain">
+  <section id="unlockPanel" class="kitUnlock">
+    <p class="eyebrow">Payment return · Camille Monroe Systems</p>
+    <h1>Unlock your Starter Kit.</h1>
+    <p>Enter the same email address you used at Stripe checkout. We use it only to match this purchase session.</p>
+    <form id="unlockForm" class="kitUnlockForm">
+      <label>Email used at checkout<input id="purchaseEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+      <button id="unlockKit" class="btn primary" type="submit">Open my Starter Kit</button>
+    </form>
+    <p id="accessStatus" class="formStatus" aria-live="polite"></p>
+    <p class="systemsFine">If you closed this page, return using the successful Stripe checkout link from your browser history.</p>
+  </section>
+
+  <section id="kitContent" hidden>
+    <header class="kitHeader">
+      <p class="eyebrow">Camille Monroe Systems</p>
+      <h1 id="kitTitle">Documentation Workflow Starter Kit</h1>
+      <p id="kitSubtitle" class="systemsLead"></p>
+      <div class="systemsActions noPrint">
+        <button id="printKit" class="btn primary" type="button">Print / Save as PDF</button>
+        <button id="downloadText" class="btn" type="button">Download Complete Kit (.txt)</button>
+      </div>
+      <div id="kitDisclaimer" class="systemsNotice"></div>
+    </header>
+
+    <section class="systemsSection">
+      <p class="eyebrow">Quick start</p>
+      <ol id="quickStart" class="kitSteps"></ol>
+    </section>
+
+    <section id="kitSections" class="kitSections"></section>
+
+    <section class="systemsSection">
+      <p class="eyebrow">Downloadable templates</p>
+      <h2>Start with blank files.</h2>
+      <p>These CSV files open in Excel, Google Sheets, Numbers, and most spreadsheet apps.</p>
+      <div id="templateDownloads" class="templateGrid"></div>
+    </section>
+
+    <footer class="kitFooter">
+      <strong>Camille Monroe Systems</strong>
+      <span id="kitVersion"></span>
+    </footer>
+  </section>
+</main>
+<script src="/assets/admin-starter-kit-access.js?v=20261005-1" defer></script>
+</body>
+</html>
