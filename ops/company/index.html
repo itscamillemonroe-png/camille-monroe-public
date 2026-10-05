@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <title>Parent Company | Camille Monroe</title>
+  <link rel="stylesheet" href="/assets/style.css?v=20260917-sfw">
+  <link rel="stylesheet" href="/assets/ops-control.css?v=20261005-company1">
+</head>
+<body data-page="ops-company">
+<nav class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="/ops/">CAMILLE MONROE</a>
+    <div class="navActions">
+      <a href="/ops/">Control Room</a>
+      <a href="/ops/inbox/">Founder Inbox</a>
+      <a href="/studio/">Studio</a>
+      <button id="signOut" class="navButton" type="button">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="opsShell">
+  <a class="opsBack" href="/ops/">← Back to Control Room</a>
+  <div class="opsSubnav">
+    <a class="active" href="/ops/company/">Parent Company</a>
+    <a href="/ops/revenue/">Revenue</a>
+    <a href="/ops/launch/">Ready to Sell</a>
+    <a href="/ops/intelligence/">Growth Intelligence</a>
+    <a href="/studio/">Creator Studio</a>
+  </div>
+
+  <section class="opsHeader">
+    <div>
+      <p class="eyebrow">Founder-only umbrella operations</p>
+      <h1>Parent Company</h1>
+      <p class="lead">One operating view across every Camille Monroe division, offer, priority, and revenue path.</p>
+    </div>
+    <span id="structurePill" class="opsPill">Loading…</span>
+  </section>
+
+  <div id="opsStatus" class="opsStatus"></div>
+
+  <section class="opsPanel" style="margin-top:0">
+    <div class="opsSectionHead">
+      <div>
+        <h2>Company Identity</h2>
+        <p>Public brand and formal legal identity stay separated until the business structure is formally registered.</p>
+      </div>
+    </div>
+    <div class="opsSummary">
+      <article class="opsStat"><span>Operating Brand</span><strong id="operatingName">—</strong><small>public-facing umbrella</small></article>
+      <article class="opsStat"><span>Legal Operator</span><strong id="legalOperator">—</strong><small>formal/legal matters</small></article>
+      <article class="opsStat"><span>Communication</span><strong id="communicationMode">—</strong><small>default business workflow</small></article>
+      <article class="opsStat"><span>Structure</span><strong id="structureState">—</strong><small>legal-status guardrail</small></article>
+    </div>
+    <div class="opsItem">
+      <strong>Company objective</strong>
+      <p id="companyObjective">Loading…</p>
+      <p id="companyNotes"></p>
+    </div>
+  </section>
+
+  <section class="opsSummary">
+    <article class="opsStat"><span>Active Divisions</span><strong id="activeDivisions">—</strong><small id="buildingDivisions">— building</small></article>
+    <article class="opsStat"><span>Live Offers</span><strong id="liveOffers">—</strong><small id="buildingOffers">— being built/planned</small></article>
+    <article class="opsStat"><span>Payment Ready</span><strong id="paymentReadyOffers">—</strong><small>current sellable offers</small></article>
+    <article class="opsStat"><span>Collected Revenue</span><strong id="companyRevenue">—</strong><small>recorded across current company systems</small></article>
+  </section>
+
+  <section class="opsPanel">
+    <div class="opsSectionHead">
+      <div>
+        <h2>Divisions</h2>
+        <p>Creator activity is now one division inside the larger operating company instead of the whole company.</p>
+      </div>
+      <span id="divisionCountPill" class="opsPill">—</span>
+    </div>
+    <div id="divisionGrid" class="companyDivisionGrid"></div>
+  </section>
+
+  <section class="opsPanel">
+    <div class="opsSectionHead">
+      <div>
+        <h2>Offers & Revenue Paths</h2>
+        <p>Sorted by cash-now score so the fastest legitimate revenue paths stay visible.</p>
+      </div>
+      <span id="offerPill" class="opsPill">—</span>
+    </div>
+    <div class="opsTableWrap">
+      <table class="opsTable">
+        <thead><tr><th>Offer</th><th>Division</th><th>Status</th><th>Price</th><th>Cash-now</th><th>Next action</th></tr></thead>
+        <tbody id="offerRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="opsPanel">
+    <div class="opsSectionHead">
+      <div>
+        <h2>Founder Priority Queue</h2>
+        <p>Active work that moves the parent company forward. Status changes are recorded directly in the company control layer.</p>
+      </div>
+      <span id="projectPill" class="opsPill">—</span>
+    </div>
+    <div id="projectList" class="opsStack"></div>
+  </section>
+</main>
+
+<script type="module" src="/assets/company-ops.js?v=20261005-company1"></script>
+<script src="/assets/analytics.js?v=20260919-rev39" defer></script>
+</body>
+</html>
