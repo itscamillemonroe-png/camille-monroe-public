@@ -68,6 +68,23 @@ Deno.serve(async(req:Request)=>{
         if(!Array.isArray(purchaseRows)||!purchaseRows[0]?.edition_number)throw new Error("Collectible purchase record missing.");
         return new Response("ok",{status:200});
       }
+      if(session.payment_status==="paid" && session?.metadata?.offer==="documentation_starter_kit_v1"){
+        const buyerEmail=String(session?.customer_details?.email||session?.customer_email||"").trim();
+        const valid=/^cs_(test_|live_)?[A-Za-z0-9_]+$/.test(String(session.id||"")) &&
+          Number(session.amount_total)===1900 &&
+          String(session.currency||"").toLowerCase()==="usd" &&
+          buyerEmail;
+        if(!valid)return new Response("invalid starter kit purchase",{status:400});
+        const {error:purchaseError}=await admin.rpc("record_admin_education_purchase",{
+          p_stripe_session_id:String(session.id),
+          p_product_key:"documentation_starter_kit_v1",
+          p_buyer_email:buyerEmail,
+          p_amount_cents:1900,
+          p_currency:"USD"
+        });
+        if(purchaseError)throw purchaseError;
+        return new Response("ok",{status:200});
+      }
       if(session.payment_status==="paid" && orderId){
         const {error:fulfillError}=await admin.rpc("fulfill_paid_order",{target_order_id:orderId});
         if(fulfillError && !String(fulfillError.message||"").includes("already")) throw fulfillError;
