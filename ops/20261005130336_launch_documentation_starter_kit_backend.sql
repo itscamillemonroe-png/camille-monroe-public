@@ -1,0 +1,1 @@
+-- Applied to production Supabase on 2026-10-05. Creates admin education product/purchase ledgers, seeds Documentation Workflow Starter Kit v1, records purchases server-side, updates parent-company revenue snapshot, and promotes the Starter Kit offer to live at $19. See production migration launch_documentation_starter_kit_backend for the canonical applied SQL.
