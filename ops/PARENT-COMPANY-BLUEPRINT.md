@@ -464,3 +464,12 @@ When the parent-company structure changes, reconcile:
 6. Any live public offer or owner dashboard that exposes the change.
 
 Preserve historical documents rather than rewriting evidence of what existed before.
+
+
+## 19. Revenue reporting scope
+
+The company dashboard's **Website Payments Recorded** total currently covers paid member orders, collectible purchases, and paid Administrative Education purchases. It is not a consolidated company cash or bank-settlement total.
+
+PR invoices, Creator Private OS deployment/support payments, affiliate payouts, and external creator-platform payments require separate source evidence and reconciliation. A sent pitch, buyer-list entry, automatic reply, projected commission, or platform tip notification is not proof of cleared company cash.
+
+The Revenue Opportunity Pipeline links the current cash-proof offers and the specialized Creator Private OS buyer tracker. Individual software prospect status remains authoritative in that buyer tracker; the main pipeline contains the sales rollup. Beauty, venue, vendor, media-kit and managed-capture services are assigned to PR & Brand Relations; subcontracting is a fulfillment method.
