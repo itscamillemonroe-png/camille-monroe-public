@@ -357,7 +357,107 @@ Any adult-performer production activity requires jurisdiction-specific professio
 
 Never mix adult-performer recruiting or production with the public SFW Camille member funnel.
 
-## 11. Cross-company cash-conversion engines
+## 11. Revenue Division H — Digital Marketing & Creator Services
+
+**Status:** Active / sales-active  
+**Purpose:** Sell email-first, remote digital marketing systems and creator-growth services to creators, personal brands, feminine/lifestyle businesses, boutiques, coaches/consultants, and selected small businesses.
+
+**Core specialization:** Creator Commerce + Digital Marketing Systems.
+
+### Service architecture
+
+1. **Social Media & Creator Marketing**
+   - Social strategy/management.
+   - Instagram influencer marketing.
+   - TikTok / short-form strategy.
+   - Pinterest commerce/traffic strategy.
+   - Influencer campaign strategy.
+   - Social analytics/reporting.
+   - Selective reputation/crisis support.
+
+2. **Email Marketing & Lifecycle Automation**
+   - Welcome, nurture, and sales sequences.
+   - Newsletters.
+   - Creator/customer funnels.
+   - Email audits.
+   - Segmentation.
+   - Campaign management.
+   - Automation and performance optimization.
+
+3. **Content Production & Repurposing**
+   - Blog/article writing.
+   - E-books/digital guides.
+   - Newsletter content.
+   - Infographic/social assets.
+   - UGC campaign support.
+   - Interactive content when appropriate.
+   - Cross-channel content repurposing.
+   - Selective case-study/white-paper work.
+
+4. **Analytics, Audits & Strategy**
+   - Social/content/email audits.
+   - CTA/conversion review.
+   - Campaign reporting.
+   - Growth recommendations.
+   - Performance analysis.
+   - Digital marketing strategy consulting.
+
+5. **Podcast Growth & Monetization Support**
+   - Podcast SEO/discoverability.
+   - Sponsorship/brand-partnership support.
+   - Audience-growth strategy.
+   - Social promotion.
+   - Show-note/newsletter repurposing.
+   - PR/media outreach.
+   - Analytics/reporting.
+   - Full recording/audio engineering is excluded unless separately subcontracted.
+
+6. **Mobile Conversion & Campaign Optimization**
+   - Mobile landing-page review.
+   - Mobile checkout/funnel optimization.
+   - Mobile-first content strategy.
+   - QR-code campaigns.
+   - Mobile analytics/reporting.
+   - SMS, location-based marketing, app acquisition, ASO, and gamification remain selective/later services until compliance and delivery infrastructure are verified.
+
+### Initial live pilot offers
+
+- **Creator / Brand Social & Content Audit — $99 pilot.**
+- **Email Conversion Sequence — $149 pilot.**
+- **Newsletter Starter Package — $99 pilot.**
+- **Content Repurposing Sprint — $149 pilot.**
+- **Mobile Funnel & Checkout Review — $125 pilot.**
+- **Marketing Analytics & Growth Report — $125 pilot.**
+
+### Building / recurring extensions
+
+- Digital Guide / E-book Build — $250–$500 pilot range.
+- Podcast Growth & Repurposing Support — $175+ pilot.
+- Email & Content Lifecycle Retainer — $350–$1,000+/month after a successful pilot.
+- Digital products/courses expand only after smaller offers demonstrate real demand.
+
+### Cash-now doctrine
+
+Prioritize **cash now + proof now + reusable assets**.
+
+Each paid engagement should ideally create:
+1. collected revenue,
+2. truthful portfolio proof or a testimonial request,
+3. a reusable checklist/template/process,
+4. a clear next offer or retainer path.
+
+Use written scope → Stripe invoice/payment → delivery → confirmation → proof/testimonial request.
+
+### Guardrails
+
+- Never invent clients, case studies, metrics, conversions, rankings, revenue lift, testimonials, or performance claims.
+- Do not promise followers, traffic, sales, press, rankings, or conversions.
+- Do not sell advanced PPC/paid-ad management, technical SEO, full podcast production/audio engineering, sophisticated SMS programs, app-store optimization, app-user acquisition, or similarly specialist/high-risk work as a core capability until verified proof, a repeatable workflow, or a qualified subcontractor exists.
+- Client-provided lists/data must be used lawfully; no spam or deceptive outreach.
+- Client source content must be owned/licensed for the requested use.
+- Physical, phone-heavy, specialist, or technical implementation outside the approved founder workflow defaults to documented subcontracting.
+
+## 12. Cross-company cash-conversion engines
 
 Every division can use one or more of these economics:
 
@@ -379,7 +479,7 @@ Memberships, retainers, support agreements, subscriptions, repeat commissions, l
 ### Engine 6 — Owned-IP leverage
 Create once, sell/license repeatedly: software, templates, collectibles, content/IP, workflows, and brand assets.
 
-## 12. Subcontracting doctrine
+## 13. Subcontracting doctrine
 
 Founder default operating role is digital, strategic, written, and email-first.
 
@@ -408,7 +508,7 @@ Track:
 
 Prefer collecting client funds/deposit before incurring contractor expense.
 
-## 13. Content asset doctrine
+## 14. Content asset doctrine
 
 Every rights-cleared Camille asset should be evaluated for more than one economic use:
 
@@ -425,7 +525,7 @@ Every rights-cleared Camille asset should be evaluated for more than one economi
 
 One asset should create multiple distribution and monetization possibilities without violating rights or public/private brand separation.
 
-## 14. Asset recovery from prior company work
+## 15. Asset recovery from prior company work
 
 Useful operating principles from older parent-company work are retained without making those former brands the Camille parent company:
 
@@ -440,19 +540,21 @@ Useful operating principles from older parent-company work are retained without 
 
 Legacy real-estate, industrial, companion-marketplace, or unrelated opportunity structures are **not automatically Camille Monroe divisions**. They require a separate brand-fit and legal/economic decision before activation.
 
-## 15. Current priority board
+## 16. Current priority board
 
 ### Priority 1 — cash proof
 - First real Camille Stripe membership sale.
 - First Digital Collectible No. 001 purchase/numbered delivery.
 - First Documentation Workflow Starter Kit purchase/delivery.
 - First paid PR/Visibility service from the current prospect pipeline.
+- First paid Digital Marketing & Creator Services pilot offer, with payment, delivery, and truthful proof logged.
 
 ### Priority 2 — higher-value economics
 - Verify/activate written affiliate/referral economics.
 - Activate Creator Commerce account eligibility and package the first paid UGC offer.
 - Resume qualified Creator Private OS sales.
 - Convert successful PR sprints to recurring retainers.
+- Package the six live Digital Marketing pilot offers into a single sales menu and convert the strongest one-time clients into lifecycle/content retainers.
 
 ### Priority 3 — owned-IP expansion
 - Build the rights-cleared commercial licensing catalog.
@@ -462,7 +564,7 @@ Legacy real-estate, industrial, companion-marketplace, or unrelated opportunity 
 - Black Label Pictures launch-readiness/compliance review.
 - Formal legal/entity/trade-name structure when founder approves.
 
-## 16. Governance rules
+## 17. Governance rules
 
 - Camille Monroe = public operating umbrella.
 - Cheryl Snider = legal/formal operator until legal structure changes.
@@ -474,7 +576,7 @@ Legacy real-estate, industrial, companion-marketplace, or unrelated opportunity 
 - Do not rebuild or duplicate the current Camille production stack.
 - Stripe remains the current Camille-site payment authority; retired payment/social dependencies are not reintroduced merely because older documents mention them.
 
-## 17. Control-layer data model
+## 18. Control-layer data model
 
 - `company_profile` — umbrella identity and legal-status guardrail.
 - `company_divisions` — capability/economic divisions.
@@ -486,7 +588,7 @@ Legacy real-estate, industrial, companion-marketplace, or unrelated opportunity 
 - Rights ledger — ownership/licensing evidence.
 - Treasury/revenue attribution — collected cash evidence.
 
-## 18. Source-of-truth rule
+## 19. Source-of-truth rule
 
 When the parent-company structure changes, reconcile:
 
@@ -500,7 +602,7 @@ When the parent-company structure changes, reconcile:
 Preserve historical documents rather than rewriting evidence of what existed before.
 
 
-## 19. Revenue reporting scope
+## 20. Revenue reporting scope
 
 The company dashboard's **Website Payments Recorded** total currently covers paid member orders, collectible purchases, and paid Administrative Education purchases. It is not a consolidated company cash or bank-settlement total.
 
