@@ -96,7 +96,7 @@ async function load(){
   renderDivisions(data?.divisions||[]);
   renderOffers(data?.offers||[]);
   renderProjects(data?.projects||[]);
-  status('Parent company synchronized.','success');
+  status('Operating records loaded. Review the linked sales trackers and payment evidence for current status.','success');
 }
 async function init(){await requireOwner();await load();}
 init().catch(e=>status(e.message||'Parent-company view could not load.','error'));
