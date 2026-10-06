@@ -3,7 +3,8 @@ const endpoint='https://wybpxixkjimbpvufozub.supabase.co/functions/v1/public-adm
 const apikey='sb_publishable_0bNGPfELmwuT32zmhXXkMQ_sJIXotwE';
 const buy=document.getElementById('buyStarterKit');
 const status=document.getElementById('starterKitStatus');
-const setStatus=(text,type='')=>{if(!status)return;status.textContent=text;status.className=('formStatus '+type).trim();};\nfunction getAttribution(){try{return JSON.parse(localStorage.getItem('cm_attribution_v1')||'{}')||{};}catch{return {};}}
+const setStatus=(text,type='')=>{if(!status)return;status.textContent=text;status.className=('formStatus '+type).trim();};
+function getAttribution(){try{return JSON.parse(localStorage.getItem('cm_attribution_v1')||'{}')||{};}catch{return {};}}
 async function call(body){
   const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','apikey':apikey},body:JSON.stringify(body)});
   const data=await response.json().catch(()=>({}));
