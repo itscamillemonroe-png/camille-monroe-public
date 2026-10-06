@@ -230,6 +230,39 @@ Beauty, lifestyle, hospitality, venues, creators, events, culture, premium local
 - Licensing partnerships.
 - Monthly business-development relationships.
 
+### Named revenue lane — Creator Commerce & Brand Partnerships
+
+**Status:** Active / revenue-building.  
+**Role:** Monetize Camille's creator presence through shoppable content, paid brand creative, sponsorships, and hybrid economics without creating a duplicate parent division.
+
+Initial channels to qualify/activate:
+
+- TikTok Shop Affiliate.
+- Amazon Influencer / storefront commissions.
+- Instagram/Facebook creator partnerships and creator-marketplace opportunities.
+- Direct paid UGC and sponsored-content outreach.
+
+Commercial models:
+
+- Affiliate/product-sale commissions.
+- Flat paid-UGC creation fees.
+- Sponsored-post/campaign fees.
+- Flat fee + commission hybrid deals.
+- Usage-rights / ad-rights add-ons where separately negotiated.
+
+Brand focus:
+
+Beauty, hair, fragrance, fashion, accessories, feminine lifestyle/home, creator technology, and other premium Camille-aligned products.
+
+Operating rules:
+
+- Default to $0-first; do not buy inventory merely to qualify for a promotion.
+- Verify platform/account eligibility before representing enrollment or availability.
+- Disclose affiliate, gifted, sponsored, and other material relationships as required.
+- Never invent product experience, results, audience metrics, conversions, clients, or brand relationships.
+- Put compensation, deliverables, deadlines, revisions, content usage, ad/whitelisting rights, exclusivity, attribution, and payment timing in writing.
+- Track product/brand, platform, fee or commission, content deliverable, link/code, conversion evidence, payout status, and reusable-content rights.
+
 ### Current active economics work
 
 - NOWPayments written affiliate/referral economics verification.
@@ -417,6 +450,7 @@ Legacy real-estate, industrial, companion-marketplace, or unrelated opportunity 
 
 ### Priority 2 — higher-value economics
 - Verify/activate written affiliate/referral economics.
+- Activate Creator Commerce account eligibility and package the first paid UGC offer.
 - Resume qualified Creator Private OS sales.
 - Convert successful PR sprints to recurring retainers.
 
